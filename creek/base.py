@@ -152,7 +152,7 @@ class Creek:
         return getattr(self.stream, attr)
 
     def __dir__(self):
-        return list(set(self.__dir__()).union(self.stream.__dir__()))  # to forward dir to delegated stream as well
+        return list(set(dir(self.__class__)).union(self.stream.__dir__()))  # to forward dir to delegated stream as well
 
     def __hash__(self):
         return self.stream.__hash__()
