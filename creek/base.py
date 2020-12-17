@@ -38,6 +38,7 @@ no_such_item = NoSuchItem()
 def cls_wrap(cls, obj):
     if isinstance(obj, type):
 
+        @wraps(cls, updated=())
         class Wrap(cls):
             @wraps(obj.__init__)
             def __init__(self, *args, **kwargs):
@@ -47,6 +48,24 @@ def cls_wrap(cls, obj):
         return Wrap
     else:
         return cls(obj)
+
+
+# def cls_wrap(cls, obj, __name__=None, __module__=None, __doc__=None):
+#     if isinstance(obj, type):
+#
+#         class Wrap(cls):
+#             @wraps(obj.__init__)
+#             def __init__(self, *args, **kwargs):
+#                 wrapped = obj(*args, **kwargs)
+#                 super().__init__(wrapped)
+#         #
+#         Wrap.__name__ = __name__ or obj.__name__
+#         Wrap.__module__ = __module__ or obj.__module__
+#         Wrap.__doc__ = __doc__ or obj.__doc__
+#
+#         return Wrap
+#     else:
+#         return cls(obj)
 
 
 class stream_util:
@@ -66,7 +85,7 @@ class stream_util:
 class Creek:
     """A layer-able version of the stream interface
 
-    There are three layering methods -- pre_iter, data_to_obj, and post_filt
+    There are three layering methods -- pre_iter, data_to_obj, and post_iter
     -- whose use is demonstrated in the iteration code below:
 
     >>> from io import StringIO
@@ -113,8 +132,8 @@ class Creek:
     ... 4, 5,6
     ... ''')
     >>> class MyFilteredCreek(MyCreek):
-    ...     def post_filt(self, obj):
-    ...         return str.isnumeric(obj[0])
+    ...     def post_iter(self, objs):
+    ...         yield from filter(lambda obj: str.isnumeric(obj[0]), objs)
     >>>
     >>> s = MyFilteredCreek(src)
     >>>
@@ -134,6 +153,9 @@ class Creek:
     - pre_iter: involving enumerate to get line indices in stream iterator
     - pre_iter = functools.partial(map, line_pre_proc_func) to preprocess all lines with line_pre_proc_func
     - pre_iter: include filter before obj
+
+    - post_iter: chain.from_iterable to flatten a chunked/segmented stream
+    - post_iter: functools.partial(filter, condition) to filter yielded objs
     """
 
     def __init__(self, stream):
@@ -141,16 +163,29 @@ class Creek:
 
     wrap = classmethod(cls_wrap)
 
+    def __getattr__(self, attr):
+        """Delegate method to wrapped store if not part of wrapper store methods"""
+        return getattr(self.stream, attr)
+
+    def __hash__(self):
+        return self.store.__hash__()
+
     # _data_of_obj = static_identity_method  # for write methods
     pre_iter = static_identity_method
     data_to_obj = static_identity_method
-    post_filt = stream_util.always_true
+    # post_filt = stream_util.always_true
+    post_iter = static_identity_method
 
     def __iter__(self):
-        for line in self.pre_iter(self.stream):
-            obj = self.data_to_obj(line)
-            if self.post_filt(obj):
-                yield obj
+        yield from self.post_iter(
+            map(self.data_to_obj,
+                self.pre_iter(
+                    self.stream)))
+
+        # for line in self.pre_iter(self.stream):
+        #     obj = self.data_to_obj(line)
+        #     if self.post_filt(obj):
+        #         yield obj
 
         # TODO: See pros and cons of above vs below:
         # yield from filter(self.post_filt,
@@ -162,14 +197,6 @@ class Creek:
     def __next__(self):  # TODO: Pros and cons of having a __next__?
         return next(iter(self))
 
-    def __getattr__(self, attr):
-        """Delegate method to wrapped store if not part of wrapper store methods"""
-        return getattr(self.stream, attr)
-        # if attr in self._wrapped_methods:
-        #     return getattr(self, attr)
-        # else:
-        #     return getattr(self.stream, attr)
-
     def __enter__(self):
         self.stream.__enter__()
         return self
@@ -179,3 +206,13 @@ class Creek:
         return self.stream.__exit__(
             exc_type, exc_val, exc_tb
         )  # TODO: Should we have a _post_proc? Uses?
+
+# class Brook(Creek):
+#     post_iter = static_identity_method
+#
+#     def __iter__(self):
+#         yield from self.post_iter(
+#             filter(self.post_filt,
+#                    map(self.data_to_obj,
+#                        self.pre_iter(
+#                            self.stream))))
