@@ -38,34 +38,18 @@ no_such_item = NoSuchItem()
 def cls_wrap(cls, obj):
     if isinstance(obj, type):
 
-        @wraps(cls, updated=())
+        @wraps(obj, updated=())
         class Wrap(cls):
             @wraps(obj.__init__)
             def __init__(self, *args, **kwargs):
                 wrapped = obj(*args, **kwargs)
                 super().__init__(wrapped)
 
+        # Wrap.__signature__ = signature(obj)
+
         return Wrap
     else:
         return cls(obj)
-
-
-# def cls_wrap(cls, obj, __name__=None, __module__=None, __doc__=None):
-#     if isinstance(obj, type):
-#
-#         class Wrap(cls):
-#             @wraps(obj.__init__)
-#             def __init__(self, *args, **kwargs):
-#                 wrapped = obj(*args, **kwargs)
-#                 super().__init__(wrapped)
-#         #
-#         Wrap.__name__ = __name__ or obj.__name__
-#         Wrap.__module__ = __module__ or obj.__module__
-#         Wrap.__doc__ = __doc__ or obj.__doc__
-#
-#         return Wrap
-#     else:
-#         return cls(obj)
 
 
 class stream_util:
@@ -164,11 +148,14 @@ class Creek:
     wrap = classmethod(cls_wrap)
 
     def __getattr__(self, attr):
-        """Delegate method to wrapped store if not part of wrapper store methods"""
+        """Delegate method to wrapped stream"""
         return getattr(self.stream, attr)
 
+    def __dir__(self):
+        return list(set(self.__dir__()).union(self.stream.__dir__()))  # to forward dir to delegated stream as well
+
     def __hash__(self):
-        return self.store.__hash__()
+        return self.stream.__hash__()
 
     # _data_of_obj = static_identity_method  # for write methods
     pre_iter = static_identity_method
