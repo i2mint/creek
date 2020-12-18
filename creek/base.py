@@ -182,6 +182,9 @@ class Creek:
     # _wrapped_methods = {'__iter__'}
 
     def __next__(self):  # TODO: Pros and cons of having a __next__?
+        """by default: next(iter(self))
+        Expect to
+        """
         return next(iter(self))
 
     def __enter__(self):
