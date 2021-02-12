@@ -59,8 +59,8 @@ class MergedStreams:
     ...     'hello': [(2, 'two'), (3, 'three'), (5, 'five')],
     ...     'world': [(0, 'zero'), (1, 'one'), (3, 'three'), (6, 'six')]
     ... }
-    >>> mts = MergedStreams(streams_map)
-    >>> it = iter(mts)
+    >>> streams_items = MergedStreams(streams_map)
+    >>> it = iter(streams_items)
     >>> list(it)  # doctest: +NORMALIZE_WHITESPACE
     [('world', (0, 'zero')),
      ('world', (1, 'one')),
