@@ -152,7 +152,8 @@ class Creek:
         return getattr(self.stream, attr)
 
     def __dir__(self):
-        return list(set(dir(self.__class__)).union(self.stream.__dir__()))  # to forward dir to delegated stream as well
+        return list(set((*dir(self.__class__), *dir(self.stream))))  # to forward dir to delegated stream as well
+        # return list(set(dir(self.__class__)).union(self.stream.__dir__()))  # to forward dir to delegated stream as well
 
     def __hash__(self):
         return self.stream.__hash__()
@@ -197,6 +198,7 @@ class Creek:
             exc_type, exc_val, exc_tb
         )  # TODO: Should we have a _post_proc? Uses?
 
+
 # class Brook(Creek):
 #     post_iter = static_identity_method
 #
@@ -206,3 +208,4 @@ class Creek:
 #                    map(self.data_to_obj,
 #                        self.pre_iter(
 #                            self.stream))))
+
