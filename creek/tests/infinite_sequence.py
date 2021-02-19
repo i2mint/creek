@@ -3,6 +3,31 @@ from creek.infinite_sequence import InfiniteSeq, IndexedBuffer, OverlapsFutureEr
 
 
 def test_infinite_seq():
+    from itertools import cycle
+    iterator = cycle(range(100))
+    # Let's make an InfiniteSeq instance for this stream, accomodating for a view of up to 11 items.
+    s = InfiniteSeq(iterator, buffer_len=11)
+    # Let's ask for element 15 (which is the (15 + 1)th element (and should have a value of 15).
+    assert s[15] == 15
+    # Now, to get this value, the iterator will move forward up to that point;
+    # that is, until the buffer's head (i.e. most recent) item contains that requested (15 + 1)th element.
+    # But the buffer is of size 11, so we still have access to a few previous elements:
+    assert s[11] == 11
+    assert s[5:15] == [5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+
+    # But if we asked for anything before index 5...
+    with pytest.raises(OverlapsPastError):
+        _ = s[2:7]
+
+    # So we can't go backwards. But we can always go forwards:
+
+    assert s[95:105] == [95, 96, 97, 98, 99, 0, 1, 2, 3, 4]
+
+    # You can also use slices with step and with negative integers (referencing the head of the buffer)
+    assert s[120:130:2] == [20, 22, 24, 26, 28]
+    assert s[-8:-2] == [22, 23, 24, 25, 26, 27]
+
+    # What to do if your iterator provides "chunks"? Example below.
     from itertools import chain
     data_gen_source = [
         range(0, 5),
@@ -74,4 +99,49 @@ def test_indexed_buffer_extreme_cases():
     # use negative indices
     assert s[4:-1] == [4, 5, 6, 7, 8]
     assert s[-4:-1] == [6, 7, 8]
+
+
+def test_source(capsys):
+    from creek.infinite_sequence import InfiniteSeq
+    from collections import Mapping
+
+    def assert_prints(print_str):
+        out, err = capsys.readouterr()
+        assert out == print_str
+
+    class Source(Mapping):
+        n = 100
+
+        __len__ = lambda self: self.n
+
+        def __iter__(self):
+            yield from range(self.n)
+
+        def __getitem__(self, k):
+            print(f"Asking for {k}")
+            return list(range(k * 10, (k + 1) * 10))
+
+    source = Source()
+
+    assert source[3] == [30, 31, 32, 33, 34, 35, 36, 37, 38, 39]
+    assert_prints("Asking for 3\n")
+
+    from itertools import chain
+
+    iterator = chain.from_iterable(source.values())
+
+    s = InfiniteSeq(iterator, 10)
+
+    assert s[:5] == [0, 1, 2, 3, 4]
+    assert_prints("Asking for 0\n")
+
+    assert s[4:8] == [4, 5, 6, 7]
+
+    assert s[8:12] == [8, 9, 10, 11]
+    assert_prints("Asking for 1\n")
+
+    assert s[40:42] == [40, 41]
+    assert_prints("Asking for 2\nAsking for 3\nAsking for 4\n")
+
+
 

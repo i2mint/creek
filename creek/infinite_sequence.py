@@ -3,6 +3,10 @@ Essentially, trying to give you the impression that you have read access to infi
 with some (parametrizable) limitations.
 
 """
+# TODO: Build up extensive relations expression and handling, but InfiniteSeq only uses BEFORE (past).
+#  Consider simplifying.
+# TODO:
+
 from collections import deque
 from typing import Iterable, Tuple, Union, Callable
 from functools import wraps, partial, partialmethod
@@ -271,7 +275,7 @@ class IndexedBuffer:
     IndexedBuffer uses collections.deque, exposing the append, extend, and clear methods, updating the index reference
     in a thread-safe manner.
 
-    >>> s = IndexedBuffer(maxlen=4)
+    >>> s = IndexedBuffer(buffer_len=4)
     >>> s.extend(range(4))  # adding 4 elements in bulk (filling the buffer completely)
     >>> list(s)
     [0, 1, 2, 3]
@@ -310,18 +314,23 @@ class IndexedBuffer:
     On the other hand, if you ask for something that is not in the buffer (anymore, or yet), you'll get an
     error that tells you so:
 
-    >>> s[1:4]  # element for idx 1 is missing in [2, 3, 4, 5]
+    >>> # element for idx 1 is missing in [2, 3, 4, 5]
+    >>> s[1:4]  # doctest: +SKIP
     Traceback (most recent call last):
         ...
-    infinite_sequence.OverlapsPastError: You asked for slice(1, 4, None), but the buffer only contains the index range: 2:6
-    >>> s[0:9]  # elements for 0:2 are missing (as well as 6:9, but OverlapsPastError trumps OverlapsFutureError
+    OverlapsPastError: You asked for slice(1, 4, None), but the buffer only contains the index range: 2:6
+
+    >>> # elements for 0:2 are missing (as well as 6:9, but OverlapsPastError trumps OverlapsFutureError
+    >>> s[0:9]  # doctest: +SKIP
     Traceback (most recent call last):
         ...
-    infinite_sequence.OverlapsPastError: You asked for slice(0, 9, None), but the buffer only contains the index range: 2:6
-    >>> s[4:9]  # element for 6:9 are missing in [2, 3, 4, 5]
+    OverlapsPastError: You asked for slice(0, 9, None), but the buffer only contains the index range: 2:6
+
+    >>> # element for 6:9 are missing in [2, 3, 4, 5]
+    >>> s[4:9]  # doctest: +SKIP
     Traceback (most recent call last):
         ...
-    infinite_sequence.OverlapsFutureError: You asked for slice(4, 9, None), but the buffer only contains the index range: 2:6
+    OverlapsFutureError: You asked for slice(4, 9, None), but the buffer only contains the index range: 2:6
     """
 
     def __init__(self, buffer_len, prefill=(),
@@ -423,6 +432,107 @@ from typing import Iterator
 
 @dataclass
 class InfiniteSeq:
+    """A list-like (read) view of an unbounded sequence/stream.
+
+    For example, take an iterator that cycles from 0 to 99 forever:
+
+    >>> from itertools import cycle
+    >>> iterator = cycle(range(100))
+
+    Let's make an InfiniteSeq instance for this stream, accomodating for a view of up to 11 items.
+
+    >>> s = InfiniteSeq(iterator, buffer_len=11)
+
+    Let's ask for element 15 (which is the (15 + 1)th element (and should have a value of 15).
+
+    >>> s[15]
+    15
+
+    Now, to get this value, the iterator will move forward up to that point;
+    that is, until the buffer's head (i.e. most recent) item contains that requested (15 + 1)th element.
+    But the buffer is of size 11, so we still have access to a few previous elements:
+
+    >>> s[11]
+    11
+    >>> s[5:15]
+    [5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+
+    But if we asked for anything before index 5...
+
+    >>> s[2:7]  #doctest: +SKIP
+    Traceback (most recent call last):
+        ...
+    OverlapsPastError: You asked for slice(2, 7, None), but the buffer only contains the index range: 5:16
+
+    So we can't go backwards. But we can always go forwards:
+
+    >>> s[95:105]
+    [95, 96, 97, 98, 99, 0, 1, 2, 3, 4]
+
+    You can also use slices with step and with negative integers (referencing the head of the buffer)
+    >>> s[120:130:2]
+    [20, 22, 24, 26, 28]
+    >>> s[-8:-2]
+    [22, 23, 24, 25, 26, 27]
+
+    Sometimes the source provides data in chunks. Sometimes these chunks are not even of fixed size.
+    In those situations, you can use ``itertools.chain`` to "flatten" the iterator as in the following example:
+
+
+    >>> from creek.infinite_sequence import InfiniteSeq
+    >>> from collections import Mapping
+    >>>
+    >>> class Source(Mapping):
+    ...     n = 100
+    ...
+    ...     __len__ = lambda self: self.n
+    ...
+    ...     def __iter__(self):
+    ...         yield from range(self.n)
+    ...
+    ...     def __getitem__(self, k):
+    ...         print(f"Asking for {k}")
+    ...         return list(range(k * 10, (k + 1) * 10))
+    ...
+    >>>
+    >>> source = Source()
+    >>>
+
+    See that when we ask for a chunk of data, there's a print notification about it.
+
+    >>> assert source[3] == [30, 31, 32, 33, 34, 35, 36, 37, 38, 39]
+    Asking for 3
+
+    Now let's make an iterator of the data and an InfiniteSeq (with buffer length 10) on top of it.
+
+    >>> from itertools import chain
+    >>> iterator = chain.from_iterable(source.values())
+    >>> s = InfiniteSeq(iterator, 10)
+
+    See that when you ask for :5, you see that chunk 0 is requested.
+
+    >>> s[:5]
+    Asking for 0
+    [0, 1, 2, 3, 4]
+
+    If you ask for something that's already in the buffer, you won't see the print notification though.
+
+    >>> s[4:8]
+    [4, 5, 6, 7]
+
+    The following shows you how InfiniteSeq "hits" the data source as it's getting the data it needs for the request.
+
+    >>> s[8:12]
+    Asking for 1
+    [8, 9, 10, 11]
+    >>>
+    >>> s[40:42]
+    Asking for 2
+    Asking for 3
+    Asking for 4
+    [40, 41]
+
+    """
     iterator: Iterator
     buffer_len: int
 

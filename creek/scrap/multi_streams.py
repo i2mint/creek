@@ -96,3 +96,7 @@ def multi_stream_items(streams_map: StreamsMap):
     """
     for stream_id, stream in streams_map.items():
         yield product([stream_id], stream)
+
+
+class SortKeys:
+    all_but_last = staticmethod(itemgetter(-1))
