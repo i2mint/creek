@@ -1,69 +1,6 @@
-import functools
+"""The base objects of creek"""
 
-wrapper_assignments = (
-    "__module__",
-    "__name__",
-    "__qualname__",
-    "__doc__",
-    "__annotations__",
-    "__defaults__",
-    "__kwdefaults__",
-)
-
-update_wrapper = functools.update_wrapper
-update_wrapper.__defaults__ = (
-    functools.WRAPPER_ASSIGNMENTS,
-    functools.WRAPPER_UPDATES,
-)
-wraps = functools.wraps
-wraps.__defaults__ = (functools.WRAPPER_ASSIGNMENTS, functools.WRAPPER_UPDATES)
-
-
-# TODO: Make identity_func "identifiable". If we use the following one, we can use == to detect it's use,
-# TODO: ... but there may be a way to annotate, register, or type any identity function so it can be detected.
-def identity_func(x):
-    return x
-
-
-static_identity_method = staticmethod(identity_func)
-
-
-class NoSuchItem:
-    pass
-
-
-no_such_item = NoSuchItem()
-
-
-def cls_wrap(cls, obj):
-    if isinstance(obj, type):
-
-        @wraps(obj, updated=())
-        class Wrap(cls):
-            @wraps(obj.__init__)
-            def __init__(self, *args, **kwargs):
-                wrapped = obj(*args, **kwargs)
-                super().__init__(wrapped)
-
-        # Wrap.__signature__ = signature(obj)
-
-        return Wrap
-    else:
-        return cls(obj)
-
-
-class stream_util:
-    def always_true(*args, **kwargs):
-        return True
-
-    def do_nothing(*args, **kwargs):
-        pass
-
-    def rewind(self, instance):
-        instance.seek(0)
-
-    def skip_lines(self, instance, n_lines_to_skip=0):
-        instance.seek(0)
+from creek.util import cls_wrap, static_identity_method, no_such_item
 
 
 class Creek:
@@ -198,7 +135,6 @@ class Creek:
             exc_type, exc_val, exc_tb
         )  # TODO: Should we have a _post_proc? Uses?
 
-
 # class Brook(Creek):
 #     post_iter = static_identity_method
 #
@@ -208,4 +144,3 @@ class Creek:
 #                    map(self.data_to_obj,
 #                        self.pre_iter(
 #                            self.stream))))
-
