@@ -5,7 +5,6 @@ with some (parametrizable) limitations.
 """
 # TODO: Build up extensive relations expression and handling, but InfiniteSeq only uses BEFORE (past).
 #  Consider simplifying.
-# TODO:
 
 from collections import deque
 from typing import Iterable, Tuple, Union, Callable
@@ -430,6 +429,8 @@ from dataclasses import dataclass
 from typing import Iterator
 
 
+# TODO: Add some mechanism to deal with ITERABLE instead of just iterator. As it is we have some unwanted behavior with
+#   iterables
 @dataclass
 class InfiniteSeq:
     """A list-like (read) view of an unbounded sequence/stream.
@@ -472,8 +473,17 @@ class InfiniteSeq:
     You can also use slices with step and with negative integers (referencing the head of the buffer)
     >>> s[120:130:2]
     [20, 22, 24, 26, 28]
+    >>> s[120:130]
+    [20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
     >>> s[-8:-2]
     [22, 23, 24, 25, 26, 27]
+
+    but you cannot slice farther back than the buffer
+    >>> s[-20:-2]
+    Traceback (most recent call last):
+    ...
+    infinite_sequence.OverlapsPastError: You asked for slice(110, 128, None), but the buffer only contains the index range: 119:130
+
 
     Sometimes the source provides data in chunks. Sometimes these chunks are not even of fixed size.
     In those situations, you can use ``itertools.chain`` to "flatten" the iterator as in the following example:
