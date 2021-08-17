@@ -479,10 +479,11 @@ class InfiniteSeq:
     [22, 23, 24, 25, 26, 27]
 
     but you cannot slice farther back than the buffer
-    >>> s[-20:-2]
+    >>> s[-20:-2] # doctest: +NORMALIZE_WHITESPACE
     Traceback (most recent call last):
     ...
-    infinite_sequence.OverlapsPastError: You asked for slice(110, 128, None), but the buffer only contains the index range: 119:130
+    infinite_sequence.OverlapsPastError: You asked for slice(110, 128, None),
+    but the buffer only contains the index range: 119:130
 
 
     Sometimes the source provides data in chunks. Sometimes these chunks are not even of fixed size.
