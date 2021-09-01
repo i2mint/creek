@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>creek.scrap.multi_streams &#8212; creek 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="creek.tests.infinite_sequence" href="../tests/infinite_sequence.html" />
+    <link rel="prev" title="creek.scrap.creek_layers" href="creek_layers.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-creek.scrap.multi_streams">
+<span id="creek-scrap-multi-streams"></span><h1>creek.scrap.multi_streams<a class="headerlink" href="#module-creek.scrap.multi_streams" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="creek.scrap.multi_streams.MergedStreams">
+<em class="property">class </em><code class="sig-prename descclassname">creek.scrap.multi_streams.</code><code class="sig-name descname">MergedStreams</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">streams_map</span><span class="p">:</span> <span class="n">Mapping<span class="p">[</span>Any<span class="p">, </span>Iterable<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">sort_key</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Callable<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/creek/scrap/multi_streams.html#MergedStreams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.scrap.multi_streams.MergedStreams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an iterable of (stream_id, stream_item) pairs from a {stream_id: stream, …} map.
+The stream_item will be yield in sorted order.
+Sort behavior can be modified by the <code class="docutils literal notranslate"><span class="pre">sort_key</span></code> argument which behaves like <cite>key`</cite> arguments of built-in like
+<code class="docutils literal notranslate"><span class="pre">sorted</span></code>, <code class="docutils literal notranslate"><span class="pre">heapq.merge</span></code>, <code class="docutils literal notranslate"><span class="pre">itertools.groupby</span></code>, etc.
+If given, the <cite>sort_key</cite> function applies to <code class="docutils literal notranslate"><span class="pre">stream_item</span></code> (not to <code class="docutils literal notranslate"><span class="pre">stream_id</span></code>).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">streams_map</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s1">&#39;hello&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;two&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;three&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;five&#39;</span><span class="p">)],</span>
+<span class="gp">... </span>    <span class="s1">&#39;world&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;zero&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;one&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;three&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;six&#39;</span><span class="p">)]</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">streams_items</span> <span class="o">=</span> <span class="n">MergedStreams</span><span class="p">(</span><span class="n">streams_map</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">streams_items</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>  
+<span class="go">[(&#39;world&#39;, (0, &#39;zero&#39;)),</span>
+<span class="go"> (&#39;world&#39;, (1, &#39;one&#39;)),</span>
+<span class="go"> (&#39;hello&#39;, (2, &#39;two&#39;)),</span>
+<span class="go"> (&#39;hello&#39;, (3, &#39;three&#39;)),</span>
+<span class="go"> (&#39;world&#39;, (3, &#39;three&#39;)),</span>
+<span class="go"> (&#39;hello&#39;, (5, &#39;five&#39;)),</span>
+<span class="go"> (&#39;world&#39;, (6, &#39;six&#39;))]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt id="creek.scrap.multi_streams.Pipe">
+<em class="property">class </em><code class="sig-prename descclassname">creek.scrap.multi_streams.</code><code class="sig-name descname">Pipe</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">funcs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/creek/scrap/multi_streams.html#Pipe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.scrap.multi_streams.Pipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple function composition. That is, gives you a callable that implements input -&gt; f_1 -&gt; … -&gt; f_n -&gt; output.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">Pipe</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;x: </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">x: 5</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Pipe instances don’t have a __name__ etc. So some expectations of normal functions are not met.</p></li>
+<li><p>Pipe instance are pickalable (as long as the functions that compose them are)</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="creek.scrap.multi_streams.multi_stream_items">
+<code class="sig-prename descclassname">creek.scrap.multi_streams.</code><code class="sig-name descname">multi_stream_items</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">streams_map</span><span class="p">:</span> <span class="n">Mapping<span class="p">[</span>Any<span class="p">, </span>Iterable<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/creek/scrap/multi_streams.html#multi_stream_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.scrap.multi_streams.multi_stream_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides a iterable of (k1, v1_1), (k1, v1_2), …
+&gt;&gt;&gt; streams_map = {‘hello’: ‘abc’, ‘world’: [1, 2]}
+&gt;&gt;&gt; hello_items, world_items = multi_stream_items(streams_map)
+&gt;&gt;&gt; list(hello_items)
+[(‘hello’, ‘a’), (‘hello’, ‘b’), (‘hello’, ‘c’)]
+&gt;&gt;&gt; list(world_items)
+[(‘world’, 1), (‘world’, 2)]</p>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">creek</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../creek.html">creek</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../base.html">creek.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../infinite_sequence.html">creek.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="creek_layers.html">creek.scrap.creek_layers</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">creek.scrap.multi_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../util.html">creek.util</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="creek_layers.html" title="previous chapter">creek.scrap.creek_layers</a></li>
+      <li>Next: <a href="../tests/infinite_sequence.html" title="next chapter">creek.tests.infinite_sequence</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;NO COPYRIGHT.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../../_sources/module_docs/creek/scrap/multi_streams.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

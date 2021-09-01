@@ -1,0 +1,695 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>creek.infinite_sequence &#8212; creek 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for creek.infinite_sequence</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Objects that support some list-like read operations on an unbounded stream.</span>
+<span class="sd">Essentially, trying to give you the impression that you have read access to infinite list,</span>
+<span class="sd">with some (parametrizable) limitations.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># TODO: Build up extensive relations expression and handling, but InfiniteSeq only uses BEFORE (past).</span>
+<span class="c1">#  Consider simplifying.</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">partialmethod</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">le</span><span class="p">,</span> <span class="n">lt</span><span class="p">,</span> <span class="n">ge</span><span class="p">,</span> <span class="n">gt</span><span class="p">,</span> <span class="n">itemgetter</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Lock</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">count</span><span class="p">,</span> <span class="n">islice</span>
+
+<span class="n">Number</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>  <span class="c1"># TODO: existing builtin to specify real numbers?</span>
+
+<span class="n">opposite_op</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">le</span><span class="p">:</span> <span class="n">gt</span><span class="p">,</span>
+    <span class="n">lt</span><span class="p">:</span> <span class="n">ge</span><span class="p">,</span>
+    <span class="n">ge</span><span class="p">:</span> <span class="n">lt</span><span class="p">,</span>
+    <span class="n">gt</span><span class="p">:</span> <span class="n">le</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="c1"># TODO: Check performance for string versus int enum values</span>
+<div class="viewcode-block" id="Relations"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.Relations">[docs]</a><span class="k">class</span> <span class="nc">Relations</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Point-interval and interval-interval relations.</span>
+
+<span class="sd">    See Allen&#39;s interval algebra for (some of the) interval relations</span>
+<span class="sd">    (https://en.wikipedia.org/wiki/Allen%27s_interval_algebra).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># simple relations, that can be used between (X: point, Y: interval), (X: interval, Y: interval) pairs</span>
+    <span class="n">BEFORE</span> <span class="o">=</span> <span class="s1">&#39;Some of X happens BEFORE Y&#39;</span>
+    <span class="n">DURING</span> <span class="o">=</span> <span class="s1">&#39;All of X happens within Y&#39;</span>
+    <span class="n">AFTER</span> <span class="o">=</span> <span class="s1">&#39;Some of X happens AFTER Y&#39;</span>
+
+    <span class="c1"># Extras (Allen&#39;s)</span>
+    <span class="n">PRECEDES</span> <span class="o">=</span> <span class="s1">&#39;X precedes Y: All of X happens before Y&#39;</span>
+    <span class="n">MEETS</span> <span class="o">=</span> <span class="s1">&#39;X meets Y: When X ends, Y starts&#39;</span>
+    <span class="n">OVERLAPS</span> <span class="o">=</span> <span class="s1">&#39;X overlaps Y: Point is AFTER interval&#39;</span>
+    <span class="n">STARTS</span> <span class="o">=</span> <span class="s1">&#39;X starts at the same time as Y (and finishes no later)&#39;</span>
+    <span class="n">FINISHES</span> <span class="o">=</span> <span class="s1">&#39;X finishes Y: Point is AFTER interval&#39;</span>
+    <span class="n">EQUAL</span> <span class="o">=</span> <span class="s1">&#39;X is equal to Y&#39;</span></div>
+
+
+<div class="viewcode-block" id="validate_interval"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.validate_interval">[docs]</a><span class="k">def</span> <span class="nf">validate_interval</span><span class="p">(</span><span class="n">interval</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Asserts that input is a valid interval, raising a ValueError if not&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">bt</span><span class="p">,</span> <span class="n">tt</span> <span class="o">=</span> <span class="n">interval</span>
+        <span class="k">assert</span> <span class="n">bt</span> <span class="o">&lt;=</span> <span class="n">tt</span>
+        <span class="k">return</span> <span class="n">bt</span><span class="p">,</span> <span class="n">tt</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Not a valid interval: </span><span class="si">{</span><span class="n">interval</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<span class="c1"># TODO: Validate intervals (assert x[0] &lt;= x[1] and )?</span>
+<div class="viewcode-block" id="simple_interval_relationship"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.simple_interval_relationship">[docs]</a><span class="k">def</span> <span class="nf">simple_interval_relationship</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Number</span><span class="p">],</span>
+    <span class="n">y</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Number</span><span class="p">],</span>
+    <span class="n">above_bt</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">ge</span><span class="p">,</span>
+    <span class="n">below_tt</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">lt</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get the simple relationship between intervals x and y.</span>
+
+<span class="sd">    :param x: An point (a number) or an interval (a 2-tuple of numbers).</span>
+<span class="sd">    :param y: An interval; a 2-tuple of numbers.</span>
+<span class="sd">    :param above_bt: a above_bt(x_bt, y_bt) boolean function (ge or gt) deciding if x starts after y does.</span>
+<span class="sd">    :param below_tt: a below_tt(x_tt, y_tt) boolean function (lt or le) deciding if x ends before y does.</span>
+<span class="sd">    :return: One of three relations</span>
+<span class="sd">        Relations.BEFORE if some of x is below y,</span>
+<span class="sd">        Relations.AFTER if some of x is after y,</span>
+<span class="sd">        Relations.DURING if x is entirely with y</span>
+
+<span class="sd">    The target ``y`` interval is expressed only by it&#39;s bounds, but we don&#39;t know if these are</span>
+<span class="sd">     inclusive or not. The ``below_bt`` and ``above_tt`` allow us to express that by expressing how below the</span>
+<span class="sd">     lowest (bt) bound and what higher than highest (tt) bound are defined.</span>
+
+<span class="sd">    The function is meant to be curried (partial), for example:</span>
+
+<span class="sd">    &gt;&gt;&gt; from functools import partial</span>
+<span class="sd">    &gt;&gt;&gt; from operator import le, lt, ge, gt</span>
+<span class="sd">    &gt;&gt;&gt; default = simple_interval_relationship  # uses below_bt=ge, above_tt=lt</span>
+<span class="sd">    &gt;&gt;&gt; including_bounds = partial(simple_interval_relationship, above_bt=ge, below_tt=le)</span>
+<span class="sd">    &gt;&gt;&gt; excluding_bounds = partial(simple_interval_relationship, above_bt=gt, below_tt=lt)</span>
+
+<span class="sd">    Take ``(4, 8)`` as the target interval, and want to query the relationship of other points and intervals with it.</span>
+<span class="sd">    No matter what the function is, they will always agree on any intervals that don&#39;t share any bounds.</span>
+
+<span class="sd">    &gt;&gt;&gt; for relation_func in (default, including_bounds, excluding_bounds):</span>
+<span class="sd">    ...     print (</span>
+<span class="sd">    ...         relation_func(3, (4, 8)),</span>
+<span class="sd">    ...         relation_func(5, (4, 8)),</span>
+<span class="sd">    ...         relation_func(9, (4, 8)),</span>
+<span class="sd">    ...         relation_func((3, 7), (4, 8)),</span>
+<span class="sd">    ...         relation_func((5, 7), (4, 8)),</span>
+<span class="sd">    ...         relation_func((7, 9), (4, 8))</span>
+<span class="sd">    ... )</span>
+<span class="sd">    Relations.BEFORE Relations.DURING Relations.AFTER Relations.BEFORE Relations.DURING Relations.AFTER</span>
+<span class="sd">    Relations.BEFORE Relations.DURING Relations.AFTER Relations.BEFORE Relations.DURING Relations.AFTER</span>
+<span class="sd">    Relations.BEFORE Relations.DURING Relations.AFTER Relations.BEFORE Relations.DURING Relations.AFTER</span>
+
+<span class="sd">    But if the two intervals share some bounds, these functions will diverge.</span>
+
+<span class="sd">    &gt;&gt;&gt; for relation_func in (default, including_bounds, excluding_bounds):</span>
+<span class="sd">    ...     print (</span>
+<span class="sd">    ...         relation_func(4, (4, 8)),</span>
+<span class="sd">    ...         relation_func(8, (4, 8)),</span>
+<span class="sd">    ...         relation_func((4, 7), (4, 8)),</span>
+<span class="sd">    ...         relation_func((4, 8), (4, 8)),</span>
+<span class="sd">    ...         relation_func((5, 8), (4, 8))</span>
+<span class="sd">    ... )</span>
+<span class="sd">    Relations.DURING Relations.AFTER Relations.DURING Relations.AFTER Relations.AFTER</span>
+<span class="sd">    Relations.DURING Relations.DURING Relations.DURING Relations.DURING Relations.DURING</span>
+<span class="sd">    Relations.BEFORE Relations.AFTER Relations.BEFORE Relations.BEFORE Relations.AFTER</span>
+
+<span class="sd">    The function can be used with the FIRST argument being a slice object as well.</span>
+<span class="sd">    This can then be used to enable [i:j] access.</span>
+
+<span class="sd">    &gt;&gt;&gt; for relation_func in (default, including_bounds, excluding_bounds):</span>
+<span class="sd">    ...     print (</span>
+<span class="sd">    ...         relation_func(slice(4, 7), (4, 8)),</span>
+<span class="sd">    ...         relation_func(slice(4, 8), (4, 8)),</span>
+<span class="sd">    ...         relation_func(slice(5, 8), (4, 8))</span>
+<span class="sd">    ... )</span>
+<span class="sd">    Relations.DURING Relations.AFTER Relations.AFTER</span>
+<span class="sd">    Relations.DURING Relations.DURING Relations.DURING</span>
+<span class="sd">    Relations.BEFORE Relations.BEFORE Relations.AFTER</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+        <span class="n">x_bt</span><span class="p">,</span> <span class="n">x_tt</span> <span class="o">=</span> <span class="n">validate_interval</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">stop</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+        <span class="n">x_bt</span><span class="p">,</span> <span class="n">x_tt</span> <span class="o">=</span> <span class="n">validate_interval</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x_bt</span><span class="p">,</span> <span class="n">x_tt</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">x</span>  <span class="c1"># consider a point to be the (x, x) interval</span>
+    <span class="n">y_bt</span><span class="p">,</span> <span class="n">y_tt</span> <span class="o">=</span> <span class="n">validate_interval</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">above_bt</span><span class="p">(</span><span class="n">x_bt</span><span class="p">,</span> <span class="n">y_bt</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Relations</span><span class="o">.</span><span class="n">BEFORE</span>
+    <span class="k">elif</span> <span class="n">below_tt</span><span class="p">(</span><span class="n">x_tt</span><span class="p">,</span> <span class="n">y_tt</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Relations</span><span class="o">.</span><span class="n">DURING</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Relations</span><span class="o">.</span><span class="n">AFTER</span></div>
+
+
+<span class="c1"># Error handling #######################################################################################################</span>
+<div class="viewcode-block" id="ExceptionRaiserCallbackMixin"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.ExceptionRaiserCallbackMixin">[docs]</a><span class="k">class</span> <span class="nc">ExceptionRaiserCallbackMixin</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Make the instance callable and have the effect of raising the instance.</span>
+<span class="sd">    Meant to add to an exception class so that instances of this class can be used as callbacks that raise the error&quot;&quot;&quot;</span>
+
+    <span class="n">dflt_args</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dflt_args</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dflt_args</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dflt_args</span><span class="p">,)</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dflt_args</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="bp">self</span></div>
+
+
+<span class="c1"># TODO: Include all 13 of Allen&#39;s interval algebra relations? Enum/sentinels and errors for these events?</span>
+<span class="c1">#  (https://en.wikipedia.org/wiki/Allen%27s_interval_algebra#Relations)</span>
+<div class="viewcode-block" id="NotDuringError"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.NotDuringError">[docs]</a><span class="k">class</span> <span class="nc">NotDuringError</span><span class="p">(</span><span class="n">ExceptionRaiserCallbackMixin</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;IndexError that indicates that there was an attempt to index some data that is not contained in the buffer</span>
+<span class="sd">    (i.e. is that a part of the request is NO LONGER, or NOT YET covered by the buffer)&quot;&quot;&quot;</span>
+
+    <span class="n">dflt_args</span> <span class="o">=</span> <span class="s1">&#39;Some of the data requested was in the past or in the future&#39;</span></div>
+
+
+<div class="viewcode-block" id="OverlapsPastError"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.OverlapsPastError">[docs]</a><span class="k">class</span> <span class="nc">OverlapsPastError</span><span class="p">(</span><span class="n">NotDuringError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;IndexError that indicates that there was an attempt to index some data that is in the PAST</span>
+<span class="sd">    (i.e. is NO LONGER completely covered by the buffer)&quot;&quot;&quot;</span>
+
+    <span class="n">dlft_args</span> <span class="o">=</span> <span class="s1">&#39;Some of the data requested is in the past&#39;</span></div>
+
+
+<div class="viewcode-block" id="OverlapsFutureError"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.OverlapsFutureError">[docs]</a><span class="k">class</span> <span class="nc">OverlapsFutureError</span><span class="p">(</span><span class="n">NotDuringError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;IndexError that indicates that there was an attempt to index some data that is in the FUTURE</span>
+<span class="sd">    (i.e. is NOT YET completely covered by the buffer)&quot;&quot;&quot;</span>
+
+    <span class="n">dlft_args</span> <span class="o">=</span> <span class="s1">&#39;Some of the data requested is in the future&#39;</span></div>
+
+
+<div class="viewcode-block" id="RelationNotHandledError"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.RelationNotHandledError">[docs]</a><span class="k">class</span> <span class="nc">RelationNotHandledError</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;TypeError that indicates that a relation is either not a valid one, or not handled by conditional clause.&quot;&quot;&quot;</span></div>
+
+
+<span class="n">not_during_error</span> <span class="o">=</span> <span class="n">NotDuringError</span><span class="p">()</span>
+<span class="n">overlaps_past_error</span> <span class="o">=</span> <span class="n">OverlapsPastError</span><span class="p">()</span>
+<span class="n">overlaps_future_error</span> <span class="o">=</span> <span class="n">OverlapsFutureError</span><span class="p">()</span>
+
+
+<span class="c1"># The IndexedBuffer, finally #############################################################################################</span>
+
+
+<span class="k">def</span> <span class="nf">_not_implemented</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># ram heavier, cpu lighter extend</span>
+<span class="k">def</span> <span class="nf">_extend_cpu_lighter_ram_heavier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Extend buffer with an iterable of items&quot;&quot;&quot;</span>
+    <span class="n">iterable</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+    <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_idx</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+
+
+<span class="c1"># cpu heavier, ram lighter extend</span>
+<span class="k">def</span> <span class="nf">_extend_ram_lighter_cpu_heavier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Extend buffer with an iterable of items&quot;&quot;&quot;</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">count</span><span class="p">()</span>
+    <span class="n">counting_iter</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="nb">zip</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
+    <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">counting_iter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_idx</span> <span class="o">+=</span> <span class="nb">next</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="none_safe_addition"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.none_safe_addition">[docs]</a><span class="k">def</span> <span class="nf">none_safe_addition</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds the two numbers if x is not None, or return None if not&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span></div>
+
+
+<span class="k">def</span> <span class="nf">slice_args</span><span class="p">(</span><span class="n">slice_obj</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">slice_obj</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">slice_obj</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">slice_obj</span><span class="o">.</span><span class="n">step</span>
+
+
+<span class="k">def</span> <span class="nf">shift_slice</span><span class="p">(</span><span class="n">slice_obj</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="n">Number</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">slice</span><span class="p">(</span>
+        <span class="n">none_safe_addition</span><span class="p">(</span><span class="n">slice_obj</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">shift</span><span class="p">),</span>
+        <span class="n">none_safe_addition</span><span class="p">(</span><span class="n">slice_obj</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">shift</span><span class="p">),</span>
+        <span class="n">slice_obj</span><span class="o">.</span><span class="n">step</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<div class="viewcode-block" id="absolute_item"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.absolute_item">[docs]</a><span class="k">def</span> <span class="nf">absolute_item</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">max_idx</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns an item with absolute references: i.e. with negative indices idx resolved to max_idx + idx</span>
+<span class="sd">    &gt;&gt;&gt; absolute_item(-1, 10)</span>
+<span class="sd">    9</span>
+<span class="sd">    &gt;&gt;&gt; absolute_item(slice(-4, -2, 2), 10)</span>
+<span class="sd">    slice(6, 8, 2)</span>
+
+<span class="sd">    But anything else that&#39;s not a slice or int will be left untouched</span>
+<span class="sd">    (and will probably result in errors if you use with IndexedBuffer)</span>
+
+<span class="sd">    &gt;&gt;&gt; absolute_item((-7, -2), 10)</span>
+<span class="sd">    (-7, -2)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+        <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">slice_args</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">max_idx</span> <span class="o">+</span> <span class="n">start</span>
+        <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">stop</span> <span class="o">=</span> <span class="n">max_idx</span> <span class="o">+</span> <span class="n">stop</span>
+        <span class="k">return</span> <span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">item</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">item</span> <span class="o">+</span> <span class="n">max_idx</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">item</span></div>
+
+
+<span class="c1"># TODO: Make operations thread safe</span>
+<div class="viewcode-block" id="IndexedBuffer"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.IndexedBuffer">[docs]</a><span class="k">class</span> <span class="nc">IndexedBuffer</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A list-like object that gives a limited-past read view of an unbounded stream</span>
+
+<span class="sd">    For example, say we had the stream of increasing integers 0, 1, 2, ... that is being fed to indexedBuffer</span>
+
+<span class="sd">    What IndexedBuffer(maxlen=4) offers is access to the buffer&#39;s contents, but using the indices that</span>
+<span class="sd">    the stream (if it were one big list in memory) would use instead of the buffer&#39;s index.</span>
+<span class="sd">        0 1 2 3 [4 5 6 7] 8 9</span>
+
+<span class="sd">    IndexedBuffer uses collections.deque, exposing the append, extend, and clear methods, updating the index reference</span>
+<span class="sd">    in a thread-safe manner.</span>
+
+<span class="sd">    &gt;&gt;&gt; s = IndexedBuffer(buffer_len=4)</span>
+<span class="sd">    &gt;&gt;&gt; s.extend(range(4))  # adding 4 elements in bulk (filling the buffer completely)</span>
+<span class="sd">    &gt;&gt;&gt; list(s)</span>
+<span class="sd">    [0, 1, 2, 3]</span>
+<span class="sd">    &gt;&gt;&gt; s[2]</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; s[1:2]</span>
+<span class="sd">    [1]</span>
+<span class="sd">    &gt;&gt;&gt; s[1:1]</span>
+<span class="sd">    []</span>
+
+<span class="sd">    Let&#39;s add two more elements (using append this time), making the buffer &quot;shift&quot;</span>
+
+<span class="sd">    &gt;&gt;&gt; s.append(4)</span>
+<span class="sd">    &gt;&gt;&gt; s.append(5)</span>
+<span class="sd">    &gt;&gt;&gt; list(s)</span>
+<span class="sd">    [2, 3, 4, 5]</span>
+<span class="sd">    &gt;&gt;&gt; s[2]</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; s[5]</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; s[2:5]</span>
+<span class="sd">    [2, 3, 4]</span>
+<span class="sd">    &gt;&gt;&gt; s[3:6]</span>
+<span class="sd">    [3, 4, 5]</span>
+<span class="sd">    &gt;&gt;&gt; assert s[2:6] == list(range(2, 6))</span>
+
+<span class="sd">    You can slice with step:</span>
+
+<span class="sd">    &gt;&gt;&gt; s[2:6:2]</span>
+<span class="sd">    [2, 4]</span>
+
+<span class="sd">    You can slice with negatives</span>
+<span class="sd">    &gt;&gt;&gt; s[2:-2]</span>
+<span class="sd">    [2, 3]</span>
+
+<span class="sd">    On the other hand, if you ask for something that is not in the buffer (anymore, or yet), you&#39;ll get an</span>
+<span class="sd">    error that tells you so:</span>
+
+<span class="sd">    &gt;&gt;&gt; # element for idx 1 is missing in [2, 3, 4, 5]</span>
+<span class="sd">    &gt;&gt;&gt; s[1:4]  # doctest: +SKIP</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">    OverlapsPastError: You asked for slice(1, 4, None), but the buffer only contains the index range: 2:6</span>
+
+<span class="sd">    &gt;&gt;&gt; # elements for 0:2 are missing (as well as 6:9, but OverlapsPastError trumps OverlapsFutureError</span>
+<span class="sd">    &gt;&gt;&gt; s[0:9]  # doctest: +SKIP</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">    OverlapsPastError: You asked for slice(0, 9, None), but the buffer only contains the index range: 2:6</span>
+
+<span class="sd">    &gt;&gt;&gt; # element for 6:9 are missing in [2, 3, 4, 5]</span>
+<span class="sd">    &gt;&gt;&gt; s[4:9]  # doctest: +SKIP</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">    OverlapsFutureError: You asked for slice(4, 9, None), but the buffer only contains the index range: 2:6</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">buffer_len</span><span class="p">,</span>
+        <span class="n">prefill</span><span class="o">=</span><span class="p">(),</span>
+        <span class="n">if_overlaps_past</span><span class="o">=</span><span class="n">overlaps_past_error</span><span class="p">,</span>
+        <span class="n">if_overlaps_future</span><span class="o">=</span><span class="n">overlaps_future_error</span><span class="p">,</span>
+        <span class="n">slice_get_postproc</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="nb">list</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="n">prefill</span><span class="p">,</span> <span class="n">buffer_len</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffer_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span><span class="o">.</span><span class="n">maxlen</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_idx</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># should correspond to the number of items added</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">if_overlaps_past</span> <span class="o">=</span> <span class="n">if_overlaps_past</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">if_overlaps_future</span> <span class="o">=</span> <span class="n">if_overlaps_future</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slice_get_postproc</span> <span class="o">=</span> <span class="n">slice_get_postproc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">(buffer_len=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer_len</span><span class="si">}</span><span class="s1">, min_idx=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">min_idx</span><span class="si">}</span><span class="s1">, max_idx=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_idx</span><span class="si">}</span><span class="s1">, ...)&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">min_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_idx</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer_len</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># TODO: Use singledispathmethod?</span>
+    <span class="k">def</span> <span class="nf">outer_to_buffer_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">shift_slice</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">min_idx</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">idx</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">idx</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_idx</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># idx &lt; 0</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer_len</span> <span class="o">+</span> <span class="n">idx</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_idx</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">idx</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="si">}</span><span class="s1"> are not handled. You requested the outer_to_buffer_idx of </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="n">absolute_item</span><span class="p">(</span>
+            <span class="n">item</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_idx</span>
+        <span class="p">)</span>  <span class="c1"># Note: Overhead for convenience of negative indices use (worth it?)</span>
+        <span class="n">relationship</span> <span class="o">=</span> <span class="n">simple_interval_relationship</span><span class="p">(</span>
+            <span class="n">item</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">relationship</span> <span class="o">==</span> <span class="n">Relations</span><span class="o">.</span><span class="n">DURING</span><span class="p">:</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer_to_buffer_idx</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">slice_get_postproc</span><span class="p">(</span><span class="n">islice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_deque</span><span class="p">,</span> <span class="o">*</span><span class="n">slice_args</span><span class="p">(</span><span class="n">item</span><span class="p">)))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_deque</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer_len</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overlaps_future_error</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span>
+        <span class="k">elif</span> <span class="n">relationship</span> <span class="o">==</span> <span class="n">Relations</span><span class="o">.</span><span class="n">AFTER</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overlaps_future_error</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">relationship</span> <span class="o">==</span> <span class="n">Relations</span><span class="o">.</span><span class="n">BEFORE</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overlaps_past_error</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">RelationNotHandledError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;The relation </span><span class="si">{</span><span class="n">relationship</span><span class="si">}</span><span class="s1"> is not handled.&#39;</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_overlaps_past_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">OverlapsPastError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;You asked for </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s1">, but the buffer only contains the index range: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">min_idx</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_idx</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_overlaps_future_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">OverlapsFutureError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;You asked for </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s1">, but the buffer only contains the index range: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">min_idx</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_idx</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">extend</span> <span class="o">=</span> <span class="n">_extend_ram_lighter_cpu_heavier</span>
+
+    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_idx</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+    <span class="c1"># # TODO: Sanity check.</span>
+    <span class="c1"># def __len__(self):</span>
+    <span class="c1">#     &quot;&quot;&quot;Length in the sense of &quot;number of items that passed through buffer so far -- not the length of the buff &quot;&quot;&quot;</span>
+    <span class="c1">#     return self.max_idx</span>
+
+
+<div class="viewcode-block" id="consume"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.consume">[docs]</a><span class="k">def</span> <span class="nf">consume</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Consume n iterations of generator (without returning elements)&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterator</span>
+
+
+<span class="c1"># TODO: Add some mechanism to deal with ITERABLE instead of just iterator. As it is we have some unwanted behavior with</span>
+<span class="c1">#   iterables</span>
+<div class="viewcode-block" id="InfiniteSeq"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.InfiniteSeq">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">InfiniteSeq</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A list-like (read) view of an unbounded sequence/stream.</span>
+
+<span class="sd">    For example, take an iterator that cycles from 0 to 99 forever:</span>
+
+<span class="sd">    &gt;&gt;&gt; from itertools import cycle</span>
+<span class="sd">    &gt;&gt;&gt; iterator = cycle(range(100))</span>
+
+<span class="sd">    Let&#39;s make an InfiniteSeq instance for this stream, accomodating for a view of up to 11 items.</span>
+
+<span class="sd">    &gt;&gt;&gt; s = InfiniteSeq(iterator, buffer_len=11)</span>
+
+<span class="sd">    Let&#39;s ask for element 15 (which is the (15 + 1)th element (and should have a value of 15).</span>
+
+<span class="sd">    &gt;&gt;&gt; s[15]</span>
+<span class="sd">    15</span>
+
+<span class="sd">    Now, to get this value, the iterator will move forward up to that point;</span>
+<span class="sd">    that is, until the buffer&#39;s head (i.e. most recent) item contains that requested (15 + 1)th element.</span>
+<span class="sd">    But the buffer is of size 11, so we still have access to a few previous elements:</span>
+
+<span class="sd">    &gt;&gt;&gt; s[11]</span>
+<span class="sd">    11</span>
+<span class="sd">    &gt;&gt;&gt; s[5:15]</span>
+<span class="sd">    [5, 6, 7, 8, 9, 10, 11, 12, 13, 14]</span>
+
+<span class="sd">    But if we asked for anything before index 5...</span>
+
+<span class="sd">    &gt;&gt;&gt; s[2:7]  #doctest: +SKIP</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">    OverlapsPastError: You asked for slice(2, 7, None), but the buffer only contains the index range: 5:16</span>
+
+<span class="sd">    So we can&#39;t go backwards. But we can always go forwards:</span>
+
+<span class="sd">    &gt;&gt;&gt; s[95:105]</span>
+<span class="sd">    [95, 96, 97, 98, 99, 0, 1, 2, 3, 4]</span>
+
+<span class="sd">    You can also use slices with step and with negative integers (referencing the head of the buffer)</span>
+
+<span class="sd">    &gt;&gt;&gt; s[120:130:2]</span>
+<span class="sd">    [20, 22, 24, 26, 28]</span>
+<span class="sd">    &gt;&gt;&gt; s[120:130]</span>
+<span class="sd">    [20, 21, 22, 23, 24, 25, 26, 27, 28, 29]</span>
+<span class="sd">    &gt;&gt;&gt; s[-8:-2]</span>
+<span class="sd">    [22, 23, 24, 25, 26, 27]</span>
+
+<span class="sd">    but you cannot slice farther back than the buffer</span>
+
+<span class="sd">    &gt;&gt;&gt; try:</span>
+<span class="sd">    ...     s[-20:-2]</span>
+<span class="sd">    ... except OverlapsPastError as e:</span>
+<span class="sd">    ...     msg_text = str(e)</span>
+<span class="sd">    &gt;&gt;&gt; print(msg_text)</span>
+<span class="sd">    You asked for slice(110, 128, None), but the buffer only contains the index range: 119:130</span>
+
+<span class="sd">    Sometimes the source provides data in chunks. Sometimes these chunks are not even of fixed size.</span>
+<span class="sd">    In those situations, you can use ``itertools.chain`` to &quot;flatten&quot; the iterator as in the following example:</span>
+
+
+<span class="sd">    &gt;&gt;&gt; from creek.infinite_sequence import InfiniteSeq</span>
+<span class="sd">    &gt;&gt;&gt; from collections import Mapping</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; class Source(Mapping):</span>
+<span class="sd">    ...     n = 100</span>
+<span class="sd">    ...</span>
+<span class="sd">    ...     __len__ = lambda self: self.n</span>
+<span class="sd">    ...</span>
+<span class="sd">    ...     def __iter__(self):</span>
+<span class="sd">    ...         yield from range(self.n)</span>
+<span class="sd">    ...</span>
+<span class="sd">    ...     def __getitem__(self, k):</span>
+<span class="sd">    ...         print(f&quot;Asking for {k}&quot;)</span>
+<span class="sd">    ...         return list(range(k * 10, (k + 1) * 10))</span>
+<span class="sd">    ...</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; source = Source()</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+
+<span class="sd">    See that when we ask for a chunk of data, there&#39;s a print notification about it.</span>
+
+<span class="sd">    &gt;&gt;&gt; assert source[3] == [30, 31, 32, 33, 34, 35, 36, 37, 38, 39]</span>
+<span class="sd">    Asking for 3</span>
+
+<span class="sd">    Now let&#39;s make an iterator of the data and an InfiniteSeq (with buffer length 10) on top of it.</span>
+
+<span class="sd">    &gt;&gt;&gt; from itertools import chain</span>
+<span class="sd">    &gt;&gt;&gt; iterator = chain.from_iterable(source.values())</span>
+<span class="sd">    &gt;&gt;&gt; s = InfiniteSeq(iterator, 10)</span>
+
+<span class="sd">    See that when you ask for :5, you see that chunk 0 is requested.</span>
+
+<span class="sd">    &gt;&gt;&gt; s[:5]</span>
+<span class="sd">    Asking for 0</span>
+<span class="sd">    [0, 1, 2, 3, 4]</span>
+
+<span class="sd">    If you ask for something that&#39;s already in the buffer, you won&#39;t see the print notification though.</span>
+
+<span class="sd">    &gt;&gt;&gt; s[4:8]</span>
+<span class="sd">    [4, 5, 6, 7]</span>
+
+<span class="sd">    The following shows you how InfiniteSeq &quot;hits&quot; the data source as it&#39;s getting the data it needs for the request.</span>
+
+<span class="sd">    &gt;&gt;&gt; s[8:12]</span>
+<span class="sd">    Asking for 1</span>
+<span class="sd">    [8, 9, 10, 11]</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; s[40:42]</span>
+<span class="sd">    Asking for 2</span>
+<span class="sd">    Asking for 3</span>
+<span class="sd">    Asking for 4</span>
+<span class="sd">    [40, 41]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">iterator</span><span class="p">:</span> <span class="n">Iterator</span>
+    <span class="n">buffer_len</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">indexed_buffer</span> <span class="o">=</span> <span class="n">IndexedBuffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer_len</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+            <span class="n">n_ticks_in_the_future</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">stop</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexed_buffer</span><span class="o">.</span><span class="n">max_idx</span>
+            <span class="k">if</span> <span class="n">n_ticks_in_the_future</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># TODO: If indexed_buffer had a &quot;fast-forward&quot; (perhaps &quot;peek&quot;) it could wasted less buffer writes</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">indexed_buffer</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">islice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iterator</span><span class="p">,</span> <span class="n">n_ticks_in_the_future</span><span class="p">))</span>
+                <span class="c1"># consume(self.iterator, n_ticks_in_the_future)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexed_buffer</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">item</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">creek</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek.html">creek</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/base.html">creek.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/infinite_sequence.html">creek.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/util.html">creek.util</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;NO COPYRIGHT.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

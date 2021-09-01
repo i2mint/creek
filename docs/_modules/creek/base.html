@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>creek.base &#8212; creek 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for creek.base</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;The base objects of creek&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">creek.util</span> <span class="kn">import</span> <span class="n">cls_wrap</span><span class="p">,</span> <span class="n">static_identity_method</span><span class="p">,</span> <span class="n">no_such_item</span>
+
+
+<div class="viewcode-block" id="Creek"><a class="viewcode-back" href="../../module_docs/creek/base.html#creek.base.Creek">[docs]</a><span class="k">class</span> <span class="nc">Creek</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A layer-able version of the stream interface</span>
+
+<span class="sd">    There are three layering methods -- pre_iter, data_to_obj, and post_iter</span>
+<span class="sd">    -- whose use is demonstrated in the iteration code below:</span>
+
+<span class="sd">    &gt;&gt;&gt; from io import StringIO</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; src = StringIO(</span>
+<span class="sd">    ... &#39;&#39;&#39;a, b, c</span>
+<span class="sd">    ... 1,2, 3</span>
+<span class="sd">    ... 4, 5,6</span>
+<span class="sd">    ... &#39;&#39;&#39;</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; from creek.base import Creek</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; class MyCreek(Creek):</span>
+<span class="sd">    ...     def data_to_obj(self, line):</span>
+<span class="sd">    ...         return [x.strip() for x in line.strip().split(&#39;,&#39;)]</span>
+<span class="sd">    ...</span>
+<span class="sd">    &gt;&gt;&gt; stream = MyCreek(src)</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; list(stream)</span>
+<span class="sd">    [[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;], [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;], [&#39;4&#39;, &#39;5&#39;, &#39;6&#39;]]</span>
+<span class="sd">    &gt;&gt;&gt; stream.seek(0)  # oh!... but we consumed the stream already, so let&#39;s go back to the beginning</span>
+<span class="sd">    0</span>
+<span class="sd">    &gt;&gt;&gt; list(stream)</span>
+<span class="sd">    [[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;], [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;], [&#39;4&#39;, &#39;5&#39;, &#39;6&#39;]]</span>
+<span class="sd">    &gt;&gt;&gt; stream.seek(0)  # reverse again</span>
+<span class="sd">    0</span>
+<span class="sd">    &gt;&gt;&gt; next(stream)</span>
+<span class="sd">    [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; next(stream)</span>
+<span class="sd">    [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;]</span>
+
+<span class="sd">    Let&#39;s add a filter! There&#39;s two kinds you can use.</span>
+<span class="sd">    One that is applied to the line before the data is transformed by data_to_obj,</span>
+<span class="sd">    and the other that is applied after (to the obj).</span>
+
+
+<span class="sd">    &gt;&gt;&gt; from creek.base import Creek</span>
+<span class="sd">    &gt;&gt;&gt; from io import StringIO</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; src = StringIO(</span>
+<span class="sd">    ...     &#39;&#39;&#39;a, b, c</span>
+<span class="sd">    ... 1,2, 3</span>
+<span class="sd">    ... 4, 5,6</span>
+<span class="sd">    ... &#39;&#39;&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; class MyFilteredCreek(MyCreek):</span>
+<span class="sd">    ...     def post_iter(self, objs):</span>
+<span class="sd">    ...         yield from filter(lambda obj: str.isnumeric(obj[0]), objs)</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; s = MyFilteredCreek(src)</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; list(s)</span>
+<span class="sd">    [[&#39;1&#39;, &#39;2&#39;, &#39;3&#39;], [&#39;4&#39;, &#39;5&#39;, &#39;6&#39;]]</span>
+<span class="sd">    &gt;&gt;&gt; s.seek(0)</span>
+<span class="sd">    0</span>
+<span class="sd">    &gt;&gt;&gt; list(s)</span>
+<span class="sd">    [[&#39;1&#39;, &#39;2&#39;, &#39;3&#39;], [&#39;4&#39;, &#39;5&#39;, &#39;6&#39;]]</span>
+<span class="sd">    &gt;&gt;&gt; s.seek(0)</span>
+<span class="sd">    0</span>
+<span class="sd">    &gt;&gt;&gt; next(s)</span>
+<span class="sd">    [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;]</span>
+
+<span class="sd">    Recipes:</span>
+<span class="sd">    - pre_iter: involving itertools.islice to skip header lines</span>
+<span class="sd">    - pre_iter: involving enumerate to get line indices in stream iterator</span>
+<span class="sd">    - pre_iter = functools.partial(map, line_pre_proc_func) to preprocess all lines with line_pre_proc_func</span>
+<span class="sd">    - pre_iter: include filter before obj</span>
+
+<span class="sd">    - post_iter: chain.from_iterable to flatten a chunked/segmented stream</span>
+<span class="sd">    - post_iter: functools.partial(filter, condition) to filter yielded objs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span> <span class="o">=</span> <span class="n">stream</span>
+
+    <span class="n">wrap</span> <span class="o">=</span> <span class="nb">classmethod</span><span class="p">(</span><span class="n">cls_wrap</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Delegate method to wrapped stream&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="nb">set</span><span class="p">((</span><span class="o">*</span><span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">),</span> <span class="o">*</span><span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">)))</span>
+        <span class="p">)</span>  <span class="c1"># to forward dir to delegated stream as well</span>
+        <span class="c1"># return list(set(dir(self.__class__)).union(self.stream.__dir__()))  # to forward dir to delegated stream as well</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="fm">__hash__</span><span class="p">()</span>
+
+    <span class="c1"># _data_of_obj = static_identity_method  # for write methods</span>
+    <span class="n">pre_iter</span> <span class="o">=</span> <span class="n">static_identity_method</span>
+    <span class="n">data_to_obj</span> <span class="o">=</span> <span class="n">static_identity_method</span>
+    <span class="c1"># post_filt = stream_util.always_true</span>
+    <span class="n">post_iter</span> <span class="o">=</span> <span class="n">static_identity_method</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_iter</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_to_obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">)))</span>
+
+        <span class="c1"># for line in self.pre_iter(self.stream):</span>
+        <span class="c1">#     obj = self.data_to_obj(line)</span>
+        <span class="c1">#     if self.post_filt(obj):</span>
+        <span class="c1">#         yield obj</span>
+
+        <span class="c1"># TODO: See pros and cons of above vs below:</span>
+        <span class="c1"># yield from filter(self.post_filt,</span>
+        <span class="c1">#                   map(self.data_to_obj,</span>
+        <span class="c1">#                       self.pre_iter(self.stream)))</span>
+
+    <span class="c1"># _wrapped_methods = {&#39;__iter__&#39;}</span>
+
+    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># TODO: Pros and cons of having a __next__?</span>
+        <span class="sd">&quot;&quot;&quot;by default: next(iter(self))</span>
+<span class="sd">        Expect to</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span>
+        <span class="c1"># return self._pre_proc(self.stream) # moved to iter to</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span>
+            <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span>
+        <span class="p">)</span>  <span class="c1"># TODO: Should we have a _post_proc? Uses?</span></div>
+
+
+<span class="c1"># class Brook(Creek):</span>
+<span class="c1">#     post_iter = static_identity_method</span>
+<span class="c1">#</span>
+<span class="c1">#     def __iter__(self):</span>
+<span class="c1">#         yield from self.post_iter(</span>
+<span class="c1">#             filter(self.post_filt,</span>
+<span class="c1">#                    map(self.data_to_obj,</span>
+<span class="c1">#                        self.pre_iter(</span>
+<span class="c1">#                            self.stream))))</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">creek</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek.html">creek</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/base.html">creek.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/infinite_sequence.html">creek.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/util.html">creek.util</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;NO COPYRIGHT.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

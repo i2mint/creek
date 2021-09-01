@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>creek.scrap.creek_layers &#8212; creek 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="creek.scrap.multi_streams" href="multi_streams.html" />
+    <link rel="prev" title="creek.infinite_sequence" href="../infinite_sequence.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-creek.scrap.creek_layers">
+<span id="creek-scrap-creek-layers"></span><h1>creek.scrap.creek_layers<a class="headerlink" href="#module-creek.scrap.creek_layers" title="Permalink to this headline">¶</a></h1>
+<p># Wrapper interfaces</p>
+<p>## Inner-class</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python
+def intify(self, data):</p>
+<blockquote>
+<div><p>return tuple(map(int, data))</p>
+</div></blockquote>
+<dl>
+<dt>class D(Creek):</dt><dd><p># subclassing <cite>CreekLayer</cite> indicates that this class is a layering class
+# could also use decorator for this: Allowing simple injection of external classes
+class Lay(CreekLayer):</p>
+<blockquote>
+<div><p># name indicates what kind of layer this is (i.e. where/how to apply it)
+def pre_iter(stream):</p>
+<blockquote>
+<div><p>next(stream)  # skip one</p>
+</div></blockquote>
+<p>&#64;data_to_obj  # decorator to indicate what kind of layer this is (i.e. where/how to apply it
+def strip_and_split(data):  # function can be a method (first arg is instance) or static (data_to_obj figures it out)</p>
+<blockquote>
+<div><p>return data.strip().split(‘,’)</p>
+</div></blockquote>
+<p>another_data_to_obj_layer = data_to_obj(intify)  # decorator can be used to inject function defined externally</p>
+</div></blockquote>
+</dd>
+</dl>
+<p><a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+<p>## Decorators</p>
+<p><a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a>python
+&#64;lay(kind=’pre_iter’, func=func)
+&#64;lay.data_to_obj(func=func)
+class D(Creek):</p>
+<blockquote>
+<div><p>pass</p>
+</div></blockquote>
+<p><a href="#id13"><span class="problematic" id="id14">``</span></a><a href="#id15"><span class="problematic" id="id16">`</span></a></p>
+<p>## Fluid interfaces</p>
+<p><a href="#id17"><span class="problematic" id="id18">``</span></a><a href="#id19"><span class="problematic" id="id20">`</span></a>python
+D = (Creek</p>
+<blockquote>
+<div><p>.lay(‘pre_iter’, func)
+.lay.data_to_obj(func)…</p>
+</div></blockquote>
+<section id="id21">
+<h2>)<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h2>
+<p># Backend</p>
+<p>Use lists to stack layers.</p>
+<p>Compile the layers to increase resource use.</p>
+<p>Uncompile to increase debugibility.</p>
+<dl class="py class">
+<dt id="creek.scrap.creek_layers.CreekLayer">
+<em class="property">class </em><code class="sig-prename descclassname">creek.scrap.creek_layers.</code><code class="sig-name descname">CreekLayer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pre_iters</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Callable<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em>, <em class="sig-param"><span class="n">data_to_objs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Callable<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em>, <em class="sig-param"><span class="n">post_iters</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Callable<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/creek/scrap/creek_layers.html#CreekLayer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.scrap.creek_layers.CreekLayer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">creek</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../creek.html">creek</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../base.html">creek.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../infinite_sequence.html">creek.infinite_sequence</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">creek.scrap.creek_layers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id21">)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multi_streams.html">creek.scrap.multi_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../util.html">creek.util</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../infinite_sequence.html" title="previous chapter">creek.infinite_sequence</a></li>
+      <li>Next: <a href="multi_streams.html" title="next chapter">creek.scrap.multi_streams</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;NO COPYRIGHT.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../../_sources/module_docs/creek/scrap/creek_layers.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>creek.scrap.creek_layers &#8212; creek 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for creek.scrap.creek_layers</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd"># Wrapper interfaces</span>
+
+<span class="sd">## Inner-class</span>
+
+<span class="sd">```python</span>
+<span class="sd">def intify(self, data):</span>
+<span class="sd">    return tuple(map(int, data))</span>
+
+<span class="sd">class D(Creek):</span>
+<span class="sd">    # subclassing `CreekLayer` indicates that this class is a layering class</span>
+<span class="sd">    # could also use decorator for this: Allowing simple injection of external classes</span>
+<span class="sd">    class Lay(CreekLayer):</span>
+<span class="sd">        # name indicates what kind of layer this is (i.e. where/how to apply it)</span>
+<span class="sd">        def pre_iter(stream):</span>
+<span class="sd">            next(stream)  # skip one</span>
+
+<span class="sd">        @data_to_obj  # decorator to indicate what kind of layer this is (i.e. where/how to apply it</span>
+<span class="sd">        def strip_and_split(data):  # function can be a method (first arg is instance) or static (data_to_obj figures it out)</span>
+<span class="sd">            return data.strip().split(&#39;,&#39;)</span>
+
+<span class="sd">        another_data_to_obj_layer = data_to_obj(intify)  # decorator can be used to inject function defined externally</span>
+<span class="sd">```</span>
+
+<span class="sd">## Decorators</span>
+
+<span class="sd">```python</span>
+<span class="sd">@lay(kind=&#39;pre_iter&#39;, func=func)</span>
+<span class="sd">@lay.data_to_obj(func=func)</span>
+<span class="sd">class D(Creek):</span>
+<span class="sd">    pass</span>
+<span class="sd">```</span>
+
+<span class="sd">## Fluid interfaces</span>
+
+<span class="sd">```python</span>
+<span class="sd">D = (Creek</span>
+<span class="sd">    .lay(&#39;pre_iter&#39;, func)</span>
+<span class="sd">    .lay.data_to_obj(func)...</span>
+<span class="sd">)</span>
+<span class="sd">```</span>
+
+
+<span class="sd"># Backend</span>
+
+<span class="sd">Use lists to stack layers.</span>
+
+<span class="sd">Compile the layers to increase resource use.</span>
+
+<span class="sd">Uncompile to increase debugibility.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">Signature</span><span class="p">,</span> <span class="n">signature</span>
+
+
+<span class="k">def</span> <span class="nf">identity_func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span>
+
+
+<span class="n">static_identity_method</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">identity_func</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Compose</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">funcs</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">identity_func</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">funcs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">first_func</span> <span class="o">=</span> <span class="p">(</span><span class="n">default</span><span class="p">,)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">other_funcs</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">first_func</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">other_funcs</span> <span class="o">=</span> <span class="n">funcs</span>
+        <span class="c1"># The following so that __call__ gets the same signature as first_func:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__signature__</span> <span class="o">=</span> <span class="n">Signature</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span><span class="n">signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">first_func</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">other_funcs</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="n">FuncSequence</span> <span class="o">=</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span>
+
+
+<span class="c1"># TODO: Use descriptors to manage the pre_iters/pre_iter relationship.</span>
+<div class="viewcode-block" id="CreekLayer"><a class="viewcode-back" href="../../../module_docs/creek/scrap/creek_layers.html#creek.scrap.creek_layers.CreekLayer">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">CreekLayer</span><span class="p">:</span>
+    <span class="n">pre_iters</span><span class="p">:</span> <span class="n">FuncSequence</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">data_to_objs</span><span class="p">:</span> <span class="n">FuncSequence</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">post_iters</span><span class="p">:</span> <span class="n">FuncSequence</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">pre_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_stream</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Compose</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">pre_iters</span><span class="p">)(</span><span class="n">data_stream</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">data_to_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Compose</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">data_to_objs</span><span class="p">)(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">post_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj_stream</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Compose</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">post_iters</span><span class="p">)(</span><span class="n">obj_stream</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">lay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">creek</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/creek.html">creek</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/creek/base.html">creek.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/creek/infinite_sequence.html">creek.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/creek/scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/creek/scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/creek/tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/creek/util.html">creek.util</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;NO COPYRIGHT.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

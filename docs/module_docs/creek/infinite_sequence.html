@@ -1,0 +1,468 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>creek.infinite_sequence &#8212; creek 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="creek.scrap.creek_layers" href="scrap/creek_layers.html" />
+    <link rel="prev" title="creek.base" href="base.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-creek.infinite_sequence">
+<span id="creek-infinite-sequence"></span><h1>creek.infinite_sequence<a class="headerlink" href="#module-creek.infinite_sequence" title="Permalink to this headline">¶</a></h1>
+<p>Objects that support some list-like read operations on an unbounded stream.
+Essentially, trying to give you the impression that you have read access to infinite list,
+with some (parametrizable) limitations.</p>
+<dl class="py class">
+<dt id="creek.infinite_sequence.ExceptionRaiserCallbackMixin">
+<em class="property">class </em><code class="sig-prename descclassname">creek.infinite_sequence.</code><code class="sig-name descname">ExceptionRaiserCallbackMixin</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/infinite_sequence.html#ExceptionRaiserCallbackMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.infinite_sequence.ExceptionRaiserCallbackMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make the instance callable and have the effect of raising the instance.
+Meant to add to an exception class so that instances of this class can be used as callbacks that raise the error</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="creek.infinite_sequence.IndexedBuffer">
+<em class="property">class </em><code class="sig-prename descclassname">creek.infinite_sequence.</code><code class="sig-name descname">IndexedBuffer</code><span class="sig-paren">(</span><em class="sig-param">buffer_len</em>, <em class="sig-param">prefill=()</em>, <em class="sig-param">if_overlaps_past=OverlapsPastError('Some of the data requested was in the past or in the future')</em>, <em class="sig-param">if_overlaps_future=OverlapsFutureError('Some of the data requested was in the past or in the future')</em>, <em class="sig-param">slice_get_postproc: Callable = &lt;class 'list'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/infinite_sequence.html#IndexedBuffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.infinite_sequence.IndexedBuffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list-like object that gives a limited-past read view of an unbounded stream</p>
+<p>For example, say we had the stream of increasing integers 0, 1, 2, … that is being fed to indexedBuffer</p>
+<p>What IndexedBuffer(maxlen=4) offers is access to the buffer’s contents, but using the indices that
+the stream (if it were one big list in memory) would use instead of the buffer’s index.</p>
+<blockquote>
+<div><p>0 1 2 3 [4 5 6 7] 8 9</p>
+</div></blockquote>
+<p>IndexedBuffer uses collections.deque, exposing the append, extend, and clear methods, updating the index reference
+in a thread-safe manner.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">IndexedBuffer</span><span class="p">(</span><span class="n">buffer_len</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>  <span class="c1"># adding 4 elements in bulk (filling the buffer completely)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="go">[0, 1, 2, 3]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+<span class="go">[1]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+<p>Let’s add two more elements (using append this time), making the buffer “shift”</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="go">[2, 3, 4, 5]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span>
+<span class="go">[2, 3, 4]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+<span class="go">[3, 4, 5]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>You can slice with step:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">6</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+<span class="go">[2, 4]</span>
+</pre></div>
+</div>
+<p>You can slice with negatives
+&gt;&gt;&gt; s[2:-2]
+[2, 3]</p>
+<p>On the other hand, if you ask for something that is not in the buffer (anymore, or yet), you’ll get an
+error that tells you so:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># element for idx 1 is missing in [2, 3, 4, 5]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>  
+<span class="gt">Traceback (most recent call last):</span>
+    <span class="o">...</span>
+<span class="gr">OverlapsPastError</span>: <span class="n">You asked for slice(1, 4, None), but the buffer only contains the index range: 2:6</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># elements for 0:2 are missing (as well as 6:9, but OverlapsPastError trumps OverlapsFutureError</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span>  
+<span class="gt">Traceback (most recent call last):</span>
+    <span class="o">...</span>
+<span class="gr">OverlapsPastError</span>: <span class="n">You asked for slice(0, 9, None), but the buffer only contains the index range: 2:6</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># element for 6:9 are missing in [2, 3, 4, 5]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span>  
+<span class="gt">Traceback (most recent call last):</span>
+    <span class="o">...</span>
+<span class="gr">OverlapsFutureError</span>: <span class="n">You asked for slice(4, 9, None), but the buffer only contains the index range: 2:6</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="creek.infinite_sequence.IndexedBuffer.extend">
+<code class="sig-name descname">extend</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#creek.infinite_sequence.IndexedBuffer.extend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extend buffer with an iterable of items</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="creek.infinite_sequence.InfiniteSeq">
+<em class="property">class </em><code class="sig-prename descclassname">creek.infinite_sequence.</code><code class="sig-name descname">InfiniteSeq</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterator</span><span class="p">:</span> <span class="n">Iterator</span></em>, <em class="sig-param"><span class="n">buffer_len</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/infinite_sequence.html#InfiniteSeq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.infinite_sequence.InfiniteSeq" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list-like (read) view of an unbounded sequence/stream.</p>
+<p>For example, take an iterator that cycles from 0 to 99 forever:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">cycle</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Let’s make an InfiniteSeq instance for this stream, accomodating for a view of up to 11 items.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">InfiniteSeq</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="n">buffer_len</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Let’s ask for element 15 (which is the (15 + 1)th element (and should have a value of 15).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">15</span><span class="p">]</span>
+<span class="go">15</span>
+</pre></div>
+</div>
+<p>Now, to get this value, the iterator will move forward up to that point;
+that is, until the buffer’s head (i.e. most recent) item contains that requested (15 + 1)th element.
+But the buffer is of size 11, so we still have access to a few previous elements:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span>
+<span class="go">11</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">15</span><span class="p">]</span>
+<span class="go">[5, 6, 7, 8, 9, 10, 11, 12, 13, 14]</span>
+</pre></div>
+</div>
+<p>But if we asked for anything before index 5…</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span>  
+<span class="gt">Traceback (most recent call last):</span>
+    <span class="o">...</span>
+<span class="gr">OverlapsPastError</span>: <span class="n">You asked for slice(2, 7, None), but the buffer only contains the index range: 5:16</span>
+</pre></div>
+</div>
+<p>So we can’t go backwards. But we can always go forwards:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">95</span><span class="p">:</span><span class="mi">105</span><span class="p">]</span>
+<span class="go">[95, 96, 97, 98, 99, 0, 1, 2, 3, 4]</span>
+</pre></div>
+</div>
+<p>You can also use slices with step and with negative integers (referencing the head of the buffer)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">120</span><span class="p">:</span><span class="mi">130</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+<span class="go">[20, 22, 24, 26, 28]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">120</span><span class="p">:</span><span class="mi">130</span><span class="p">]</span>
+<span class="go">[20, 21, 22, 23, 24, 25, 26, 27, 28, 29]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">8</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+<span class="go">[22, 23, 24, 25, 26, 27]</span>
+</pre></div>
+</div>
+<p>but you cannot slice farther back than the buffer</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">20</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+<span class="gp">... </span><span class="k">except</span> <span class="n">OverlapsPastError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">msg_text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">msg_text</span><span class="p">)</span>
+<span class="go">You asked for slice(110, 128, None), but the buffer only contains the index range: 119:130</span>
+</pre></div>
+</div>
+<p>Sometimes the source provides data in chunks. Sometimes these chunks are not even of fixed size.
+In those situations, you can use <code class="docutils literal notranslate"><span class="pre">itertools.chain</span></code> to “flatten” the iterator as in the following example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">creek.infinite_sequence</span> <span class="kn">import</span> <span class="n">InfiniteSeq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Mapping</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Source</span><span class="p">(</span><span class="n">Mapping</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="fm">__len__</span> <span class="o">=</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="k">yield from</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Asking for </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="mi">10</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">...</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">source</span> <span class="o">=</span> <span class="n">Source</span><span class="p">()</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>See that when we ask for a chunk of data, there’s a print notification about it.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">source</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">39</span><span class="p">]</span>
+<span class="go">Asking for 3</span>
+</pre></div>
+</div>
+<p>Now let’s make an iterator of the data and an InfiniteSeq (with buffer length 10) on top of it.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">InfiniteSeq</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See that when you ask for :5, you see that chunk 0 is requested.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
+<span class="go">Asking for 0</span>
+<span class="go">[0, 1, 2, 3, 4]</span>
+</pre></div>
+</div>
+<p>If you ask for something that’s already in the buffer, you won’t see the print notification though.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="go">[4, 5, 6, 7]</span>
+</pre></div>
+</div>
+<p>The following shows you how InfiniteSeq “hits” the data source as it’s getting the data it needs for the request.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">12</span><span class="p">]</span>
+<span class="go">Asking for 1</span>
+<span class="go">[8, 9, 10, 11]</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">40</span><span class="p">:</span><span class="mi">42</span><span class="p">]</span>
+<span class="go">Asking for 2</span>
+<span class="go">Asking for 3</span>
+<span class="go">Asking for 4</span>
+<span class="go">[40, 41]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="creek.infinite_sequence.NotDuringError">
+<em class="property">exception </em><code class="sig-prename descclassname">creek.infinite_sequence.</code><code class="sig-name descname">NotDuringError</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/infinite_sequence.html#NotDuringError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.infinite_sequence.NotDuringError" title="Permalink to this definition">¶</a></dt>
+<dd><p>IndexError that indicates that there was an attempt to index some data that is not contained in the buffer
+(i.e. is that a part of the request is NO LONGER, or NOT YET covered by the buffer)</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="creek.infinite_sequence.OverlapsFutureError">
+<em class="property">exception </em><code class="sig-prename descclassname">creek.infinite_sequence.</code><code class="sig-name descname">OverlapsFutureError</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/infinite_sequence.html#OverlapsFutureError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.infinite_sequence.OverlapsFutureError" title="Permalink to this definition">¶</a></dt>
+<dd><p>IndexError that indicates that there was an attempt to index some data that is in the FUTURE
+(i.e. is NOT YET completely covered by the buffer)</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="creek.infinite_sequence.OverlapsPastError">
+<em class="property">exception </em><code class="sig-prename descclassname">creek.infinite_sequence.</code><code class="sig-name descname">OverlapsPastError</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/infinite_sequence.html#OverlapsPastError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.infinite_sequence.OverlapsPastError" title="Permalink to this definition">¶</a></dt>
+<dd><p>IndexError that indicates that there was an attempt to index some data that is in the PAST
+(i.e. is NO LONGER completely covered by the buffer)</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="creek.infinite_sequence.RelationNotHandledError">
+<em class="property">exception </em><code class="sig-prename descclassname">creek.infinite_sequence.</code><code class="sig-name descname">RelationNotHandledError</code><a class="reference internal" href="../../_modules/creek/infinite_sequence.html#RelationNotHandledError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.infinite_sequence.RelationNotHandledError" title="Permalink to this definition">¶</a></dt>
+<dd><p>TypeError that indicates that a relation is either not a valid one, or not handled by conditional clause.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="creek.infinite_sequence.Relations">
+<em class="property">class </em><code class="sig-prename descclassname">creek.infinite_sequence.</code><code class="sig-name descname">Relations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/infinite_sequence.html#Relations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.infinite_sequence.Relations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point-interval and interval-interval relations.</p>
+<p>See Allen’s interval algebra for (some of the) interval relations
+(<a class="reference external" href="https://en.wikipedia.org/wiki/Allen%27s_interval_algebra">https://en.wikipedia.org/wiki/Allen%27s_interval_algebra</a>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="creek.infinite_sequence.absolute_item">
+<code class="sig-prename descclassname">creek.infinite_sequence.</code><code class="sig-name descname">absolute_item</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span></em>, <em class="sig-param"><span class="n">max_idx</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/infinite_sequence.html#absolute_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.infinite_sequence.absolute_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an item with absolute references: i.e. with negative indices idx resolved to max_idx + idx
+&gt;&gt;&gt; absolute_item(-1, 10)
+9
+&gt;&gt;&gt; absolute_item(slice(-4, -2, 2), 10)
+slice(6, 8, 2)</p>
+<p>But anything else that’s not a slice or int will be left untouched
+(and will probably result in errors if you use with IndexedBuffer)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">absolute_item</span><span class="p">((</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="mi">10</span><span class="p">)</span>
+<span class="go">(-7, -2)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="creek.infinite_sequence.consume">
+<code class="sig-prename descclassname">creek.infinite_sequence.</code><code class="sig-name descname">consume</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gen</span></em>, <em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/infinite_sequence.html#consume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.infinite_sequence.consume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Consume n iterations of generator (without returning elements)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="creek.infinite_sequence.none_safe_addition">
+<code class="sig-prename descclassname">creek.infinite_sequence.</code><code class="sig-name descname">none_safe_addition</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/infinite_sequence.html#none_safe_addition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.infinite_sequence.none_safe_addition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the two numbers if x is not None, or return None if not</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="creek.infinite_sequence.simple_interval_relationship">
+<code class="sig-prename descclassname">creek.infinite_sequence.</code><code class="sig-name descname">simple_interval_relationship</code><span class="sig-paren">(</span><em class="sig-param">x: Tuple[Union[int, float], Union[int, float]], y: Tuple[Union[int, float], Union[int, float]], above_bt: Callable = &lt;built-in function ge&gt;, below_tt: Callable = &lt;built-in function lt&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/infinite_sequence.html#simple_interval_relationship"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.infinite_sequence.simple_interval_relationship" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the simple relationship between intervals x and y.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – An point (a number) or an interval (a 2-tuple of numbers).</p></li>
+<li><p><strong>y</strong> – An interval; a 2-tuple of numbers.</p></li>
+<li><p><strong>above_bt</strong> – a above_bt(x_bt, y_bt) boolean function (ge or gt) deciding if x starts after y does.</p></li>
+<li><p><strong>below_tt</strong> – a below_tt(x_tt, y_tt) boolean function (lt or le) deciding if x ends before y does.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>One of three relations
+Relations.BEFORE if some of x is below y,
+Relations.AFTER if some of x is after y,
+Relations.DURING if x is entirely with y</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>The target <code class="docutils literal notranslate"><span class="pre">y</span></code> interval is expressed only by it’s bounds, but we don’t know if these are</dt><dd><p>inclusive or not. The <code class="docutils literal notranslate"><span class="pre">below_bt</span></code> and <code class="docutils literal notranslate"><span class="pre">above_tt</span></code> allow us to express that by expressing how below the
+lowest (bt) bound and what higher than highest (tt) bound are defined.</p>
+</dd>
+</dl>
+<p>The function is meant to be curried (partial), for example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">le</span><span class="p">,</span> <span class="n">lt</span><span class="p">,</span> <span class="n">ge</span><span class="p">,</span> <span class="n">gt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">default</span> <span class="o">=</span> <span class="n">simple_interval_relationship</span>  <span class="c1"># uses below_bt=ge, above_tt=lt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">including_bounds</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">simple_interval_relationship</span><span class="p">,</span> <span class="n">above_bt</span><span class="o">=</span><span class="n">ge</span><span class="p">,</span> <span class="n">below_tt</span><span class="o">=</span><span class="n">le</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">excluding_bounds</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">simple_interval_relationship</span><span class="p">,</span> <span class="n">above_bt</span><span class="o">=</span><span class="n">gt</span><span class="p">,</span> <span class="n">below_tt</span><span class="o">=</span><span class="n">lt</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Take <code class="docutils literal notranslate"><span class="pre">(4,</span> <span class="pre">8)</span></code> as the target interval, and want to query the relationship of other points and intervals with it.
+No matter what the function is, they will always agree on any intervals that don’t share any bounds.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">relation_func</span> <span class="ow">in</span> <span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">including_bounds</span><span class="p">,</span> <span class="n">excluding_bounds</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">print</span> <span class="p">(</span>
+<span class="gp">... </span>        <span class="n">relation_func</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
+<span class="gp">... </span>        <span class="n">relation_func</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
+<span class="gp">... </span>        <span class="n">relation_func</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
+<span class="gp">... </span>        <span class="n">relation_func</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
+<span class="gp">... </span>        <span class="n">relation_func</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
+<span class="gp">... </span>        <span class="n">relation_func</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">Relations.BEFORE Relations.DURING Relations.AFTER Relations.BEFORE Relations.DURING Relations.AFTER</span>
+<span class="go">Relations.BEFORE Relations.DURING Relations.AFTER Relations.BEFORE Relations.DURING Relations.AFTER</span>
+<span class="go">Relations.BEFORE Relations.DURING Relations.AFTER Relations.BEFORE Relations.DURING Relations.AFTER</span>
+</pre></div>
+</div>
+<p>But if the two intervals share some bounds, these functions will diverge.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">relation_func</span> <span class="ow">in</span> <span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">including_bounds</span><span class="p">,</span> <span class="n">excluding_bounds</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">print</span> <span class="p">(</span>
+<span class="gp">... </span>        <span class="n">relation_func</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
+<span class="gp">... </span>        <span class="n">relation_func</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
+<span class="gp">... </span>        <span class="n">relation_func</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
+<span class="gp">... </span>        <span class="n">relation_func</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
+<span class="gp">... </span>        <span class="n">relation_func</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">Relations.DURING Relations.AFTER Relations.DURING Relations.AFTER Relations.AFTER</span>
+<span class="go">Relations.DURING Relations.DURING Relations.DURING Relations.DURING Relations.DURING</span>
+<span class="go">Relations.BEFORE Relations.AFTER Relations.BEFORE Relations.BEFORE Relations.AFTER</span>
+</pre></div>
+</div>
+<p>The function can be used with the FIRST argument being a slice object as well.
+This can then be used to enable [i:j] access.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">relation_func</span> <span class="ow">in</span> <span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">including_bounds</span><span class="p">,</span> <span class="n">excluding_bounds</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">print</span> <span class="p">(</span>
+<span class="gp">... </span>        <span class="n">relation_func</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
+<span class="gp">... </span>        <span class="n">relation_func</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
+<span class="gp">... </span>        <span class="n">relation_func</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">Relations.DURING Relations.AFTER Relations.AFTER</span>
+<span class="go">Relations.DURING Relations.DURING Relations.DURING</span>
+<span class="go">Relations.BEFORE Relations.BEFORE Relations.AFTER</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="creek.infinite_sequence.validate_interval">
+<code class="sig-prename descclassname">creek.infinite_sequence.</code><code class="sig-name descname">validate_interval</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">interval</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/infinite_sequence.html#validate_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.infinite_sequence.validate_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asserts that input is a valid interval, raising a ValueError if not</p>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">creek</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../creek.html">creek</a></li>
+<li class="toctree-l1"><a class="reference internal" href="base.html">creek.base</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">creek.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="util.html">creek.util</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="base.html" title="previous chapter">creek.base</a></li>
+      <li>Next: <a href="scrap/creek_layers.html" title="next chapter">creek.scrap.creek_layers</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;NO COPYRIGHT.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/module_docs/creek/infinite_sequence.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
