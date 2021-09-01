@@ -492,6 +492,7 @@ class InfiniteSeq:
     [95, 96, 97, 98, 99, 0, 1, 2, 3, 4]
 
     You can also use slices with step and with negative integers (referencing the head of the buffer)
+
     >>> s[120:130:2]
     [20, 22, 24, 26, 28]
     >>> s[120:130]
@@ -500,12 +501,13 @@ class InfiniteSeq:
     [22, 23, 24, 25, 26, 27]
 
     but you cannot slice farther back than the buffer
-    >>> s[-20:-2] # doctest: +NORMALIZE_WHITESPACE
-    Traceback (most recent call last):
-    ...
-    infinite_sequence.OverlapsPastError: You asked for slice(110, 128, None),
-    but the buffer only contains the index range: 119:130
 
+    >>> try:
+    ...     s[-20:-2]
+    ... except OverlapsPastError as e:
+    ...     msg_text = str(e)
+    >>> print(msg_text)
+    You asked for slice(110, 128, None), but the buffer only contains the index range: 119:130
 
     Sometimes the source provides data in chunks. Sometimes these chunks are not even of fixed size.
     In those situations, you can use ``itertools.chain`` to "flatten" the iterator as in the following example:
