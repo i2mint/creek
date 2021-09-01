@@ -31,7 +31,7 @@ class Pipe:
         n_funcs = len(funcs)
         other_funcs = ()
         if n_funcs == 0:
-            raise ValueError("You need to specify at least one function!")
+            raise ValueError('You need to specify at least one function!')
         elif n_funcs == 1:
             first_func = last_func = funcs[0]
         else:
@@ -70,6 +70,7 @@ class MergedStreams:
      ('hello', (5, 'five')),
      ('world', (6, 'six'))]
     """
+
     streams_map: StreamsMap
     sort_key: Optional[Callable] = None
 
@@ -80,8 +81,9 @@ class MergedStreams:
             self.effecitve_sort_key = Pipe(itemgetter(1), self.sort_key)
 
     def __iter__(self):
-        for item in heapq.merge(*multi_stream_items(self.streams_map),
-                                key=self.effecitve_sort_key):
+        for item in heapq.merge(
+            *multi_stream_items(self.streams_map), key=self.effecitve_sort_key
+        ):
             yield item
 
 

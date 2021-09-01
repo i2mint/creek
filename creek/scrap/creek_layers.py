@@ -70,7 +70,9 @@ class Compose:
         else:
             self.first_func, *self.other_funcs = funcs
         # The following so that __call__ gets the same signature as first_func:
-        self.__signature__ = Signature(list(signature(self.first_func).parameters.values()))
+        self.__signature__ = Signature(
+            list(signature(self.first_func).parameters.values())
+        )
 
     def __call__(self, *args, **kwargs):
         out = self.first_func(*args, **kwargs)

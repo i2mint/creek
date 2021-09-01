@@ -1,6 +1,11 @@
 """Utils for creek"""
 
-from functools import WRAPPER_ASSIGNMENTS, partial, update_wrapper as _update_wrapper, wraps as _wraps
+from functools import (
+    WRAPPER_ASSIGNMENTS,
+    partial,
+    update_wrapper as _update_wrapper,
+    wraps as _wraps,
+)
 from itertools import islice
 
 wrapper_assignments = (*WRAPPER_ASSIGNMENTS, '__defaults__', '__kwdefaults__')
@@ -53,6 +58,7 @@ def cls_wrap(cls, obj):
 
 # TODO: Make identity_func "identifiable". If we use the following one, we can use == to detect it's use,
 # TODO: ... but there may be a way to annotate, register, or type any identity function so it can be detected.
+
 
 def identity_func(x):
     return x

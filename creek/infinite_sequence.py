@@ -31,6 +31,7 @@ class Relations(Enum):
     See Allen's interval algebra for (some of the) interval relations
     (https://en.wikipedia.org/wiki/Allen%27s_interval_algebra).
     """
+
     # simple relations, that can be used between (X: point, Y: interval), (X: interval, Y: interval) pairs
     BEFORE = 'Some of X happens BEFORE Y'
     DURING = 'All of X happens within Y'
@@ -52,14 +53,16 @@ def validate_interval(interval):
         assert bt <= tt
         return bt, tt
     except Exception as e:
-        raise ValueError(f"Not a valid interval: {interval}")
+        raise ValueError(f'Not a valid interval: {interval}')
 
 
 # TODO: Validate intervals (assert x[0] <= x[1] and )?
-def simple_interval_relationship(x: Tuple[Number, Number],
-                                 y: Tuple[Number, Number],
-                                 above_bt: Callable = ge,
-                                 below_tt: Callable = lt):
+def simple_interval_relationship(
+    x: Tuple[Number, Number],
+    y: Tuple[Number, Number],
+    above_bt: Callable = ge,
+    below_tt: Callable = lt,
+):
     """Get the simple relationship between intervals x and y.
 
     :param x: An point (a number) or an interval (a 2-tuple of numbers).
@@ -146,6 +149,7 @@ def simple_interval_relationship(x: Tuple[Number, Number],
 class ExceptionRaiserCallbackMixin:
     """Make the instance callable and have the effect of raising the instance.
     Meant to add to an exception class so that instances of this class can be used as callbacks that raise the error"""
+
     dflt_args = ()
 
     def __init__(self, *args, **kwargs):
@@ -164,19 +168,22 @@ class ExceptionRaiserCallbackMixin:
 class NotDuringError(ExceptionRaiserCallbackMixin, IndexError):
     """IndexError that indicates that there was an attempt to index some data that is not contained in the buffer
     (i.e. is that a part of the request is NO LONGER, or NOT YET covered by the buffer)"""
-    dflt_args = "Some of the data requested was in the past or in the future"
+
+    dflt_args = 'Some of the data requested was in the past or in the future'
 
 
 class OverlapsPastError(NotDuringError):
     """IndexError that indicates that there was an attempt to index some data that is in the PAST
     (i.e. is NO LONGER completely covered by the buffer)"""
-    dlft_args = "Some of the data requested is in the past"
+
+    dlft_args = 'Some of the data requested is in the past'
 
 
 class OverlapsFutureError(NotDuringError):
     """IndexError that indicates that there was an attempt to index some data that is in the FUTURE
     (i.e. is NOT YET completely covered by the buffer)"""
-    dlft_args = "Some of the data requested is in the future"
+
+    dlft_args = 'Some of the data requested is in the future'
 
 
 class RelationNotHandledError(TypeError):
@@ -192,7 +199,7 @@ overlaps_future_error = OverlapsFutureError()
 
 
 def _not_implemented(self, method_name, *args, **kwargs):
-    raise NotImplementedError("")
+    raise NotImplementedError('')
 
 
 # ram heavier, cpu lighter extend
@@ -332,10 +339,14 @@ class IndexedBuffer:
     OverlapsFutureError: You asked for slice(4, 9, None), but the buffer only contains the index range: 2:6
     """
 
-    def __init__(self, buffer_len, prefill=(),
-                 if_overlaps_past=overlaps_past_error,
-                 if_overlaps_future=overlaps_future_error,
-                 slice_get_postproc: Callable = list):
+    def __init__(
+        self,
+        buffer_len,
+        prefill=(),
+        if_overlaps_past=overlaps_past_error,
+        if_overlaps_future=overlaps_future_error,
+        slice_get_postproc: Callable = list,
+    ):
         self._deque = deque(prefill, buffer_len)
         self.buffer_len = self._deque.maxlen
         self.max_idx = 0  # should correspond to the number of items added
@@ -345,7 +356,7 @@ class IndexedBuffer:
         self._lock = Lock()
 
     def __repr__(self):
-        return f"{type(self).__name__}(buffer_len={self.buffer_len}, min_idx={self.min_idx}, max_idx={self.max_idx}, ...)"
+        return f'{type(self).__name__}(buffer_len={self.buffer_len}, min_idx={self.min_idx}, max_idx={self.max_idx}, ...)'
 
     def __iter__(self):
         yield from self._deque
@@ -366,11 +377,17 @@ class IndexedBuffer:
         elif isinstance(idx, Iterable):
             return tuple(x - self.min_idx for x in idx)
         else:
-            raise TypeError(f"{type(idx)} are not handled. You requested the outer_to_buffer_idx of {idx}")
+            raise TypeError(
+                f'{type(idx)} are not handled. You requested the outer_to_buffer_idx of {idx}'
+            )
 
     def __getitem__(self, item):
-        item = absolute_item(item, self.max_idx)  # Note: Overhead for convenience of negative indices use (worth it?)
-        relationship = simple_interval_relationship(item, (self.min_idx, self.max_idx + 1))
+        item = absolute_item(
+            item, self.max_idx
+        )  # Note: Overhead for convenience of negative indices use (worth it?)
+        relationship = simple_interval_relationship(
+            item, (self.min_idx, self.max_idx + 1)
+        )
         if relationship == Relations.DURING:
             item = self.outer_to_buffer_idx(item)
             if isinstance(item, slice):
@@ -388,15 +405,19 @@ class IndexedBuffer:
         elif relationship == Relations.BEFORE:
             raise self._overlaps_past_error(item)
         else:
-            raise RelationNotHandledError(f"The relation {relationship} is not handled.")
+            raise RelationNotHandledError(
+                f'The relation {relationship} is not handled.'
+            )
 
     def _overlaps_past_error(self, item):
         return OverlapsPastError(
-            f"You asked for {item}, but the buffer only contains the index range: {self.min_idx}:{self.max_idx}")
+            f'You asked for {item}, but the buffer only contains the index range: {self.min_idx}:{self.max_idx}'
+        )
 
     def _overlaps_future_error(self, item):
         return OverlapsFutureError(
-            f"You asked for {item}, but the buffer only contains the index range: {self.min_idx}:{self.max_idx}")
+            f'You asked for {item}, but the buffer only contains the index range: {self.min_idx}:{self.max_idx}'
+        )
 
     def append(self, x) -> None:
         with self._lock:
@@ -544,6 +565,7 @@ class InfiniteSeq:
     [40, 41]
 
     """
+
     iterator: Iterator
     buffer_len: int
 
