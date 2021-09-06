@@ -3,6 +3,8 @@ Simple streams facade.
 
 To install:	```pip install creek```
 
+[Documentation here](https://i2mint.github.io/creek/)
+
 The ``Creek`` base class offsers a layer-able wrap of the stream interface.
 
 There are three layering methods -- pre_iter, data_to_obj, and post_filt
