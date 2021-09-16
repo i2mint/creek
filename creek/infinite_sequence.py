@@ -1,4 +1,5 @@
-"""Objects that support some list-like read operations on an unbounded stream.
+"""
+Objects that support some list-like read operations on an unbounded stream.
 Essentially, trying to give you the impression that you have read access to infinite list,
 with some (parametrizable) limitations.
 

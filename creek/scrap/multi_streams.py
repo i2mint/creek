@@ -49,11 +49,27 @@ class Pipe:
 
 @dataclass
 class MergedStreams:
-    """Creates an iterable of (stream_id, stream_item) pairs from a {stream_id: stream, ...} map.
+    """Creates an iterable of (stream_id, stream_item) pairs from a stream Mapping,
+    that is, {stream_id: stream, ...}.
+
     The stream_item will be yield in sorted order.
-    Sort behavior can be modified by the ``sort_key`` argument which behaves like `key`` arguments of built-in like
-    ``sorted``, ``heapq.merge``, ``itertools.groupby``, etc.
+    Sort behavior can be modified by the ``sort_key`` argument which behaves like ``key``
+    arguments of built-in like ``sorted``, ``heapq.merge``, ``itertools.groupby``, etc.
+
     If given, the `sort_key` function applies to ``stream_item`` (not to ``stream_id``).
+
+    Important: To function as expected, the streams should be already sorted (according
+    to the ``sort_key`` order).
+
+    The cannonical use case of this function is to "flatten", or "weave together"
+    multiple streams of timestamped data. We're given several streams that provide
+    ``(timestamp, data)`` items (where timestamps arrive in order within each stream)
+    and we get a single stream of ``(stream_id, (timestamp, data))`` items where
+    the ``timestamp``s are yield in sorted order.
+
+    The following example uses a dict pointing to a fixed-size list as the ``stream_map``
+    but in general the ``stream_map`` will be a ``Mapping`` (not necessarily a dict)
+    whose values are potentially bound-less streams.
 
     >>> streams_map = {
     ...     'hello': [(2, 'two'), (3, 'three'), (5, 'five')],
