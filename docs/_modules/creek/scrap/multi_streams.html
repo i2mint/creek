@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>creek.scrap.multi_streams &#8212; creek 0.1.2 documentation</title>
+    <title>creek.scrap.multi_streams &#8212; creek 0.1.3 documentation</title>
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
@@ -84,11 +84,27 @@
 
 <div class="viewcode-block" id="MergedStreams"><a class="viewcode-back" href="../../../module_docs/creek/scrap/multi_streams.html#creek.scrap.multi_streams.MergedStreams">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">MergedStreams</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Creates an iterable of (stream_id, stream_item) pairs from a {stream_id: stream, ...} map.</span>
+    <span class="sd">&quot;&quot;&quot;Creates an iterable of (stream_id, stream_item) pairs from a stream Mapping,</span>
+<span class="sd">    that is, {stream_id: stream, ...}.</span>
+
 <span class="sd">    The stream_item will be yield in sorted order.</span>
-<span class="sd">    Sort behavior can be modified by the ``sort_key`` argument which behaves like `key`` arguments of built-in like</span>
-<span class="sd">    ``sorted``, ``heapq.merge``, ``itertools.groupby``, etc.</span>
+<span class="sd">    Sort behavior can be modified by the ``sort_key`` argument which behaves like ``key``</span>
+<span class="sd">    arguments of built-in like ``sorted``, ``heapq.merge``, ``itertools.groupby``, etc.</span>
+
 <span class="sd">    If given, the `sort_key` function applies to ``stream_item`` (not to ``stream_id``).</span>
+
+<span class="sd">    Important: To function as expected, the streams should be already sorted (according</span>
+<span class="sd">    to the ``sort_key`` order).</span>
+
+<span class="sd">    The cannonical use case of this function is to &quot;flatten&quot;, or &quot;weave together&quot;</span>
+<span class="sd">    multiple streams of timestamped data. We&#39;re given several streams that provide</span>
+<span class="sd">    ``(timestamp, data)`` items (where timestamps arrive in order within each stream)</span>
+<span class="sd">    and we get a single stream of ``(stream_id, (timestamp, data))`` items where</span>
+<span class="sd">    the ``timestamp``s are yield in sorted order.</span>
+
+<span class="sd">    The following example uses a dict pointing to a fixed-size list as the ``stream_map``</span>
+<span class="sd">    but in general the ``stream_map`` will be a ``Mapping`` (not necessarily a dict)</span>
+<span class="sd">    whose values are potentially bound-less streams.</span>
 
 <span class="sd">    &gt;&gt;&gt; streams_map = {</span>
 <span class="sd">    ...     &#39;hello&#39;: [(2, &#39;two&#39;), (3, &#39;three&#39;), (5, &#39;five&#39;)],</span>
