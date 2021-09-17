@@ -28,11 +28,23 @@ class Creek:
     >>>
     >>> list(stream)
     [['a', 'b', 'c'], ['1', '2', '3'], ['4', '5', '6']]
-    >>> stream.seek(0)  # oh!... but we consumed the stream already, so let's go back to the beginning
+
+    If we try that again, we'll get an empty list since the cursor is at the end.
+
+    >>> list(s)
+    []
+
+    But if the underlying stream has a seek, so does the creek, so we can "rewind"
+
+    >>> s.seek(0)
     0
+
     >>> list(stream)
     [['a', 'b', 'c'], ['1', '2', '3'], ['4', '5', '6']]
-    >>> stream.seek(0)  # reverse again
+
+    You can also use ``next`` to get stream items one by one
+
+    >>> stream.seek(0)  # rewind again to get back to the beginning
     0
     >>> next(stream)
     ['a', 'b', 'c']
@@ -42,7 +54,6 @@ class Creek:
     Let's add a filter! There's two kinds you can use.
     One that is applied to the line before the data is transformed by data_to_obj,
     and the other that is applied after (to the obj).
-
 
     >>> from creek.base import Creek
     >>> from io import StringIO
@@ -58,21 +69,21 @@ class Creek:
     >>>
     >>> s = MyFilteredCreek(src)
     >>>
-    >>> list(s)
-    [['1', '2', '3'], ['4', '5', '6']]
-    >>> s.seek(0)
-    0
+
     >>> list(s)
     [['1', '2', '3'], ['4', '5', '6']]
     >>> s.seek(0)
     0
     >>> next(s)
     ['1', '2', '3']
+    >>> next(s)
+    ['4', '5', '6']
 
     Recipes:
     - pre_iter: involving itertools.islice to skip header lines
     - pre_iter: involving enumerate to get line indices in stream iterator
-    - pre_iter = functools.partial(map, line_pre_proc_func) to preprocess all lines with line_pre_proc_func
+    - pre_iter = functools.partial(map, pre_proc_func) to preprocess all stream items
+        with pre_proc_func
     - pre_iter: include filter before obj
 
     - post_iter: chain.from_iterable to flatten a chunked/segmented stream
