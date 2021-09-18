@@ -33,7 +33,8 @@ class Relations(Enum):
     (https://en.wikipedia.org/wiki/Allen%27s_interval_algebra).
     """
 
-    # simple relations, that can be used between (X: point, Y: interval), (X: interval, Y: interval) pairs
+    # simple relations, that can be used between
+    # (X: point, Y: interval) or (X: interval, Y: interval) pairs
     BEFORE = 'Some of X happens BEFORE Y'
     DURING = 'All of X happens within Y'
     AFTER = 'Some of X happens AFTER Y'
@@ -75,9 +76,10 @@ def simple_interval_relationship(
         Relations.AFTER if some of x is after y,
         Relations.DURING if x is entirely with y
 
-    The target ``y`` interval is expressed only by it's bounds, but we don't know if these are
-     inclusive or not. The ``below_bt`` and ``above_tt`` allow us to express that by expressing how below the
-     lowest (bt) bound and what higher than highest (tt) bound are defined.
+    The target ``y`` interval is expressed only by it's bounds, but we don't know if
+     these are inclusive or not. The ``below_bt`` and ``above_tt`` allow us to express
+     that by expressing how below the lowest (bt) bound and what higher than highest
+     (tt) bound are defined.
 
     The function is meant to be curried (partial), for example:
 
@@ -87,8 +89,10 @@ def simple_interval_relationship(
     >>> including_bounds = partial(simple_interval_relationship, above_bt=ge, below_tt=le)
     >>> excluding_bounds = partial(simple_interval_relationship, above_bt=gt, below_tt=lt)
 
-    Take ``(4, 8)`` as the target interval, and want to query the relationship of other points and intervals with it.
-    No matter what the function is, they will always agree on any intervals that don't share any bounds.
+    Take ``(4, 8)`` as the target interval, and want to query the relationship of other
+    points and intervals with it.
+    No matter what the function is, they will always agree on any intervals that don't
+    share any bounds.
 
     >>> for relation_func in (default, including_bounds, excluding_bounds):
     ...     print (
@@ -138,9 +142,9 @@ def simple_interval_relationship(
     else:
         x_bt, x_tt = x, x  # consider a point to be the (x, x) interval
     y_bt, y_tt = validate_interval(y)
-    if not above_bt(x_bt, y_bt):
+    if not above_bt(x_bt, y_bt):  # meaning x_bt > y_bt (or >=, depending on above_bt)
         return Relations.BEFORE
-    elif below_tt(x_tt, y_tt):
+    elif below_tt(x_tt, y_tt):  # meaning x_bt < y_tt (or <=, depending on below_tt)
         return Relations.DURING
     else:
         return Relations.AFTER

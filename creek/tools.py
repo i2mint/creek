@@ -87,3 +87,44 @@ class DynamicIndexer:
         _current_idx = self.current_idx
         self.current_idx = self.idx_updater(_current_idx, x)
         return _current_idx, x
+
+
+# ---------------------------------------------------------------------------------------
+# Slicing index segment streams
+
+
+def segment_overlaps(bt_tt_segment, query_bt, query_tt):
+    """Returns True if, and only if, bt_tt_segment overlaps query interval.
+
+    A `bt_tt_segment` will need to be of the ``(bt, tt, *data)`` format.
+    That is, an iterable of at least two elements (the ``bt`` and ``tt``) followed with
+    more elements (the actual segment data).
+
+    This function is made to be curried, as shown in the following example:
+
+    >>> from functools import partial
+    >>> overlapping_segments_filt = partial(segment_overlaps, query_bt=4, query_tt=8)
+    >>>
+    >>> list(filter(overlapping_segments_filt, [
+    ...     (1, 3, 'completely before'),
+    ...     (2, 4, 'still completely before (upper bounds are strict)'),
+    ...     (3, 6, 'partially before, but overlaps bottom'),
+    ...     (4, 5, 'totally', 'inside'),  # <- note this tuple has 4 elements
+    ...     (5, 8),  # <- note this tuple has only the minimum (2) elements,
+    ...     (7, 10, 'partially after, but overlaps top'),
+    ...     (8, 11, 'completely after (strict upper bound)'),
+    ...     (100, 101, 'completely after (obviously)')
+    ... ]))  # doctest: +NORMALIZE_WHITESPACE
+    [(3, 6, 'partially before, but overlaps bottom'),
+    (4, 5, 'totally', 'inside'),
+    (5, 8),
+    (7, 10, 'partially after, but overlaps top')]
+
+    """
+    bt, tt, *segment = bt_tt_segment
+    return (
+        query_bt < tt <= query_tt  # the top part of segment intersects
+        or query_bt <= bt < query_tt  # the bottom part of the segment intersects
+    # If it's both, the interval is entirely inside the query
+    )
+
