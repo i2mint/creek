@@ -653,13 +653,6 @@ def asis(obj):
 
 
 # TODO: Finish up and document
-# `BufferedGetter` is intended to be a more general (but not optimized) class that
-# offers a query-interface to a buffer, intended to be used when the buffer is
-# being filled by a (possibly live) stream of data items.
-# The `IndexedBuffer` is a particular case where the queries are slices and the index
-# that is sliced on is an enumeration one.
-# The `InfiniteSeq` is a class combining `IndexedBuffer` with a data source it can
-# pull data from (according to the demands of the query)
 class BufferedGetter:
     """
     `BufferedGetter` is intended to be a more general (but not optimized) class that

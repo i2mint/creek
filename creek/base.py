@@ -31,12 +31,12 @@ class Creek:
 
     If we try that again, we'll get an empty list since the cursor is at the end.
 
-    >>> list(s)
+    >>> list(stream)
     []
 
     But if the underlying stream has a seek, so does the creek, so we can "rewind"
 
-    >>> s.seek(0)
+    >>> stream.seek(0)
     0
 
     >>> list(stream)
