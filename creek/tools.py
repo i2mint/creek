@@ -125,6 +125,5 @@ def segment_overlaps(bt_tt_segment, query_bt, query_tt):
     return (
         query_bt < tt <= query_tt  # the top part of segment intersects
         or query_bt <= bt < query_tt  # the bottom part of the segment intersects
-    # If it's both, the interval is entirely inside the query
+        # If it's both, the interval is entirely inside the query
     )
-
