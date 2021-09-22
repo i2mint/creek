@@ -8,7 +8,7 @@ with some (parametrizable) limitations.
 #  Consider simplifying.
 
 from collections import deque
-from typing import Iterable, Tuple, Union, Callable
+from typing import Iterable, Tuple, Union, Callable, Any, NewType
 from functools import wraps, partial, partialmethod
 from enum import Enum
 from operator import le, lt, ge, gt, itemgetter
@@ -247,7 +247,9 @@ def shift_slice(slice_obj, shift: Number):
 
 
 def absolute_item(item, max_idx):
-    """Returns an item with absolute references: i.e. with negative indices idx resolved to max_idx + idx
+    """Returns an item with absolute references: i.e. with negative indices idx
+    resolved to max_idx + idx
+
     >>> absolute_item(-1, 10)
     9
     >>> absolute_item(slice(-4, -2, 2), 10)
@@ -273,18 +275,19 @@ def absolute_item(item, max_idx):
         return item
 
 
-# TODO: Make operations thread safe
 class IndexedBuffer:
     """A list-like object that gives a limited-past read view of an unbounded stream
 
-    For example, say we had the stream of increasing integers 0, 1, 2, ... that is being fed to indexedBuffer
+    For example, say we had the stream of increasing integers 0, 1, 2, ...
+    that is being fed to indexedBuffer
 
-    What IndexedBuffer(maxlen=4) offers is access to the buffer's contents, but using the indices that
+    What IndexedBuffer(maxlen=4) offers is access to the buffer's contents,
+    but using the indices that
     the stream (if it were one big list in memory) would use instead of the buffer's index.
         0 1 2 3 [4 5 6 7] 8 9
 
-    IndexedBuffer uses collections.deque, exposing the append, extend, and clear methods, updating the index reference
-    in a thread-safe manner.
+    IndexedBuffer uses collections.deque, exposing the append, extend,
+    and clear methods, updating the index reference in a thread-safe manner.
 
     >>> s = IndexedBuffer(buffer_len=4)
     >>> s.extend(range(4))  # adding 4 elements in bulk (filling the buffer completely)
@@ -361,7 +364,12 @@ class IndexedBuffer:
         self._lock = Lock()
 
     def __repr__(self):
-        return f'{type(self).__name__}(buffer_len={self.buffer_len}, min_idx={self.min_idx}, max_idx={self.max_idx}, ...)'
+        return (
+            f'{type(self).__name__}('
+            f'buffer_len={self.buffer_len}, '
+            f'min_idx={self.min_idx}, '
+            f'max_idx={self.max_idx}, ...)'
+        )
 
     def __iter__(self):
         yield from self._deque
@@ -461,12 +469,30 @@ from typing import Iterator
 class InfiniteSeq:
     """A list-like (read) view of an unbounded sequence/stream.
 
+    It is the combination of `IndexedBuffer` and an iterator that will be used to
+    source the buffer according to the slices that are requested.
+
+    If a slice is requested whose data is "in the future", the iterator will be
+    consumed until the buffer can satisfy that request.
+    If the requested slice has any part of it that is "in the past", that is,
+    has already been iterated through and is not in the buffer anymore, a
+    `OverlapsPastError` will be raised.
+
+    Therefore, `InfiniteSeq` is meant for ordered slice queries of size no more than
+    the buffer size.
+    If these conditions are satisfied, an `InfiniteSeq` will behave (with `i:j`
+    queries) as if it were one long list in memory.
+
+    Can be used with a live stream of data as long as the buffer size is big enough
+    to handle the data production and query rates.
+
     For example, take an iterator that cycles from 0 to 99 forever:
 
     >>> from itertools import cycle
     >>> iterator = cycle(range(100))
 
-    Let's make an InfiniteSeq instance for this stream, accomodating for a view of up to 11 items.
+    Let's make an `InfiniteSeq` instance for this stream, accomodating for a view of
+    up to 11 items.
 
     >>> s = InfiniteSeq(iterator, buffer_len=11)
 
@@ -583,9 +609,135 @@ class InfiniteSeq:
         if isinstance(item, slice):
             n_ticks_in_the_future = item.stop - self.indexed_buffer.max_idx
             if n_ticks_in_the_future > 0:
-                # TODO: If indexed_buffer had a "fast-forward" (perhaps "peek") it could wasted less buffer writes
+                # TODO: If indexed_buffer had a "fast-forward" (perhaps "peek")
+                #  we could waste less buffer writes
                 self.indexed_buffer.extend(islice(self.iterator, n_ticks_in_the_future))
                 # consume(self.iterator, n_ticks_in_the_future)
             return self.indexed_buffer[item]
         elif isinstance(item, int):
             return self[slice(item, item + 1)][0]
+
+
+def new_type(name, typ, doc=None):
+    t = NewType(name, type)
+    if doc is not None:
+        t.__doc__ = doc
+    return t
+
+
+BufferInput = new_type(
+    'BufferInput', Any, 'input_of/what_we_insert_in a buffer (before transformation)'
+)
+
+BufferItem = new_type(
+    'BufferItem', Any, 'An item of a buffer (after input is transformed)'
+)
+
+InputDataTrans = new_type(
+    'InputDataTrans',
+    Callable[[BufferInput], BufferItem],
+    'A function that transforms a BufferInput in to a BufferItem',
+)
+Query = new_type('Query', Any, 'A query (i.e. key, selection specification, etc.)')
+QueryTrans = new_type(
+    'QueryTrans',
+    Callable[[Query], Query],
+    'A function transforming a query into another, ready to be applied form',
+)
+
+FiltFunc = Callable[[BufferItem], bool]
+
+
+def asis(obj):
+    return obj
+
+
+# TODO: Finish up and document
+# `BufferedGetter` is intended to be a more general (but not optimized) class that
+# offers a query-interface to a buffer, intended to be used when the buffer is
+# being filled by a (possibly live) stream of data items.
+# The `IndexedBuffer` is a particular case where the queries are slices and the index
+# that is sliced on is an enumeration one.
+# The `InfiniteSeq` is a class combining `IndexedBuffer` with a data source it can
+# pull data from (according to the demands of the query)
+class BufferedGetter:
+    """
+    `BufferedGetter` is intended to be a more general (but not optimized) class that
+    offers a query-interface to a buffer, intended to be used when the buffer is
+    being filled by a (possibly live) stream of data items.
+
+    By contrast...
+    The `IndexedBuffer` is a particular case where the queries are slices and the index
+    that is sliced on is an enumeration one.
+    The `InfiniteSeq` is a class combining `IndexedBuffer` with a data source it can
+    pull data from (according to the demands of the query).
+
+    >>> from creek.infinite_sequence import BufferedGetter
+    >>>
+    >>>
+    >>> b = BufferedGetter(20)
+    >>> b.extend([
+    ...     (1, 3, 'completely before'),
+    ...     (2, 4, 'still completely before (upper bounds are strict)'),
+    ...     (3, 6, 'partially before, but overlaps bottom'),
+    ...     (4, 5, 'totally', 'inside'),  # <- note this tuple has 4 elements
+    ...     (5, 8),  # <- note this tuple has only the minimum (2) elements,
+    ...     (7, 10, 'partially after, but overlaps top'),
+    ...     (8, 11, 'completely after (strict upper bound)'),
+    ...     (100, 101, 'completely after (obviously)')
+    ... ])
+    >>> b[lambda x: 3 < x[0] < 8]  # doctest: +NORMALIZE_WHITESPACE
+    [(4, 5, 'totally', 'inside'),
+     (5, 8),
+     (7, 10, 'partially after, but overlaps top')]
+    """
+    def __init__(
+        self,
+        buffer_len,
+        prefill=(),
+        input_data_trans=asis,
+        query_trans=asis,
+        # if_overlaps_past=overlaps_past_error,
+        # if_overlaps_future=overlaps_future_error,
+        slice_get_postproc: Callable = list,
+    ):
+        self._deque = deque(prefill, buffer_len)
+        self.buffer_len = self._deque.maxlen
+        self.input_data_trans = input_data_trans
+        self.query_trans = query_trans
+        # self.max_idx = 0  # should correspond to the number of items added
+        # self.if_overlaps_past = if_overlaps_past
+        # self.if_overlaps_future = if_overlaps_future
+        self.slice_get_postproc = slice_get_postproc
+        self._lock = Lock()
+
+    def ingress(self, x: BufferInput) -> BufferItem:
+        return x
+
+    def append(self, x: BufferInput) -> None:
+        with self._lock:
+            x = self.input_data_trans(x)
+            self._deque.append(x)
+
+    def extend(self, iterable):
+        for x in iterable:
+            self.append(x)
+
+    def clear(self):
+        with self._lock:
+            self._deque.clear()
+
+    def __getitem__(self, q: Query):
+        return self._getitem(q)
+
+    def _getitem(self, q: Query):
+        # note: just a composition
+        return self.slice_get_postproc(self.filter(self.query_trans(q)))
+
+    def filter(self, filt: Callable):
+        # assert callable(filt), f'filt must be callable, was: {filt}'
+        return filter(filt, self._deque)
+
+    def __iter__(self):  # to dodge the iteration falling back to __getitem__(i)
+        yield from self._deque
+
