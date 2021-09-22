@@ -6,7 +6,7 @@ from creek.util import cls_wrap, static_identity_method, no_such_item
 class Creek:
     """A layer-able version of the stream interface
 
-    There are three layering methods -- pre_iter, data_to_obj, and post_iter
+    There are three layering methods -- `pre_iter`, `data_to_obj`, and `post_iter`
     -- whose use is demonstrated in the iteration code below:
 
     >>> from io import StringIO
@@ -80,14 +80,14 @@ class Creek:
     ['4', '5', '6']
 
     Recipes:
-    - pre_iter: involving itertools.islice to skip header lines
-    - pre_iter: involving enumerate to get line indices in stream iterator
-    - pre_iter = functools.partial(map, pre_proc_func) to preprocess all stream items
-        with pre_proc_func
-    - pre_iter: include filter before obj
+    - `pre_iter`: involving `itertools.islice` to skip header lines
+    - `pre_iter`: involving enumerate to get line indices in stream iterator
+    - `pre_iter = functools.partial(map, pre_proc_func)` to preprocess all stream items
+        with `pre_proc_func`
+    - `pre_iter`: include filter before obj
 
-    - post_iter: chain.from_iterable to flatten a chunked/segmented stream
-    - post_iter: functools.partial(filter, condition) to filter yielded objs
+    - `post_iter`: `chain.from_iterable` to flatten a chunked/segmented stream
+    - `post_iter`: `functools.partial(filter, condition)` to filter yielded objs
     """
 
     def __init__(self, stream):
