@@ -684,6 +684,7 @@ class BufferedGetter:
      (5, 8),
      (7, 10, 'partially after, but overlaps top')]
     """
+
     def __init__(
         self,
         buffer_len,
@@ -733,4 +734,3 @@ class BufferedGetter:
 
     def __iter__(self):  # to dodge the iteration falling back to __getitem__(i)
         yield from self._deque
-
