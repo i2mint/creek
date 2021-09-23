@@ -80,14 +80,15 @@ class Creek:
     ['4', '5', '6']
 
     Recipes:
+
     - `pre_iter`: involving `itertools.islice` to skip header lines
     - `pre_iter`: involving enumerate to get line indices in stream iterator
-    - `pre_iter = functools.partial(map, pre_proc_func)` to preprocess all stream items
+    - `pre_iter = functools.partial(map, pre_proc_func)` to preprocess all streamitems \
         with `pre_proc_func`
     - `pre_iter`: include filter before obj
-
     - `post_iter`: `chain.from_iterable` to flatten a chunked/segmented stream
     - `post_iter`: `functools.partial(filter, condition)` to filter yielded objs
+
     """
 
     def __init__(self, stream):
