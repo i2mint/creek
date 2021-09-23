@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>creek.infinite_sequence &#8212; creek 0.1.3 documentation</title>
+    <title>creek.infinite_sequence &#8212; creek 0.1.5 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
@@ -43,7 +43,7 @@
 <span class="c1">#  Consider simplifying.</span>
 
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">NewType</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">partialmethod</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">le</span><span class="p">,</span> <span class="n">lt</span><span class="p">,</span> <span class="n">ge</span><span class="p">,</span> <span class="n">gt</span><span class="p">,</span> <span class="n">itemgetter</span>
@@ -68,7 +68,8 @@
 <span class="sd">    (https://en.wikipedia.org/wiki/Allen%27s_interval_algebra).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># simple relations, that can be used between (X: point, Y: interval), (X: interval, Y: interval) pairs</span>
+    <span class="c1"># simple relations, that can be used between</span>
+    <span class="c1"># (X: point, Y: interval) or (X: interval, Y: interval) pairs</span>
     <span class="n">BEFORE</span> <span class="o">=</span> <span class="s1">&#39;Some of X happens BEFORE Y&#39;</span>
     <span class="n">DURING</span> <span class="o">=</span> <span class="s1">&#39;All of X happens within Y&#39;</span>
     <span class="n">AFTER</span> <span class="o">=</span> <span class="s1">&#39;Some of X happens AFTER Y&#39;</span>
@@ -110,9 +111,10 @@
 <span class="sd">        Relations.AFTER if some of x is after y,</span>
 <span class="sd">        Relations.DURING if x is entirely with y</span>
 
-<span class="sd">    The target ``y`` interval is expressed only by it&#39;s bounds, but we don&#39;t know if these are</span>
-<span class="sd">     inclusive or not. The ``below_bt`` and ``above_tt`` allow us to express that by expressing how below the</span>
-<span class="sd">     lowest (bt) bound and what higher than highest (tt) bound are defined.</span>
+<span class="sd">    The target ``y`` interval is expressed only by it&#39;s bounds, but we don&#39;t know if</span>
+<span class="sd">     these are inclusive or not. The ``below_bt`` and ``above_tt`` allow us to express</span>
+<span class="sd">     that by expressing how below the lowest (bt) bound and what higher than highest</span>
+<span class="sd">     (tt) bound are defined.</span>
 
 <span class="sd">    The function is meant to be curried (partial), for example:</span>
 
@@ -122,8 +124,10 @@
 <span class="sd">    &gt;&gt;&gt; including_bounds = partial(simple_interval_relationship, above_bt=ge, below_tt=le)</span>
 <span class="sd">    &gt;&gt;&gt; excluding_bounds = partial(simple_interval_relationship, above_bt=gt, below_tt=lt)</span>
 
-<span class="sd">    Take ``(4, 8)`` as the target interval, and want to query the relationship of other points and intervals with it.</span>
-<span class="sd">    No matter what the function is, they will always agree on any intervals that don&#39;t share any bounds.</span>
+<span class="sd">    Take ``(4, 8)`` as the target interval, and want to query the relationship of other</span>
+<span class="sd">    points and intervals with it.</span>
+<span class="sd">    No matter what the function is, they will always agree on any intervals that don&#39;t</span>
+<span class="sd">    share any bounds.</span>
 
 <span class="sd">    &gt;&gt;&gt; for relation_func in (default, including_bounds, excluding_bounds):</span>
 <span class="sd">    ...     print (</span>
@@ -173,9 +177,9 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">x_bt</span><span class="p">,</span> <span class="n">x_tt</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">x</span>  <span class="c1"># consider a point to be the (x, x) interval</span>
     <span class="n">y_bt</span><span class="p">,</span> <span class="n">y_tt</span> <span class="o">=</span> <span class="n">validate_interval</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">above_bt</span><span class="p">(</span><span class="n">x_bt</span><span class="p">,</span> <span class="n">y_bt</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">above_bt</span><span class="p">(</span><span class="n">x_bt</span><span class="p">,</span> <span class="n">y_bt</span><span class="p">):</span>  <span class="c1"># meaning x_bt &gt; y_bt (or &gt;=, depending on above_bt)</span>
         <span class="k">return</span> <span class="n">Relations</span><span class="o">.</span><span class="n">BEFORE</span>
-    <span class="k">elif</span> <span class="n">below_tt</span><span class="p">(</span><span class="n">x_tt</span><span class="p">,</span> <span class="n">y_tt</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">below_tt</span><span class="p">(</span><span class="n">x_tt</span><span class="p">,</span> <span class="n">y_tt</span><span class="p">):</span>  <span class="c1"># meaning x_bt &lt; y_tt (or &lt;=, depending on below_tt)</span>
         <span class="k">return</span> <span class="n">Relations</span><span class="o">.</span><span class="n">DURING</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Relations</span><span class="o">.</span><span class="n">AFTER</span></div>
@@ -278,7 +282,9 @@
 
 
 <div class="viewcode-block" id="absolute_item"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.absolute_item">[docs]</a><span class="k">def</span> <span class="nf">absolute_item</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">max_idx</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns an item with absolute references: i.e. with negative indices idx resolved to max_idx + idx</span>
+    <span class="sd">&quot;&quot;&quot;Returns an item with absolute references: i.e. with negative indices idx</span>
+<span class="sd">    resolved to max_idx + idx</span>
+
 <span class="sd">    &gt;&gt;&gt; absolute_item(-1, 10)</span>
 <span class="sd">    9</span>
 <span class="sd">    &gt;&gt;&gt; absolute_item(slice(-4, -2, 2), 10)</span>
@@ -304,18 +310,19 @@
         <span class="k">return</span> <span class="n">item</span></div>
 
 
-<span class="c1"># TODO: Make operations thread safe</span>
 <div class="viewcode-block" id="IndexedBuffer"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.IndexedBuffer">[docs]</a><span class="k">class</span> <span class="nc">IndexedBuffer</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;A list-like object that gives a limited-past read view of an unbounded stream</span>
 
-<span class="sd">    For example, say we had the stream of increasing integers 0, 1, 2, ... that is being fed to indexedBuffer</span>
+<span class="sd">    For example, say we had the stream of increasing integers 0, 1, 2, ...</span>
+<span class="sd">    that is being fed to indexedBuffer</span>
 
-<span class="sd">    What IndexedBuffer(maxlen=4) offers is access to the buffer&#39;s contents, but using the indices that</span>
+<span class="sd">    What IndexedBuffer(maxlen=4) offers is access to the buffer&#39;s contents,</span>
+<span class="sd">    but using the indices that</span>
 <span class="sd">    the stream (if it were one big list in memory) would use instead of the buffer&#39;s index.</span>
 <span class="sd">        0 1 2 3 [4 5 6 7] 8 9</span>
 
-<span class="sd">    IndexedBuffer uses collections.deque, exposing the append, extend, and clear methods, updating the index reference</span>
-<span class="sd">    in a thread-safe manner.</span>
+<span class="sd">    IndexedBuffer uses collections.deque, exposing the append, extend,</span>
+<span class="sd">    and clear methods, updating the index reference in a thread-safe manner.</span>
 
 <span class="sd">    &gt;&gt;&gt; s = IndexedBuffer(buffer_len=4)</span>
 <span class="sd">    &gt;&gt;&gt; s.extend(range(4))  # adding 4 elements in bulk (filling the buffer completely)</span>
@@ -392,7 +399,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">(buffer_len=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer_len</span><span class="si">}</span><span class="s1">, min_idx=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">min_idx</span><span class="si">}</span><span class="s1">, max_idx=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_idx</span><span class="si">}</span><span class="s1">, ...)&#39;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">(&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;buffer_len=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer_len</span><span class="si">}</span><span class="s1">, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;min_idx=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">min_idx</span><span class="si">}</span><span class="s1">, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;max_idx=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_idx</span><span class="si">}</span><span class="s1">, ...)&#39;</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span>
@@ -492,12 +504,30 @@
 <span class="k">class</span> <span class="nc">InfiniteSeq</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;A list-like (read) view of an unbounded sequence/stream.</span>
 
+<span class="sd">    It is the combination of `IndexedBuffer` and an iterator that will be used to</span>
+<span class="sd">    source the buffer according to the slices that are requested.</span>
+
+<span class="sd">    If a slice is requested whose data is &quot;in the future&quot;, the iterator will be</span>
+<span class="sd">    consumed until the buffer can satisfy that request.</span>
+<span class="sd">    If the requested slice has any part of it that is &quot;in the past&quot;, that is,</span>
+<span class="sd">    has already been iterated through and is not in the buffer anymore, a</span>
+<span class="sd">    `OverlapsPastError` will be raised.</span>
+
+<span class="sd">    Therefore, `InfiniteSeq` is meant for ordered slice queries of size no more than</span>
+<span class="sd">    the buffer size.</span>
+<span class="sd">    If these conditions are satisfied, an `InfiniteSeq` will behave (with `i:j`</span>
+<span class="sd">    queries) as if it were one long list in memory.</span>
+
+<span class="sd">    Can be used with a live stream of data as long as the buffer size is big enough</span>
+<span class="sd">    to handle the data production and query rates.</span>
+
 <span class="sd">    For example, take an iterator that cycles from 0 to 99 forever:</span>
 
 <span class="sd">    &gt;&gt;&gt; from itertools import cycle</span>
 <span class="sd">    &gt;&gt;&gt; iterator = cycle(range(100))</span>
 
-<span class="sd">    Let&#39;s make an InfiniteSeq instance for this stream, accomodating for a view of up to 11 items.</span>
+<span class="sd">    Let&#39;s make an `InfiniteSeq` instance for this stream, accomodating for a view of</span>
+<span class="sd">    up to 11 items.</span>
 
 <span class="sd">    &gt;&gt;&gt; s = InfiniteSeq(iterator, buffer_len=11)</span>
 
@@ -614,12 +644,131 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
             <span class="n">n_ticks_in_the_future</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">stop</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexed_buffer</span><span class="o">.</span><span class="n">max_idx</span>
             <span class="k">if</span> <span class="n">n_ticks_in_the_future</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># TODO: If indexed_buffer had a &quot;fast-forward&quot; (perhaps &quot;peek&quot;) it could wasted less buffer writes</span>
+                <span class="c1"># TODO: If indexed_buffer had a &quot;fast-forward&quot; (perhaps &quot;peek&quot;)</span>
+                <span class="c1">#  we could waste less buffer writes</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">indexed_buffer</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">islice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iterator</span><span class="p">,</span> <span class="n">n_ticks_in_the_future</span><span class="p">))</span>
                 <span class="c1"># consume(self.iterator, n_ticks_in_the_future)</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexed_buffer</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">item</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<span class="k">def</span> <span class="nf">new_type</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">typ</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">doc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">t</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">doc</span>
+    <span class="k">return</span> <span class="n">t</span>
+
+
+<span class="n">BufferInput</span> <span class="o">=</span> <span class="n">new_type</span><span class="p">(</span>
+    <span class="s1">&#39;BufferInput&#39;</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="s1">&#39;input_of/what_we_insert_in a buffer (before transformation)&#39;</span>
+<span class="p">)</span>
+
+<span class="n">BufferItem</span> <span class="o">=</span> <span class="n">new_type</span><span class="p">(</span>
+    <span class="s1">&#39;BufferItem&#39;</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="s1">&#39;An item of a buffer (after input is transformed)&#39;</span>
+<span class="p">)</span>
+
+<span class="n">InputDataTrans</span> <span class="o">=</span> <span class="n">new_type</span><span class="p">(</span>
+    <span class="s1">&#39;InputDataTrans&#39;</span><span class="p">,</span>
+    <span class="n">Callable</span><span class="p">[[</span><span class="n">BufferInput</span><span class="p">],</span> <span class="n">BufferItem</span><span class="p">],</span>
+    <span class="s1">&#39;A function that transforms a BufferInput in to a BufferItem&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">Query</span> <span class="o">=</span> <span class="n">new_type</span><span class="p">(</span><span class="s1">&#39;Query&#39;</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="s1">&#39;A query (i.e. key, selection specification, etc.)&#39;</span><span class="p">)</span>
+<span class="n">QueryTrans</span> <span class="o">=</span> <span class="n">new_type</span><span class="p">(</span>
+    <span class="s1">&#39;QueryTrans&#39;</span><span class="p">,</span>
+    <span class="n">Callable</span><span class="p">[[</span><span class="n">Query</span><span class="p">],</span> <span class="n">Query</span><span class="p">],</span>
+    <span class="s1">&#39;A function transforming a query into another, ready to be applied form&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">FiltFunc</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">BufferItem</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">asis</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">obj</span>
+
+
+<span class="c1"># TODO: Finish up and document</span>
+<div class="viewcode-block" id="BufferedGetter"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.BufferedGetter">[docs]</a><span class="k">class</span> <span class="nc">BufferedGetter</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    `BufferedGetter` is intended to be a more general (but not optimized) class that</span>
+<span class="sd">    offers a query-interface to a buffer, intended to be used when the buffer is</span>
+<span class="sd">    being filled by a (possibly live) stream of data items.</span>
+
+<span class="sd">    By contrast...</span>
+<span class="sd">    The `IndexedBuffer` is a particular case where the queries are slices and the index</span>
+<span class="sd">    that is sliced on is an enumeration one.</span>
+<span class="sd">    The `InfiniteSeq` is a class combining `IndexedBuffer` with a data source it can</span>
+<span class="sd">    pull data from (according to the demands of the query).</span>
+
+<span class="sd">    &gt;&gt;&gt; from creek.infinite_sequence import BufferedGetter</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; b = BufferedGetter(20)</span>
+<span class="sd">    &gt;&gt;&gt; b.extend([</span>
+<span class="sd">    ...     (1, 3, &#39;completely before&#39;),</span>
+<span class="sd">    ...     (2, 4, &#39;still completely before (upper bounds are strict)&#39;),</span>
+<span class="sd">    ...     (3, 6, &#39;partially before, but overlaps bottom&#39;),</span>
+<span class="sd">    ...     (4, 5, &#39;totally&#39;, &#39;inside&#39;),  # &lt;- note this tuple has 4 elements</span>
+<span class="sd">    ...     (5, 8),  # &lt;- note this tuple has only the minimum (2) elements,</span>
+<span class="sd">    ...     (7, 10, &#39;partially after, but overlaps top&#39;),</span>
+<span class="sd">    ...     (8, 11, &#39;completely after (strict upper bound)&#39;),</span>
+<span class="sd">    ...     (100, 101, &#39;completely after (obviously)&#39;)</span>
+<span class="sd">    ... ])</span>
+<span class="sd">    &gt;&gt;&gt; b[lambda x: 3 &lt; x[0] &lt; 8]  # doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">    [(4, 5, &#39;totally&#39;, &#39;inside&#39;),</span>
+<span class="sd">     (5, 8),</span>
+<span class="sd">     (7, 10, &#39;partially after, but overlaps top&#39;)]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">buffer_len</span><span class="p">,</span>
+        <span class="n">prefill</span><span class="o">=</span><span class="p">(),</span>
+        <span class="n">input_data_trans</span><span class="o">=</span><span class="n">asis</span><span class="p">,</span>
+        <span class="n">query_trans</span><span class="o">=</span><span class="n">asis</span><span class="p">,</span>
+        <span class="c1"># if_overlaps_past=overlaps_past_error,</span>
+        <span class="c1"># if_overlaps_future=overlaps_future_error,</span>
+        <span class="n">slice_get_postproc</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="nb">list</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="n">prefill</span><span class="p">,</span> <span class="n">buffer_len</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffer_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span><span class="o">.</span><span class="n">maxlen</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_data_trans</span> <span class="o">=</span> <span class="n">input_data_trans</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">query_trans</span> <span class="o">=</span> <span class="n">query_trans</span>
+        <span class="c1"># self.max_idx = 0  # should correspond to the number of items added</span>
+        <span class="c1"># self.if_overlaps_past = if_overlaps_past</span>
+        <span class="c1"># self.if_overlaps_future = if_overlaps_future</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slice_get_postproc</span> <span class="o">=</span> <span class="n">slice_get_postproc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">ingress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">BufferInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BufferItem</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">BufferInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_data_trans</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">Query</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getitem</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_getitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">Query</span><span class="p">):</span>
+        <span class="c1"># note: just a composition</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">slice_get_postproc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">query_trans</span><span class="p">(</span><span class="n">q</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filt</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+        <span class="c1"># assert callable(filt), f&#39;filt must be callable, was: {filt}&#39;</span>
+        <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span><span class="n">filt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># to dodge the iteration falling back to __getitem__(i)</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span></div>
 </pre></div>
 
           </div>
@@ -638,7 +787,7 @@
 
 
 <h3>Navigation</h3>
-<p><span class="caption-text">Contents:</span></p>
+<p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek.html">creek</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/base.html">creek.base</a></li>
@@ -646,6 +795,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tools.html">creek.tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/util.html">creek.util</a></li>
 </ul>
 

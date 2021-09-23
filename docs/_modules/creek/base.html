@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>creek.base &#8212; creek 0.1.3 documentation</title>
+    <title>creek.base &#8212; creek 0.1.5 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
@@ -41,7 +41,7 @@
 <div class="viewcode-block" id="Creek"><a class="viewcode-back" href="../../module_docs/creek/base.html#creek.base.Creek">[docs]</a><span class="k">class</span> <span class="nc">Creek</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;A layer-able version of the stream interface</span>
 
-<span class="sd">    There are three layering methods -- pre_iter, data_to_obj, and post_iter</span>
+<span class="sd">    There are three layering methods -- `pre_iter`, `data_to_obj`, and `post_iter`</span>
 <span class="sd">    -- whose use is demonstrated in the iteration code below:</span>
 
 <span class="sd">    &gt;&gt;&gt; from io import StringIO</span>
@@ -63,11 +63,23 @@
 <span class="sd">    &gt;&gt;&gt;</span>
 <span class="sd">    &gt;&gt;&gt; list(stream)</span>
 <span class="sd">    [[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;], [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;], [&#39;4&#39;, &#39;5&#39;, &#39;6&#39;]]</span>
-<span class="sd">    &gt;&gt;&gt; stream.seek(0)  # oh!... but we consumed the stream already, so let&#39;s go back to the beginning</span>
+
+<span class="sd">    If we try that again, we&#39;ll get an empty list since the cursor is at the end.</span>
+
+<span class="sd">    &gt;&gt;&gt; list(stream)</span>
+<span class="sd">    []</span>
+
+<span class="sd">    But if the underlying stream has a seek, so does the creek, so we can &quot;rewind&quot;</span>
+
+<span class="sd">    &gt;&gt;&gt; stream.seek(0)</span>
 <span class="sd">    0</span>
+
 <span class="sd">    &gt;&gt;&gt; list(stream)</span>
 <span class="sd">    [[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;], [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;], [&#39;4&#39;, &#39;5&#39;, &#39;6&#39;]]</span>
-<span class="sd">    &gt;&gt;&gt; stream.seek(0)  # reverse again</span>
+
+<span class="sd">    You can also use ``next`` to get stream items one by one</span>
+
+<span class="sd">    &gt;&gt;&gt; stream.seek(0)  # rewind again to get back to the beginning</span>
 <span class="sd">    0</span>
 <span class="sd">    &gt;&gt;&gt; next(stream)</span>
 <span class="sd">    [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]</span>
@@ -77,7 +89,6 @@
 <span class="sd">    Let&#39;s add a filter! There&#39;s two kinds you can use.</span>
 <span class="sd">    One that is applied to the line before the data is transformed by data_to_obj,</span>
 <span class="sd">    and the other that is applied after (to the obj).</span>
-
 
 <span class="sd">    &gt;&gt;&gt; from creek.base import Creek</span>
 <span class="sd">    &gt;&gt;&gt; from io import StringIO</span>
@@ -93,25 +104,26 @@
 <span class="sd">    &gt;&gt;&gt;</span>
 <span class="sd">    &gt;&gt;&gt; s = MyFilteredCreek(src)</span>
 <span class="sd">    &gt;&gt;&gt;</span>
-<span class="sd">    &gt;&gt;&gt; list(s)</span>
-<span class="sd">    [[&#39;1&#39;, &#39;2&#39;, &#39;3&#39;], [&#39;4&#39;, &#39;5&#39;, &#39;6&#39;]]</span>
-<span class="sd">    &gt;&gt;&gt; s.seek(0)</span>
-<span class="sd">    0</span>
+
 <span class="sd">    &gt;&gt;&gt; list(s)</span>
 <span class="sd">    [[&#39;1&#39;, &#39;2&#39;, &#39;3&#39;], [&#39;4&#39;, &#39;5&#39;, &#39;6&#39;]]</span>
 <span class="sd">    &gt;&gt;&gt; s.seek(0)</span>
 <span class="sd">    0</span>
 <span class="sd">    &gt;&gt;&gt; next(s)</span>
 <span class="sd">    [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; next(s)</span>
+<span class="sd">    [&#39;4&#39;, &#39;5&#39;, &#39;6&#39;]</span>
 
 <span class="sd">    Recipes:</span>
-<span class="sd">    - pre_iter: involving itertools.islice to skip header lines</span>
-<span class="sd">    - pre_iter: involving enumerate to get line indices in stream iterator</span>
-<span class="sd">    - pre_iter = functools.partial(map, line_pre_proc_func) to preprocess all lines with line_pre_proc_func</span>
-<span class="sd">    - pre_iter: include filter before obj</span>
 
-<span class="sd">    - post_iter: chain.from_iterable to flatten a chunked/segmented stream</span>
-<span class="sd">    - post_iter: functools.partial(filter, condition) to filter yielded objs</span>
+<span class="sd">    - `pre_iter`: involving `itertools.islice` to skip header lines</span>
+<span class="sd">    - `pre_iter`: involving enumerate to get line indices in stream iterator</span>
+<span class="sd">    - `pre_iter = functools.partial(map, pre_proc_func)` to preprocess all streamitems \</span>
+<span class="sd">        with `pre_proc_func`</span>
+<span class="sd">    - `pre_iter`: include filter before obj</span>
+<span class="sd">    - `post_iter`: `chain.from_iterable` to flatten a chunked/segmented stream</span>
+<span class="sd">    - `post_iter`: `functools.partial(filter, condition)` to filter yielded objs</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">):</span>
@@ -197,7 +209,7 @@
 
 
 <h3>Navigation</h3>
-<p><span class="caption-text">Contents:</span></p>
+<p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek.html">creek</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/base.html">creek.base</a></li>
@@ -205,6 +217,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tools.html">creek.tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/util.html">creek.util</a></li>
 </ul>
 

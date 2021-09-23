@@ -4,9 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-    <title>creek.infinite_sequence &#8212; creek 0.1.3 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>creek.infinite_sequence &#8212; creek 0.1.5 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
@@ -35,11 +34,44 @@
 
           <div class="body" role="main">
             
-  <section id="module-creek.infinite_sequence">
+  <div class="section" id="module-creek.infinite_sequence">
 <span id="creek-infinite-sequence"></span><h1>creek.infinite_sequence<a class="headerlink" href="#module-creek.infinite_sequence" title="Permalink to this headline">¶</a></h1>
 <p>Objects that support some list-like read operations on an unbounded stream.
 Essentially, trying to give you the impression that you have read access to infinite list,
 with some (parametrizable) limitations.</p>
+<dl class="py class">
+<dt id="creek.infinite_sequence.BufferedGetter">
+<em class="property">class </em><code class="sig-prename descclassname">creek.infinite_sequence.</code><code class="sig-name descname">BufferedGetter</code><span class="sig-paren">(</span><em class="sig-param">buffer_len</em>, <em class="sig-param">prefill=()</em>, <em class="sig-param">input_data_trans=&lt;function asis&gt;</em>, <em class="sig-param">query_trans=&lt;function asis&gt;</em>, <em class="sig-param">slice_get_postproc: Callable = &lt;class 'list'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/infinite_sequence.html#BufferedGetter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.infinite_sequence.BufferedGetter" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>BufferedGetter</cite> is intended to be a more general (but not optimized) class that
+offers a query-interface to a buffer, intended to be used when the buffer is
+being filled by a (possibly live) stream of data items.</p>
+<p>By contrast…
+The <cite>IndexedBuffer</cite> is a particular case where the queries are slices and the index
+that is sliced on is an enumeration one.
+The <cite>InfiniteSeq</cite> is a class combining <cite>IndexedBuffer</cite> with a data source it can
+pull data from (according to the demands of the query).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">creek.infinite_sequence</span> <span class="kn">import</span> <span class="n">BufferedGetter</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">BufferedGetter</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;completely before&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;still completely before (upper bounds are strict)&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;partially before, but overlaps bottom&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;totally&#39;</span><span class="p">,</span> <span class="s1">&#39;inside&#39;</span><span class="p">),</span>  <span class="c1"># &lt;- note this tuple has 4 elements</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>  <span class="c1"># &lt;- note this tuple has only the minimum (2) elements,</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;partially after, but overlaps top&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">&#39;completely after (strict upper bound)&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="s1">&#39;completely after (obviously)&#39;</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">3</span> <span class="o">&lt;</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">]</span>  
+<span class="go">[(4, 5, &#39;totally&#39;, &#39;inside&#39;),</span>
+<span class="go"> (5, 8),</span>
+<span class="go"> (7, 10, &#39;partially after, but overlaps top&#39;)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="py class">
 <dt id="creek.infinite_sequence.ExceptionRaiserCallbackMixin">
 <em class="property">class </em><code class="sig-prename descclassname">creek.infinite_sequence.</code><code class="sig-name descname">ExceptionRaiserCallbackMixin</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/infinite_sequence.html#ExceptionRaiserCallbackMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.infinite_sequence.ExceptionRaiserCallbackMixin" title="Permalink to this definition">¶</a></dt>
@@ -51,14 +83,16 @@ Meant to add to an exception class so that instances of this class can be used a
 <dt id="creek.infinite_sequence.IndexedBuffer">
 <em class="property">class </em><code class="sig-prename descclassname">creek.infinite_sequence.</code><code class="sig-name descname">IndexedBuffer</code><span class="sig-paren">(</span><em class="sig-param">buffer_len</em>, <em class="sig-param">prefill=()</em>, <em class="sig-param">if_overlaps_past=OverlapsPastError('Some of the data requested was in the past or in the future')</em>, <em class="sig-param">if_overlaps_future=OverlapsFutureError('Some of the data requested was in the past or in the future')</em>, <em class="sig-param">slice_get_postproc: Callable = &lt;class 'list'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/infinite_sequence.html#IndexedBuffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.infinite_sequence.IndexedBuffer" title="Permalink to this definition">¶</a></dt>
 <dd><p>A list-like object that gives a limited-past read view of an unbounded stream</p>
-<p>For example, say we had the stream of increasing integers 0, 1, 2, … that is being fed to indexedBuffer</p>
-<p>What IndexedBuffer(maxlen=4) offers is access to the buffer’s contents, but using the indices that
+<p>For example, say we had the stream of increasing integers 0, 1, 2, …
+that is being fed to indexedBuffer</p>
+<p>What IndexedBuffer(maxlen=4) offers is access to the buffer’s contents,
+but using the indices that
 the stream (if it were one big list in memory) would use instead of the buffer’s index.</p>
 <blockquote>
 <div><p>0 1 2 3 [4 5 6 7] 8 9</p>
 </div></blockquote>
-<p>IndexedBuffer uses collections.deque, exposing the append, extend, and clear methods, updating the index reference
-in a thread-safe manner.</p>
+<p>IndexedBuffer uses collections.deque, exposing the append, extend,
+and clear methods, updating the index reference in a thread-safe manner.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">IndexedBuffer</span><span class="p">(</span><span class="n">buffer_len</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>  <span class="c1"># adding 4 elements in bulk (filling the buffer completely)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
@@ -130,12 +164,26 @@ error that tells you so:</p>
 <dt id="creek.infinite_sequence.InfiniteSeq">
 <em class="property">class </em><code class="sig-prename descclassname">creek.infinite_sequence.</code><code class="sig-name descname">InfiniteSeq</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterator</span><span class="p">:</span> <span class="n">Iterator</span></em>, <em class="sig-param"><span class="n">buffer_len</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/infinite_sequence.html#InfiniteSeq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.infinite_sequence.InfiniteSeq" title="Permalink to this definition">¶</a></dt>
 <dd><p>A list-like (read) view of an unbounded sequence/stream.</p>
+<p>It is the combination of <cite>IndexedBuffer</cite> and an iterator that will be used to
+source the buffer according to the slices that are requested.</p>
+<p>If a slice is requested whose data is “in the future”, the iterator will be
+consumed until the buffer can satisfy that request.
+If the requested slice has any part of it that is “in the past”, that is,
+has already been iterated through and is not in the buffer anymore, a
+<cite>OverlapsPastError</cite> will be raised.</p>
+<p>Therefore, <cite>InfiniteSeq</cite> is meant for ordered slice queries of size no more than
+the buffer size.
+If these conditions are satisfied, an <cite>InfiniteSeq</cite> will behave (with <cite>i:j</cite>
+queries) as if it were one long list in memory.</p>
+<p>Can be used with a live stream of data as long as the buffer size is big enough
+to handle the data production and query rates.</p>
 <p>For example, take an iterator that cycles from 0 to 99 forever:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">cycle</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>Let’s make an InfiniteSeq instance for this stream, accomodating for a view of up to 11 items.</p>
+<p>Let’s make an <cite>InfiniteSeq</cite> instance for this stream, accomodating for a view of
+up to 11 items.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">InfiniteSeq</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="n">buffer_len</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -279,11 +327,14 @@ In those situations, you can use <code class="docutils literal notranslate"><spa
 <dl class="py function">
 <dt id="creek.infinite_sequence.absolute_item">
 <code class="sig-prename descclassname">creek.infinite_sequence.</code><code class="sig-name descname">absolute_item</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span></em>, <em class="sig-param"><span class="n">max_idx</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/infinite_sequence.html#absolute_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.infinite_sequence.absolute_item" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns an item with absolute references: i.e. with negative indices idx resolved to max_idx + idx
-&gt;&gt;&gt; absolute_item(-1, 10)
-9
-&gt;&gt;&gt; absolute_item(slice(-4, -2, 2), 10)
-slice(6, 8, 2)</p>
+<dd><p>Returns an item with absolute references: i.e. with negative indices idx
+resolved to max_idx + idx</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">absolute_item</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="go">9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">absolute_item</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">10</span><span class="p">)</span>
+<span class="go">slice(6, 8, 2)</span>
+</pre></div>
+</div>
 <p>But anything else that’s not a slice or int will be left untouched
 (and will probably result in errors if you use with IndexedBuffer)</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">absolute_item</span><span class="p">((</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="mi">10</span><span class="p">)</span>
@@ -325,8 +376,9 @@ Relations.DURING if x is entirely with y</p>
 </dd>
 </dl>
 <dl class="simple">
-<dt>The target <code class="docutils literal notranslate"><span class="pre">y</span></code> interval is expressed only by it’s bounds, but we don’t know if these are</dt><dd><p>inclusive or not. The <code class="docutils literal notranslate"><span class="pre">below_bt</span></code> and <code class="docutils literal notranslate"><span class="pre">above_tt</span></code> allow us to express that by expressing how below the
-lowest (bt) bound and what higher than highest (tt) bound are defined.</p>
+<dt>The target <code class="docutils literal notranslate"><span class="pre">y</span></code> interval is expressed only by it’s bounds, but we don’t know if</dt><dd><p>these are inclusive or not. The <code class="docutils literal notranslate"><span class="pre">below_bt</span></code> and <code class="docutils literal notranslate"><span class="pre">above_tt</span></code> allow us to express
+that by expressing how below the lowest (bt) bound and what higher than highest
+(tt) bound are defined.</p>
 </dd>
 </dl>
 <p>The function is meant to be curried (partial), for example:</p>
@@ -337,8 +389,10 @@ lowest (bt) bound and what higher than highest (tt) bound are defined.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">excluding_bounds</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">simple_interval_relationship</span><span class="p">,</span> <span class="n">above_bt</span><span class="o">=</span><span class="n">gt</span><span class="p">,</span> <span class="n">below_tt</span><span class="o">=</span><span class="n">lt</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Take <code class="docutils literal notranslate"><span class="pre">(4,</span> <span class="pre">8)</span></code> as the target interval, and want to query the relationship of other points and intervals with it.
-No matter what the function is, they will always agree on any intervals that don’t share any bounds.</p>
+<p>Take <code class="docutils literal notranslate"><span class="pre">(4,</span> <span class="pre">8)</span></code> as the target interval, and want to query the relationship of other
+points and intervals with it.
+No matter what the function is, they will always agree on any intervals that don’t
+share any bounds.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">relation_func</span> <span class="ow">in</span> <span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">including_bounds</span><span class="p">,</span> <span class="n">excluding_bounds</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="nb">print</span> <span class="p">(</span>
 <span class="gp">... </span>        <span class="n">relation_func</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
@@ -388,7 +442,7 @@ This can then be used to enable [i:j] access.</p>
 <dd><p>Asserts that input is a valid interval, raising a ValueError if not</p>
 </dd></dl>
 
-</section>
+</div>
 
 
           </div>
@@ -407,7 +461,7 @@ This can then be used to enable [i:j] access.</p>
 
 
 <h3>Navigation</h3>
-<p><span class="caption-text">Contents:</span></p>
+<p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../creek.html">creek</a></li>
 <li class="toctree-l1"><a class="reference internal" href="base.html">creek.base</a></li>
@@ -415,6 +469,7 @@ This can then be used to enable [i:j] access.</p>
 <li class="toctree-l1"><a class="reference internal" href="scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">creek.tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="util.html">creek.util</a></li>
 </ul>
 
