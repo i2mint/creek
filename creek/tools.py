@@ -1,13 +1,47 @@
 """Tools to work with creek objects"""
 
-from typing import Union, Any, Callable
+from typing import Union, Any, Callable, Tuple, TypeVar, Iterable
 from dataclasses import dataclass
 
 
 Number = Union[int, float]
 Index = Number
-DataItem = Any
+DataItem = TypeVar('DataItem')
 IndexUpdater = Callable[[Index, DataItem], Index]
+Indexer = Callable[[DataItem], Tuple[Index, DataItem]]
+
+
+def filter_and_index_stream(
+    stream: Iterable, data_item_filt, timestamper: Indexer = enumerate
+):
+    """Index a stream and filter it (based only on the data items).
+
+    >>> assert (
+    ... list(filter_and_index_stream('this  is   a   stream', data_item_filt=' ')) == [
+    ... (0, 't'),
+    ... (1, 'h'),
+    ... (2, 'i'),
+    ... (3, 's'),
+    ... (6, 'i'),
+    ... (7, 's'),
+    ... (11, 'a'),
+    ... (15, 's'),
+    ... (16, 't'),
+    ... (17, 'r'),
+    ... (18, 'e'),
+    ... (19, 'a'),
+    ... (20, 'm')
+    ... ])
+
+    >>> list(filter_and_index_stream(
+    ...     [1, 2, 3, 4, 5, 6, 7, 8],
+    ...     data_item_filt=lambda x: x % 2))
+    [(0, 1), (2, 3), (4, 5), (6, 7)]
+    """
+    if not callable(data_item_filt):
+        sentinel = data_item_filt
+        data_item_filt = lambda x: x != sentinel
+    return filter(lambda x: data_item_filt(x[1]), timestamper(stream))
 
 
 def count_increments(current_idx, obj, step=1):
