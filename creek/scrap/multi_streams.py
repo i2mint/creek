@@ -92,13 +92,13 @@ class MergedStreams:
 
     def __post_init__(self):
         if self.sort_key is None:
-            self.effecitve_sort_key = itemgetter(1)
+            self.effective_sort_key = itemgetter(1)
         else:
-            self.effecitve_sort_key = Pipe(itemgetter(1), self.sort_key)
+            self.effective_sort_key = Pipe(itemgetter(1), self.sort_key)
 
     def __iter__(self):
         for item in heapq.merge(
-            *multi_stream_items(self.streams_map), key=self.effecitve_sort_key
+            *multi_stream_items(self.streams_map), key=self.effective_sort_key
         ):
             yield item
 
