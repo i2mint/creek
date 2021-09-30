@@ -48,6 +48,9 @@ class LabeledElement(ABC):
         self.add_new_label(self.labels, label)
         return self
 
+    def __contains__(self, label):
+        return label in self.labels
+
 
 class DictLabeledElement(LabeledElement):
     """A LabeledElement that uses a `dict` as the labels container.
@@ -120,6 +123,46 @@ class ListLabeledElement(LabeledElement):
 
 
 def label_element(elem, label, labeled_element_cls):
+    """
+
+    The `labeled_element_cls`, the `LabeledElement` class to use to label the element,
+    is meant to be "partialized out", like this:
+
+    >>> from functools import partial
+    >>> from creek.labeling import DictLabeledElement
+    >>> my_label_element = partial(label_element, labeled_element_cls=DictLabeledElement)
+    >>> # and then just use my_label_element(elem, label) to label elem
+
+    You'll probably often want to use `DictLabeledElement`, because, for example:
+
+    ```
+    {'n_channels': 2, 'phase', 2, 'session': 16987485}
+    ```
+
+    is a lot easier (and less dangerous) to use then, say:
+
+    ```
+    [2, 2, 16987485]
+    ```
+
+    But there are cases where, say:
+
+    >>> from creek.labeling import SetLabeledElement
+    >>> my_label_element = partial(label_element, labeled_element_cls=SetLabeledElement)
+    >>> x = my_label_element(42, 'divisible_by_seven')
+    >>> _ = my_label_element(x, 'is_a_number')
+    >>> 'divisible_by_seven' in x  # equivalent to 'divisible_by_seven' in x.labels
+    True
+    >>> x.labels.issuperset({'is_a_number', 'divisible_by_seven'})
+    True
+
+    is more convenient to use then using a dict with boolean values to do the same
+
+    :param elem: The element that is being labeled
+    :param label: The label to add to the element
+    :param labeled_element_cls: The `LabeledElement` class to use to label the element
+    :return:
+    """
     if not isinstance(elem, labeled_element_cls):
         return labeled_element_cls(elem).add_label(label)
     else:  # elem is already an labeled_element_cls itself, so
