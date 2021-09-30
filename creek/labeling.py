@@ -21,7 +21,8 @@ The simplest addition of metadata information could look like:
 
 ```
 
-This module treats the more complicated case of "multilabelling": a LabelledElement x has an attribute **x.element**, 
+This module treats the more complicated case of "multilabelling":
+a LabelledElement x has an attribute **x.element**,
 and a container of labels **x.labels** (list, set or dict).
 
 Multilabels can be used to segments streams into overlapping segments.
@@ -33,12 +34,11 @@ Multilabels can be used to segments streams into overlapping segments.
 
 """
 
-from typing import NewType, Iterable, Callable, Any, Tuple, TypeVar
+from typing import NewType, Iterable, Callable, Any, TypeVar, Union
 from abc import ABC, abstractmethod
 
 KT = TypeVar('KT')  # Key type.
 VT = TypeVar('VT')  # Value type.
-KV = Tuple[KT, VT]  # a (key, value) pair
 Element = NewType('Element', Any)
 Label = NewType('Label', Any)
 Labels = Iterable[Label]
@@ -155,8 +155,12 @@ class ListLabeledElement(LabeledElement):
     add_new_label = staticmethod(list.append)
 
 
-def label_element(elem, label, labeled_element_cls):
-    """
+def label_element(
+    elem: Union[Element, LabeledElement],
+    label: Label,
+    labeled_element_cls,  # TODO: LabeledElement annotation makes linter complain!?
+) -> LabeledElement:
+    """Label `element` with `label` (or add this label to the existing labels).
 
     The `labeled_element_cls`, the `LabeledElement` class to use to label the element,
     is meant to be "partialized out", like this:
