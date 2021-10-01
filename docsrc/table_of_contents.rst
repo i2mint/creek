@@ -9,5 +9,6 @@
    module_docs/creek/scrap/creek_layers
    module_docs/creek/scrap/multi_streams
    module_docs/creek/tests/infinite_sequence
+   module_docs/creek/tests/labeling
    module_docs/creek/tools
    module_docs/creek/util
