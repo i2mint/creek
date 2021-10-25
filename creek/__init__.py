@@ -7,5 +7,5 @@ from creek.tools import (
     dynamically_index,
     DynamicIndexer,
     count_increments,
-    size_increments
+    size_increments,
 )

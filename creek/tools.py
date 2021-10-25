@@ -148,6 +148,7 @@ def dynamically_index(iterable: Iterable, start=0, idx_updater=count_increments)
     dynamic_indexer = DynamicIndexer(start, idx_updater)
     return map(dynamic_indexer, iterable)
 
+
 # ---------------------------------------------------------------------------------------
 # Slicing index segment streams
 
