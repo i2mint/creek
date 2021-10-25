@@ -55,7 +55,7 @@ def size_increments(current_idx, obj, size_func=len):
 @dataclass
 class DynamicIndexer:
     """
-    :param current_idx: The index to start at (the first data item will have this index)
+    :param start: The index to start at (the first data item will have this index)
     :param idx_updater: The (Index, DataItem) -> Index
 
     Let's take a finite stream of finite iterables (strings here):
@@ -74,12 +74,12 @@ class DynamicIndexer:
     >>> def count_increments(current_idx, data_item, step=1):
     ...     return current_idx + step
 
-    To get the index starting at 10, we can specify ``start_idx=10``, and to step the
+    To get the index starting at 10, we can specify ``start=10``, and to step the
     index by 3 we can partialize ``count_increments``:
 
     >>> from functools import partial
     >>> step3 = partial(count_increments, step=3)
-    >>> list(map(DynamicIndexer(start_idx=10, idx_updater=step3), stream))
+    >>> list(map(DynamicIndexer(start=10, idx_updater=step3), stream))
     [(10, 'stream'), (13, 'of'), (16, 'different'), (19, 'sized'), (22, 'chunks')]
 
     You can specify any custom ``idx_updater`` you want: The requirements being that
@@ -108,20 +108,45 @@ class DynamicIndexer:
 
     """
 
-    start_idx: Index = 0
+    start: Index = 0
     idx_updater: IndexUpdater = count_increments
 
     count_increments = staticmethod(count_increments)
     size_increments = staticmethod(size_increments)
 
     def __post_init__(self):
-        self.current_idx = self.start_idx
+        self.current_idx = self.start
 
     def __call__(self, x):
         _current_idx = self.current_idx
         self.current_idx = self.idx_updater(_current_idx, x)
         return _current_idx, x
 
+
+def dynamically_index(iterable: Iterable, start=0, idx_updater=count_increments):
+    """Generalization of `enumerate(iterable)` that allows one to specify how the
+    indices should be updated.
+
+    The default is the sae behavior as `enumerate`: Starts with 0 and increments by 1.
+
+    >>> stream = ['stream', 'of', 'different', 'sized', 'chunks']
+    >>> assert (list(dynamically_index(stream, start=2))
+    ...     == list(enumerate(stream, start=2))
+    ...     == [(2, 'stream'), (3, 'of'), (4, 'different'), (5, 'sized'), (6, 'chunks')]
+    ... )
+
+    Say we wanted to increment the indices according to the size of the last item
+    instead of just incrementing by 1 at every iteration tick...
+
+    >>> def size_increments(current_idx, data_item, size_func=len):
+    ...     return current_idx + size_func(data_item)
+    >>> size_index = DynamicIndexer(idx_updater=DynamicIndexer.size_increments)
+    >>> list(map(size_index, stream))
+    [(0, 'stream'), (6, 'of'), (8, 'different'), (17, 'sized'), (22, 'chunks')]
+
+    """
+    dynamic_indexer = DynamicIndexer(start, idx_updater)
+    return map(dynamic_indexer, iterable)
 
 # ---------------------------------------------------------------------------------------
 # Slicing index segment streams
