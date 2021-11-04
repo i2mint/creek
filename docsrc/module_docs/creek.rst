@@ -1,0 +1,4 @@
+creek
+=====
+.. automodule:: creek
+   :members:

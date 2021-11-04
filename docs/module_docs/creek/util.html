@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>creek.util &mdash; creek 0.1.16 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/toggleprompt.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="creek.tools" href="tools.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> creek
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../creek.html">creek</a></li>
+<li class="toctree-l1"><a class="reference internal" href="async_utils.html">creek.async_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="base.html">creek.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="infinite_sequence.html">creek.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labeling.html">creek.labeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests/labeling.html">creek.tests.labeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">creek.tools</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">creek.util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">creek</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>creek.util</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/module_docs/creek/util.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-creek.util">
+<span id="creek-util"></span><h1>creek.util<a class="headerlink" href="#module-creek.util" title="Permalink to this headline">¶</a></h1>
+<p>Utils for creek</p>
+<dl class="py function">
+<dt id="creek.util.cursor_to_iterator">
+<code class="sig-prename descclassname">creek.util.</code><code class="sig-name descname">cursor_to_iterator</code><span class="sig-paren">(</span><em class="sig-param">cursor: NewType.&lt;locals&gt;.new_type</em>, <em class="sig-param">sentinel=&lt;creek.util.no_sentinel object&gt;</em><span class="sig-paren">)</span> &#x2192; Iterator<a class="reference internal" href="../../_modules/creek/util.html#cursor_to_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.util.cursor_to_iterator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an iterator ferom a cursor function.</p>
+<p>A cursor function is a callable that you call (without arguments) to get items of
+data one by one.</p>
+<p>Sometimes, especially in live io contexts, that’s the kind interface you’re given
+to consume a stream.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="fm">__next__</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you want to consume your stream as an iterator instead, use <cite>cursor_to_iterator</cite>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span> <span class="o">=</span> <span class="n">cursor_to_iterator</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
+<span class="go">[1, 2, 3]</span>
+</pre></div>
+</div>
+<p>If you want your iterator to stop (without a fuss) as soon as the cursor returns a
+particular element (called a sentinel), say it:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="fm">__next__</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span> <span class="o">=</span> <span class="n">cursor_to_iterator</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">sentinel</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
+<span class="go">[1, 2]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="creek.util.iterable_to_cursor">
+<code class="sig-prename descclassname">creek.util.</code><code class="sig-name descname">iterable_to_cursor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span></em><span class="sig-paren">)</span> &#x2192; NewType.&lt;locals&gt;.new_type<a class="reference internal" href="../../_modules/creek/util.html#iterable_to_cursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.util.iterable_to_cursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a cursor function from an iterable.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="creek.util.iterable_to_iterator">
+<code class="sig-prename descclassname">creek.util.</code><code class="sig-name descname">iterable_to_iterator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span></em><span class="sig-paren">)</span> &#x2192; Iterator<a class="reference internal" href="../../_modules/creek/util.html#iterable_to_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.util.iterable_to_iterator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an iterator from an iterable</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">iterable</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span> <span class="o">=</span> <span class="n">iterable_to_iterator</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span> <span class="o">==</span> <span class="n">iterable</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="creek.util.iterator_to_cursor">
+<code class="sig-prename descclassname">creek.util.</code><code class="sig-name descname">iterator_to_cursor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterator</span><span class="p">:</span> <span class="n">Iterator</span></em><span class="sig-paren">)</span> &#x2192; NewType.&lt;locals&gt;.new_type<a class="reference internal" href="../../_modules/creek/util.html#iterator_to_cursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.util.iterator_to_cursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a cursor function for the input iterator.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span> <span class="o">=</span> <span class="n">iterator_to_cursor</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">cursor</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">cursor_to_iterator</span><span class="p">(</span><span class="n">cursor</span><span class="p">))</span> <span class="o">==</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Note how we consumed the cursor till the end; by using cursor_to_iterator.
+Indeed, <cite>list(iter(cursor))</cite> wouldn’t have worked since a cursor isn’t a iterator,
+but a callable to get the items an the iterator would give you.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tools.html" class="btn btn-neutral float-left" title="creek.tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright NO COPYRIGHT.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

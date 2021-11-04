@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>creek.labeling &mdash; creek 0.1.16 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/toggleprompt.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> creek
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek.html">creek</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/async_utils.html">creek.async_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/base.html">creek.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/infinite_sequence.html">creek.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/labeling.html">creek.labeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/labeling.html">creek.tests.labeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tools.html">creek.tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/util.html">creek.util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">creek</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>creek.labeling</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for creek.labeling</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Tools to label/annotate stream elements</span>
+
+<span class="sd">The motivating example is the case of an incoming stream</span>
+<span class="sd">that we need to segment, according to the detection of an event.</span>
+
+<span class="sd">For example, take a stream of integers and detect the event &quot;multiple of 5&quot;:</span>
+
+<span class="sd">```</span>
+<span class="sd">1-&gt;2-&gt;3-&gt;4-&gt;&#39;multiple of 5&#39;-&gt;6-&gt;7-&gt;...</span>
+
+<span class="sd">```</span>
+
+<span class="sd">When the stream is &quot;live&quot;, we don&#39;t want to process it immediately, but instead</span>
+<span class="sd">we prefer to annotate it on the fly, by adding some metadata to it.</span>
+
+<span class="sd">The simplest addition of metadata information could look like:</span>
+
+<span class="sd">```</span>
+<span class="sd">3-&gt;4-&gt;(&#39;multiple of 5&#39;, 5) -&gt; 6 -&gt; ...</span>
+
+<span class="sd">```</span>
+
+<span class="sd">This module treats the more complicated case of &quot;multilabelling&quot;:</span>
+<span class="sd">a LabelledElement x has an attribute **x.element**,</span>
+<span class="sd">and a container of labels **x.labels** (list, set or dict).</span>
+
+<span class="sd">Multilabels can be used to segments streams into overlapping segments.</span>
+
+<span class="sd">```</span>
+<span class="sd">(group0)-&gt;(group0)-&gt;(group0, group1)-&gt;(group0, group1)-&gt; (group1)-&gt;(group1)-&gt;...</span>
+
+<span class="sd">```</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NewType</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+
+<span class="n">KT</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;KT&#39;</span><span class="p">)</span>  <span class="c1"># Key type.</span>
+<span class="n">VT</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;VT&#39;</span><span class="p">)</span>  <span class="c1"># Value type.</span>
+<span class="n">Element</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s1">&#39;Element&#39;</span><span class="p">,</span> <span class="n">Any</span><span class="p">)</span>
+<span class="n">Label</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s1">&#39;Label&#39;</span><span class="p">,</span> <span class="n">Any</span><span class="p">)</span>
+<span class="n">Labels</span> <span class="o">=</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Label</span><span class="p">]</span>
+<span class="n">LabelFactory</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Label</span><span class="p">]</span>
+<span class="n">AddLabel</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Labels</span><span class="p">,</span> <span class="n">Label</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="LabeledElement"><a class="viewcode-back" href="../../module_docs/creek/labeling.html#creek.labeling.LabeledElement">[docs]</a><span class="k">class</span> <span class="nc">LabeledElement</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Abstract class to label elements -- that is, associate some metadata to an element.</span>
+
+<span class="sd">    To make a concrete LabeledElement, one must subclass LabeledElement and provide</span>
+
+<span class="sd">    - a `mk_new_labels_container`, a `LabelFactory`, which is a callable that takes no \</span>
+<span class="sd">    input and returns a new empty labels container</span>
+<span class="sd">    - a `add_new_label`, an `AddLabel`, a (Labels, Label) callable that adds a single \</span>
+<span class="sd">    label to the labels container.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">element</span> <span class="o">=</span> <span class="n">element</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mk_new_labels_container</span><span class="p">()</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">mk_new_labels_container</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Labels</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="bp">NotImplemented</span><span class="p">(</span><span class="s1">&#39;Need to implement mk_new_labels_container&#39;</span><span class="p">)</span>
+
+    <span class="n">add_new_label</span><span class="p">:</span> <span class="n">AddLabel</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">add_new_label</span><span class="p">(</span><span class="n">labels</span><span class="p">:</span> <span class="n">Labels</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="n">Label</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="bp">NotImplemented</span><span class="p">(</span><span class="s1">&#39;Need to implement add_new_label&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="si">}</span><span class="s1">)&#39;</span>
+
+    <span class="k">def</span> <span class="nf">add_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_new_label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span></div>
+
+
+<div class="viewcode-block" id="DictLabeledElement"><a class="viewcode-back" href="../../module_docs/creek/labeling.html#creek.labeling.DictLabeledElement">[docs]</a><span class="k">class</span> <span class="nc">DictLabeledElement</span><span class="p">(</span><span class="n">LabeledElement</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A LabeledElement that uses a `dict` as the labels container.</span>
+<span class="sd">    Use this when you need to keep labels classified and have quick access to the</span>
+<span class="sd">    a specific class of labels.</span>
+<span class="sd">    Note that when adding a label, you need to specify it as a `{key: val, ...}`</span>
+<span class="sd">    `dict`, the keys being the (hashable) label kinds,</span>
+<span class="sd">    and the vals being the values for those kinds.</span>
+
+<span class="sd">    &gt;&gt;&gt; x = DictLabeledElement(42).add_label({&#39;string&#39;: &#39;forty-two&#39;})</span>
+<span class="sd">    &gt;&gt;&gt; x.element</span>
+<span class="sd">    42</span>
+<span class="sd">    &gt;&gt;&gt; x.labels</span>
+<span class="sd">    {&#39;string&#39;: &#39;forty-two&#39;}</span>
+<span class="sd">    &gt;&gt;&gt; x.add_label({&#39;type&#39;: &#39;number&#39;, &#39;prime&#39;: False})</span>
+<span class="sd">    DictLabeledElement(42)</span>
+<span class="sd">    &gt;&gt;&gt; x.element</span>
+<span class="sd">    42</span>
+<span class="sd">    &gt;&gt;&gt; assert x.labels == {&#39;string&#39;: &#39;forty-two&#39;, &#39;type&#39;: &#39;number&#39;, &#39;prime&#39;: False}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">mk_new_labels_container</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">add_new_label</span><span class="p">(</span><span class="n">labels</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">labels</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">label</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SetLabeledElement"><a class="viewcode-back" href="../../module_docs/creek/labeling.html#creek.labeling.SetLabeledElement">[docs]</a><span class="k">class</span> <span class="nc">SetLabeledElement</span><span class="p">(</span><span class="n">LabeledElement</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A LabeledElement that uses a `set` as the labels container.</span>
+<span class="sd">    Use this when you want to get fast `label in labels` check and/or maintain the</span>
+<span class="sd">    labels unduplicated.</span>
+<span class="sd">    Note that since `set` is the container, the labels will have to be hashable.</span>
+
+<span class="sd">    &gt;&gt;&gt; x = SetLabeledElement(42).add_label(&#39;forty-two&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; x.element</span>
+<span class="sd">    42</span>
+<span class="sd">    &gt;&gt;&gt; x.labels</span>
+<span class="sd">    {&#39;forty-two&#39;}</span>
+<span class="sd">    &gt;&gt;&gt; x.add_label(&#39;number&#39;)</span>
+<span class="sd">    SetLabeledElement(42)</span>
+<span class="sd">    &gt;&gt;&gt; x.element</span>
+<span class="sd">    42</span>
+<span class="sd">    &gt;&gt;&gt; assert x.labels == {&#39;forty-two&#39;, &#39;number&#39;}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">mk_new_labels_container</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+    <span class="n">add_new_label</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="nb">set</span><span class="o">.</span><span class="n">add</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ListLabeledElement"><a class="viewcode-back" href="../../module_docs/creek/labeling.html#creek.labeling.ListLabeledElement">[docs]</a><span class="k">class</span> <span class="nc">ListLabeledElement</span><span class="p">(</span><span class="n">LabeledElement</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A LabeledElement that uses a `list` as the labels container.</span>
+<span class="sd">    Use this when you need to use unhashable labels, or label insertion order matters,</span>
+<span class="sd">    or don&#39;t need fast `label in labels` checks or label deduplication.</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ListLabeledElement(42).add_label(&#39;forty-two&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; x.element</span>
+<span class="sd">    42</span>
+<span class="sd">    &gt;&gt;&gt; x.labels</span>
+<span class="sd">    [&#39;forty-two&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; x.add_label(&#39;number&#39;)</span>
+<span class="sd">    ListLabeledElement(42)</span>
+<span class="sd">    &gt;&gt;&gt; x.element</span>
+<span class="sd">    42</span>
+<span class="sd">    &gt;&gt;&gt; assert x.labels == [&#39;forty-two&#39;, &#39;number&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">mk_new_labels_container</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">add_new_label</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="label_element"><a class="viewcode-back" href="../../module_docs/creek/labeling.html#creek.labeling.label_element">[docs]</a><span class="k">def</span> <span class="nf">label_element</span><span class="p">(</span>
+    <span class="n">elem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="n">LabeledElement</span><span class="p">],</span>
+    <span class="n">label</span><span class="p">:</span> <span class="n">Label</span><span class="p">,</span>
+    <span class="n">labeled_element_cls</span><span class="p">,</span>  <span class="c1"># TODO: LabeledElement annotation makes linter complain!?</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LabeledElement</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Label `element` with `label` (or add this label to the existing labels).</span>
+
+<span class="sd">    The `labeled_element_cls`, the `LabeledElement` class to use to label the element,</span>
+<span class="sd">    is meant to be &quot;partialized out&quot;, like this:</span>
+
+<span class="sd">    &gt;&gt;&gt; from functools import partial</span>
+<span class="sd">    &gt;&gt;&gt; from creek.labeling import DictLabeledElement</span>
+<span class="sd">    &gt;&gt;&gt; my_label_element = partial(label_element, labeled_element_cls=DictLabeledElement)</span>
+<span class="sd">    &gt;&gt;&gt; # and then just use my_label_element(elem, label) to label elem</span>
+
+<span class="sd">    You&#39;ll probably often want to use `DictLabeledElement`, because, for example:</span>
+
+<span class="sd">    ```</span>
+<span class="sd">    {&#39;n_channels&#39;: 2, &#39;phase&#39;, 2, &#39;session&#39;: 16987485}</span>
+<span class="sd">    ```</span>
+
+<span class="sd">    is a lot easier (and less dangerous) to use then, say:</span>
+
+<span class="sd">    ```</span>
+<span class="sd">    [2, 2, 16987485]</span>
+<span class="sd">    ```</span>
+
+<span class="sd">    But there are cases where, say:</span>
+
+<span class="sd">    &gt;&gt;&gt; from creek.labeling import SetLabeledElement</span>
+<span class="sd">    &gt;&gt;&gt; my_label_element = partial(label_element, labeled_element_cls=SetLabeledElement)</span>
+<span class="sd">    &gt;&gt;&gt; x = my_label_element(42, &#39;divisible_by_seven&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; _ = my_label_element(x, &#39;is_a_number&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; &#39;divisible_by_seven&#39; in x  # equivalent to &#39;divisible_by_seven&#39; in x.labels</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; x.labels.issuperset({&#39;is_a_number&#39;, &#39;divisible_by_seven&#39;})</span>
+<span class="sd">    True</span>
+
+<span class="sd">    is more convenient to use then using a dict with boolean values to do the same</span>
+
+<span class="sd">    :param elem: The element that is being labeled</span>
+<span class="sd">    :param label: The label to add to the element</span>
+<span class="sd">    :param labeled_element_cls: The `LabeledElement` class to use to label the element</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">labeled_element_cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">labeled_element_cls</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span><span class="o">.</span><span class="n">add_label</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># elem is already an labeled_element_cls itself, so</span>
+        <span class="k">return</span> <span class="n">elem</span><span class="o">.</span><span class="n">add_label</span><span class="p">(</span><span class="n">label</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright NO COPYRIGHT.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

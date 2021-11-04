@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>creek.tools &mdash; creek 0.1.16 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/toggleprompt.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="creek.util" href="util.html" />
+    <link rel="prev" title="creek.tests.labeling" href="tests/labeling.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> creek
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../creek.html">creek</a></li>
+<li class="toctree-l1"><a class="reference internal" href="async_utils.html">creek.async_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="base.html">creek.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="infinite_sequence.html">creek.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labeling.html">creek.labeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests/labeling.html">creek.tests.labeling</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">creek.tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="util.html">creek.util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">creek</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>creek.tools</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/module_docs/creek/tools.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-creek.tools">
+<span id="creek-tools"></span><h1>creek.tools<a class="headerlink" href="#module-creek.tools" title="Permalink to this headline">¶</a></h1>
+<p>Tools to work with creek objects</p>
+<dl class="py class">
+<dt id="creek.tools.DynamicIndexer">
+<em class="property">class </em><code class="sig-prename descclassname">creek.tools.</code><code class="sig-name descname">DynamicIndexer</code><span class="sig-paren">(</span><em class="sig-param">start: Union[int, float] = 0, idx_updater: Callable[[Union[int, float], DataItem], Union[int, float]] = &lt;function count_increments&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/tools.html#DynamicIndexer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.tools.DynamicIndexer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> – The index to start at (the first data item will have this index)</p></li>
+<li><p><strong>idx_updater</strong> – The (Index, DataItem) -&gt; Index</p></li>
+</ul>
+</dd>
+</dl>
+<p>Let’s take a finite stream of finite iterables (strings here):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">stream</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;stream&#39;</span><span class="p">,</span> <span class="s1">&#39;of&#39;</span><span class="p">,</span> <span class="s1">&#39;different&#39;</span><span class="p">,</span> <span class="s1">&#39;sized&#39;</span><span class="p">,</span> <span class="s1">&#39;chunks&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The default <code class="docutils literal notranslate"><span class="pre">DynamicIndexer</span></code> just does what <code class="docutils literal notranslate"><span class="pre">enumerate</span></code> does:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">counter_index</span> <span class="o">=</span> <span class="n">DynamicIndexer</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">counter_index</span><span class="p">,</span> <span class="n">stream</span><span class="p">))</span>
+<span class="go">[(0, &#39;stream&#39;), (1, &#39;of&#39;), (2, &#39;different&#39;), (3, &#39;sized&#39;), (4, &#39;chunks&#39;)]</span>
+</pre></div>
+</div>
+<p>That’s because it uses the default <code class="docutils literal notranslate"><span class="pre">idx_updater</span></code> function just increments by one.
+This function, DynamicIndexer.count_increments, is shown below</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">count_increments</span><span class="p">(</span><span class="n">current_idx</span><span class="p">,</span> <span class="n">data_item</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">current_idx</span> <span class="o">+</span> <span class="n">step</span>
+</pre></div>
+</div>
+<p>To get the index starting at 10, we can specify <code class="docutils literal notranslate"><span class="pre">start=10</span></code>, and to step the
+index by 3 we can partialize <code class="docutils literal notranslate"><span class="pre">count_increments</span></code>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">step3</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">count_increments</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">DynamicIndexer</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">idx_updater</span><span class="o">=</span><span class="n">step3</span><span class="p">),</span> <span class="n">stream</span><span class="p">))</span>
+<span class="go">[(10, &#39;stream&#39;), (13, &#39;of&#39;), (16, &#39;different&#39;), (19, &#39;sized&#39;), (22, &#39;chunks&#39;)]</span>
+</pre></div>
+</div>
+<p>You can specify any custom <code class="docutils literal notranslate"><span class="pre">idx_updater</span></code> you want: The requirements being that
+this function should take <code class="docutils literal notranslate"><span class="pre">(current_idx,</span> <span class="pre">data_item)</span></code> as the input, and
+return the next “current index”, that is, what the index of the next data item will
+be.
+Note that <code class="docutils literal notranslate"><span class="pre">count_increments</span></code> ignored the <code class="docutils literal notranslate"><span class="pre">data_item</span></code> completely, but sometimes
+you want to take the data item into account.
+For example, your data item may contain several elements, and you want your
+index to index these elements, therefore you should update your index by
+incrementing it with the number of elements.</p>
+<p>We have <code class="docutils literal notranslate"><span class="pre">DynamicIndexer.size_increments</span></code> for that, the code is shown below:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">size_increments</span><span class="p">(</span><span class="n">current_idx</span><span class="p">,</span> <span class="n">data_item</span><span class="p">,</span> <span class="n">size_func</span><span class="o">=</span><span class="nb">len</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">current_idx</span> <span class="o">+</span> <span class="n">size_func</span><span class="p">(</span><span class="n">data_item</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">size_index</span> <span class="o">=</span> <span class="n">DynamicIndexer</span><span class="p">(</span><span class="n">idx_updater</span><span class="o">=</span><span class="n">DynamicIndexer</span><span class="o">.</span><span class="n">size_increments</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">size_index</span><span class="p">,</span> <span class="n">stream</span><span class="p">))</span>
+<span class="go">[(0, &#39;stream&#39;), (6, &#39;of&#39;), (8, &#39;different&#39;), (17, &#39;sized&#39;), (22, &#39;chunks&#39;)]</span>
+</pre></div>
+</div>
+<p>Q: What if I want the index of a data item to be a function of the data item itself?</p>
+<p>A: Then you would use that function to make the <code class="docutils literal notranslate"><span class="pre">(idxof(data_item),</span> <span class="pre">data_item)</span></code>
+pairs directly. <code class="docutils literal notranslate"><span class="pre">DynamicIndexer</span></code> is for the use case where the index of an item
+depends on the (number of, sizes of, etc.) items that came before it.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="creek.tools.dynamically_index">
+<code class="sig-prename descclassname">creek.tools.</code><code class="sig-name descname">dynamically_index</code><span class="sig-paren">(</span><em class="sig-param">iterable: Iterable</em>, <em class="sig-param">start=0</em>, <em class="sig-param">idx_updater=&lt;function count_increments&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/tools.html#dynamically_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.tools.dynamically_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generalization of <cite>enumerate(iterable)</cite> that allows one to specify how the
+indices should be updated.</p>
+<p>The default is the sae behavior as <cite>enumerate</cite>: Starts with 0 and increments by 1.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">stream</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;stream&#39;</span><span class="p">,</span> <span class="s1">&#39;of&#39;</span><span class="p">,</span> <span class="s1">&#39;different&#39;</span><span class="p">,</span> <span class="s1">&#39;sized&#39;</span><span class="p">,</span> <span class="s1">&#39;chunks&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dynamically_index</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+<span class="gp">... </span>    <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+<span class="gp">... </span>    <span class="o">==</span> <span class="p">[(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;stream&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;of&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;different&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;sized&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;chunks&#39;</span><span class="p">)]</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Say we wanted to increment the indices according to the size of the last item
+instead of just incrementing by 1 at every iteration tick…</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">size_increments</span><span class="p">(</span><span class="n">current_idx</span><span class="p">,</span> <span class="n">data_item</span><span class="p">,</span> <span class="n">size_func</span><span class="o">=</span><span class="nb">len</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">current_idx</span> <span class="o">+</span> <span class="n">size_func</span><span class="p">(</span><span class="n">data_item</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">size_index</span> <span class="o">=</span> <span class="n">DynamicIndexer</span><span class="p">(</span><span class="n">idx_updater</span><span class="o">=</span><span class="n">DynamicIndexer</span><span class="o">.</span><span class="n">size_increments</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">size_index</span><span class="p">,</span> <span class="n">stream</span><span class="p">))</span>
+<span class="go">[(0, &#39;stream&#39;), (6, &#39;of&#39;), (8, &#39;different&#39;), (17, &#39;sized&#39;), (22, &#39;chunks&#39;)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="creek.tools.filter_and_index_stream">
+<code class="sig-prename descclassname">creek.tools.</code><code class="sig-name descname">filter_and_index_stream</code><span class="sig-paren">(</span><em class="sig-param">stream: Iterable, data_item_filt, timestamper: Callable[[DataItem], Tuple[Union[int, float], DataItem]] = &lt;class 'enumerate'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/tools.html#filter_and_index_stream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.tools.filter_and_index_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index a stream and filter it (based only on the data items).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="p">(</span>
+<span class="gp">... </span><span class="nb">list</span><span class="p">(</span><span class="n">filter_and_index_stream</span><span class="p">(</span><span class="s1">&#39;this  is   a   stream&#39;</span><span class="p">,</span> <span class="n">data_item_filt</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">))</span> <span class="o">==</span> <span class="p">[</span>
+<span class="gp">... </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">(</span><span class="mi">19</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">filter_and_index_stream</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">data_item_filt</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">%</span> <span class="mi">2</span><span class="p">))</span>
+<span class="go">[(0, 1), (2, 3), (4, 5), (6, 7)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="creek.tools.segment_overlaps">
+<code class="sig-prename descclassname">creek.tools.</code><code class="sig-name descname">segment_overlaps</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bt_tt_segment</span></em>, <em class="sig-param"><span class="n">query_bt</span></em>, <em class="sig-param"><span class="n">query_tt</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/tools.html#segment_overlaps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.tools.segment_overlaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if, and only if, bt_tt_segment overlaps query interval.</p>
+<p>A <cite>bt_tt_segment</cite> will need to be of the <code class="docutils literal notranslate"><span class="pre">(bt,</span> <span class="pre">tt,</span> <span class="pre">*data)</span></code> format.
+That is, an iterable of at least two elements (the <code class="docutils literal notranslate"><span class="pre">bt</span></code> and <code class="docutils literal notranslate"><span class="pre">tt</span></code>) followed with
+more elements (the actual segment data).</p>
+<p>This function is made to be curried, as shown in the following example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">overlapping_segments_filt</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">segment_overlaps</span><span class="p">,</span> <span class="n">query_bt</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">query_tt</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">overlapping_segments_filt</span><span class="p">,</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;completely before&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;still completely before (upper bounds are strict)&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;partially before, but overlaps bottom&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;totally&#39;</span><span class="p">,</span> <span class="s1">&#39;inside&#39;</span><span class="p">),</span>  <span class="c1"># &lt;- note this tuple has 4 elements</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>  <span class="c1"># &lt;- note this tuple has only the minimum (2) elements,</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;partially after, but overlaps top&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">&#39;completely after (strict upper bound)&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="s1">&#39;completely after (obviously)&#39;</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">]))</span>  
+<span class="go">[(3, 6, &#39;partially before, but overlaps bottom&#39;),</span>
+<span class="go">(4, 5, &#39;totally&#39;, &#39;inside&#39;),</span>
+<span class="go">(5, 8),</span>
+<span class="go">(7, 10, &#39;partially after, but overlaps top&#39;)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tests/labeling.html" class="btn btn-neutral float-left" title="creek.tests.labeling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="util.html" class="btn btn-neutral float-right" title="creek.util" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright NO COPYRIGHT.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
