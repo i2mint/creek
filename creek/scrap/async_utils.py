@@ -1,4 +1,76 @@
-"""Utils to deal with async iteration"""
+"""Utils to deal with async iteration
+
+
+Making singledispatch work:
+
+```
+from typing import Generator, Iterator, Iterable, AsyncIterable, AsyncIterator
+from functools import singledispatch, partial
+
+from typing import Protocol, runtime_checkable
+
+@runtime_checkable
+class IterableType(Protocol):
+    def __iter__(self):
+        pass
+
+@runtime_checkable
+class CursorFunc(Protocol):
+    def __call__(self):
+        pass
+
+@singledispatch
+def to_iterator(x: IterableType):
+    return iter(x)
+
+will_never_happen = object()
+
+@to_iterator.register
+def _(x: CursorFunc):
+    return iter(x, will_never_happen)
+
+assert list(to_iterator([1,2,3])) == [1, 2, 3]
+
+f = partial(next, iter([1,2,3]))
+assert list(to_iterator(f)) == [1, 2, 3]
+```
+
+Trying to make async iterators/iterables/cursor_funcs utils
+
+```
+import asyncio
+
+
+async def ticker(to=3, delay=0.5):
+    # Yield numbers from 0 to `to` every `delay` seconds.
+    for i in range(to):
+        yield i
+        await asyncio.sleep(delay)
+
+async def my_aiter(async_iterable):
+    async for i in async_iterable:
+        yield i
+
+t = [i async for i in my_aiter(ticker(3, 0.2))]
+assert t == [0, 1, 2]
+
+# t = list(my_aiter(ticker(3, 0.2)))
+# # TypeError: 'async_generator' object is not iterable
+# # and
+# t = await list(ticker(3, 0.2))
+# # TypeError: 'async_generator' object is not iterable
+
+# But...
+
+async def alist(async_iterable):
+    return [i async for i in async_iterable]
+
+t = await alist(ticker(3, 0.2))
+assert t == [0, 1, 2]
+```
+
+
+"""
 
 from functools import partial
 from typing import (
@@ -27,7 +99,7 @@ try:
     # Note: doesn't have the sentinel though!!
 except NameError:
 
-    def aiter(iterable: AsyncIterable) -> AsyncIterator:
+    async def aiter(iterable: AsyncIterable) -> AsyncIterator:
         if not isinstance(iterable, AsyncIterable):
             raise TypeError(f'aiter expected an AsyncIterable, got {type(iterable)}')
         if isinstance(iterable, AsyncIterator):
@@ -50,7 +122,7 @@ def iterable_to_iterator(iterable: IterableType) -> IteratorType:
     >>> assert list(iterator) == iterable
     """
     if isinstance(iterable, AsyncIterable):
-        return aiter(iterable)
+        return await aiter(iterable)
     return iter(iterable)
 
 
@@ -69,34 +141,3 @@ def iterable_to_cursor(iterable: Iterable, sentinel=no_sentinel) -> CursorFunc:
     else:
         return partial(next, iterator, sentinel)
 
-
-# def test_async_stuff():
-#     import asyncio
-#
-#
-#     async def ticker(to=3, delay=0.5):
-#         """Yield numbers from 0 to `to` every `delay` seconds."""
-#         for i in range(to):
-#             yield i
-#             await asyncio.sleep(delay)
-#
-#     async def my_aiter(async_iterable):
-#         async for i in async_iterable:
-#             yield i
-#
-#     t = [i async for i in my_aiter(ticker(3, 0.2))]
-#     assert t == [0, 1, 2]
-#
-#     # t = list(my_aiter(ticker(3, 0.2)))
-#     # # TypeError: 'async_generator' object is not iterable
-#     # # and
-#     # t = await list(ticker(3, 0.2))
-#     # # TypeError: 'async_generator' object is not iterable
-#
-#     # But...
-#
-#     async def alist(async_iterable):
-#         return [i async for i in async_iterable]
-#
-#     t = await alist(ticker(3, 0.2))
-#     assert t == [0, 1, 2]
