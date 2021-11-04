@@ -1,5 +1,5 @@
 """Utils for creek"""
-import itertools
+
 from functools import (
     WRAPPER_ASSIGNMENTS,
     partial,
@@ -17,10 +17,7 @@ from typing import (
     AsyncIterator,
     NewType,
 )
-from functools import singledispatch, partial
-
-from atypes import Slab, MyType
-from i2.multi_object import FuncFanout, ContextFanout, MultiObj
+from functools import partial
 
 CursorFunc = NewType('CursorFunc', Callable[[], Any])
 CursorFunc.__doc__ = "An argument-less function returning an iterator's values"
@@ -33,6 +30,7 @@ wraps = partial(_wraps, assigned=wrapper_assignments)
 # ---------------------------------------------------------------------------------------
 # iteratable, iterator, cursors
 no_sentinel = type('no_sentinel', (), {})()
+
 
 def iterable_to_iterator(iterable: Iterable) -> Iterator:
     """Get an iterator from an iterable
@@ -102,49 +100,6 @@ def iterable_to_cursor(iterable: Iterable) -> CursorFunc:
 
 
 # ---------------------------------------------------------------------------------------
-
-
-class _MultiIterator(MultiObj):
-    """Helper class for DictZip"""
-
-    def _gen_next(self):
-        for name, iterator in self.objects.items():
-            yield name, next(iterator, None)
-
-    def __next__(self) -> dict:
-        return dict(self._gen_next())
-
-
-class DictZip:
-    def __init__(self, *unnamed, takewhile=None, **named):
-        self.multi_iterator = _MultiIterator(*unnamed, **named)
-        self.objects = self.multi_iterator.objects
-        self.takewhile = takewhile
-
-    def __iter__(self):
-        while True:
-            x = next(self.multi_iterator)
-            if not self.takewhile(x):
-                break
-            yield x
-
-
-class MultiIterable:
-    def __init__(self, *unnamed, **named):
-        self.multi_iterator = _MultiIterator(*unnamed, **named)
-        self.objects = self.multi_iterator.objects
-
-    def __iter__(self):
-        while True:
-            yield next(self.multi_iterator)
-
-    def takewhile(self, predicate=None):
-        """itertools.takewhile applied to self, with a bit of syntactic sugar
-        There's nothing to stop the iteration"""
-        if predicate is None:
-            predicate = lambda x: True  # always true
-        return itertools.takewhile(predicate, self)
-
 
 no_such_item = type('NoSuchItem', (), {})()
 

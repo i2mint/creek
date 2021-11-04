@@ -100,4 +100,3 @@ def iterable_to_cursor(iterable: Iterable, sentinel=no_sentinel) -> CursorFunc:
 #
 #     t = await alist(ticker(3, 0.2))
 #     assert t == [0, 1, 2]
-
