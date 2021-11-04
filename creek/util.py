@@ -8,19 +8,27 @@ from functools import (
 )
 from itertools import islice
 
-from typing import (
-    Callable,
-    Any,
-    Iterable,
-    AsyncIterable,
-    Iterator,
-    AsyncIterator,
-    NewType,
-)
-from functools import partial
+from typing import Any, Iterable, Iterator, Union
+from functools import singledispatch, partial
 
-CursorFunc = NewType('CursorFunc', Callable[[], Any])
-CursorFunc.__doc__ = "An argument-less function returning an iterator's values"
+from typing import Protocol, runtime_checkable
+
+IteratorItem = Any
+
+
+@runtime_checkable
+class IterableType(Protocol):
+    def __iter__(self) -> Iterable[IteratorItem]:
+        pass
+
+
+@runtime_checkable
+class CursorFunc(Protocol):
+    """An argument-less function returning an iterator's values"""
+
+    def __call__(self) -> IteratorItem:
+        """Get the next iterator's item and increment the cursor"""
+
 
 wrapper_assignments = (*WRAPPER_ASSIGNMENTS, '__defaults__', '__kwdefaults__')
 update_wrapper = partial(_update_wrapper, assigned=wrapper_assignments)
@@ -97,6 +105,47 @@ def iterable_to_cursor(iterable: Iterable) -> CursorFunc:
     """
     iterator = iterable_to_iterator(iterable)
     return iterator_to_cursor(iterator)
+
+
+@singledispatch
+def to_iterator(x: IterableType, sentinel=no_sentinel):
+    """Get an iterator from an iterable or a cursor function
+
+    >>> from typing import Iterator
+    >>> it = to_iterator([1, 2, 3])
+    >>> assert isinstance(it, Iterator)
+    >>> list(it)
+    [1, 2, 3]
+    >>> list(it)
+    []
+
+    >>> cursor = iter([1, 2, 3]).__next__
+    >>> assert isinstance(cursor, CursorFunc)
+    >>> it = to_iterator(cursor)
+    >>> assert isinstance(it, Iterator)
+    >>> list(it)
+    [1, 2, 3]
+    >>> list(it)
+    []
+
+    You can use sentinels too
+
+    >>> list(to_iterator([1, 2, None, 4], sentinel=None))
+    [1, 2]
+    >>> cursor = iter([1, 2, 3, 4, 5]).__next__
+    >>> list(to_iterator(cursor, sentinel=4))
+    [1, 2, 3]
+    """
+    if sentinel is no_sentinel:
+        return iter(x)
+    else:
+        cursor = iter(x).__next__
+        return to_iterator(cursor, sentinel)
+
+
+@to_iterator.register
+def _(x: CursorFunc, sentinel=no_sentinel):
+    return iter(x, sentinel)
 
 
 # ---------------------------------------------------------------------------------------
