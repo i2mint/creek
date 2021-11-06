@@ -18,7 +18,25 @@ IteratorItem = Any
 
 @runtime_checkable
 class IterableType(Protocol):
+    """An iterable type that can actually be used in singledispatch
+
+    >>> assert isinstance([1, 2, 3], IterableType)
+    >>> assert not isinstance(2, IterableType)
+    """
+
     def __iter__(self) -> Iterable[IteratorItem]:
+        pass
+
+
+@runtime_checkable
+class IteratorType(Protocol):
+    """An iterator type that can actually be used in singledispatch
+
+    >>> assert isinstance(iter([1, 2, 3]), IteratorType)
+    >>> assert not isinstance([1, 2, 3], IteratorType)
+    """
+
+    def __next__(self) -> IteratorItem:
         pass
 
 
@@ -108,7 +126,7 @@ def iterable_to_cursor(iterable: Iterable) -> CursorFunc:
 
 
 @singledispatch
-def to_iterator(x: IterableType, sentinel=no_sentinel):
+def to_iterator(x: IteratorType, sentinel=no_sentinel):
     """Get an iterator from an iterable or a cursor function
 
     >>> from typing import Iterator
@@ -137,11 +155,17 @@ def to_iterator(x: IterableType, sentinel=no_sentinel):
     [1, 2, 3]
     """
     if sentinel is no_sentinel:
-        return iter(x)
+        return x
     else:
-        cursor = iter(x).__next__
-        return to_iterator(cursor, sentinel)
+        cursor = x.__next__
+        return iter(cursor, sentinel)
 
+
+@to_iterator.register
+def _(x: IterableType, sentinel=no_sentinel):
+    return to_iterator.__wrapped__(iter(x), sentinel)
+    # TODO: Use of __wrapped__ seems hacky. Better way?
+    # TODO: Why does to_iterator(iter(x), sentinel) lead to infinite recursion?
 
 @to_iterator.register
 def _(x: CursorFunc, sentinel=no_sentinel):
