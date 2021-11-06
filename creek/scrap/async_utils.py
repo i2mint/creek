@@ -122,7 +122,7 @@ def iterable_to_iterator(iterable: IterableType) -> IteratorType:
     >>> assert list(iterator) == iterable
     """
     if isinstance(iterable, AsyncIterable):
-        return await aiter(iterable)
+        return aiter(iterable)
     return iter(iterable)
 
 
@@ -140,4 +140,3 @@ def iterable_to_cursor(iterable: Iterable, sentinel=no_sentinel) -> CursorFunc:
         return iterator_to_cursor(iterator)
     else:
         return partial(next, iterator, sentinel)
-

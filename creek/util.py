@@ -167,6 +167,7 @@ def _(x: IterableType, sentinel=no_sentinel):
     # TODO: Use of __wrapped__ seems hacky. Better way?
     # TODO: Why does to_iterator(iter(x), sentinel) lead to infinite recursion?
 
+
 @to_iterator.register
 def _(x: CursorFunc, sentinel=no_sentinel):
     return iter(x, sentinel)
