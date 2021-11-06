@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.util &mdash; creek 0.1.16 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>creek.util &mdash; creek 0.1.17 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -41,10 +41,10 @@
               <p><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek.html">creek</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/async_utils.html">creek.async_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/base.html">creek.base</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/infinite_sequence.html">creek.infinite_sequence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/labeling.html">creek.labeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/async_utils.html">creek.scrap.async_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
@@ -88,19 +88,45 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">islice</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Callable</span><span class="p">,</span>
-    <span class="n">Any</span><span class="p">,</span>
-    <span class="n">Iterable</span><span class="p">,</span>
-    <span class="n">AsyncIterable</span><span class="p">,</span>
-    <span class="n">Iterator</span><span class="p">,</span>
-    <span class="n">AsyncIterator</span><span class="p">,</span>
-    <span class="n">NewType</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">singledispatch</span><span class="p">,</span> <span class="n">partial</span>
 
-<span class="n">CursorFunc</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s1">&#39;CursorFunc&#39;</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Any</span><span class="p">])</span>
-<span class="n">CursorFunc</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;An argument-less function returning an iterator&#39;s values&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">runtime_checkable</span>
+
+<span class="n">IteratorItem</span> <span class="o">=</span> <span class="n">Any</span>
+
+
+<div class="viewcode-block" id="IterableType"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.IterableType">[docs]</a><span class="nd">@runtime_checkable</span>
+<span class="k">class</span> <span class="nc">IterableType</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An iterable type that can actually be used in singledispatch</span>
+
+<span class="sd">    &gt;&gt;&gt; assert isinstance([1, 2, 3], IterableType)</span>
+<span class="sd">    &gt;&gt;&gt; assert not isinstance(2, IterableType)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">IteratorItem</span><span class="p">]:</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="IteratorType"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.IteratorType">[docs]</a><span class="nd">@runtime_checkable</span>
+<span class="k">class</span> <span class="nc">IteratorType</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An iterator type that can actually be used in singledispatch</span>
+
+<span class="sd">    &gt;&gt;&gt; assert isinstance(iter([1, 2, 3]), IteratorType)</span>
+<span class="sd">    &gt;&gt;&gt; assert not isinstance([1, 2, 3], IteratorType)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IteratorItem</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="CursorFunc"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.CursorFunc">[docs]</a><span class="nd">@runtime_checkable</span>
+<span class="k">class</span> <span class="nc">CursorFunc</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An argument-less function returning an iterator&#39;s values&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IteratorItem</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the next iterator&#39;s item and increment the cursor&quot;&quot;&quot;</span></div>
+
 
 <span class="n">wrapper_assignments</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">WRAPPER_ASSIGNMENTS</span><span class="p">,</span> <span class="s1">&#39;__defaults__&#39;</span><span class="p">,</span> <span class="s1">&#39;__kwdefaults__&#39;</span><span class="p">)</span>
 <span class="n">update_wrapper</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_update_wrapper</span><span class="p">,</span> <span class="n">assigned</span><span class="o">=</span><span class="n">wrapper_assignments</span><span class="p">)</span>
@@ -177,6 +203,54 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">iterator</span> <span class="o">=</span> <span class="n">iterable_to_iterator</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">iterator_to_cursor</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="to_iterator"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.to_iterator">[docs]</a><span class="nd">@singledispatch</span>
+<span class="k">def</span> <span class="nf">to_iterator</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">IteratorType</span><span class="p">,</span> <span class="n">sentinel</span><span class="o">=</span><span class="n">no_sentinel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get an iterator from an iterable or a cursor function</span>
+
+<span class="sd">    &gt;&gt;&gt; from typing import Iterator</span>
+<span class="sd">    &gt;&gt;&gt; it = to_iterator([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; assert isinstance(it, Iterator)</span>
+<span class="sd">    &gt;&gt;&gt; list(it)</span>
+<span class="sd">    [1, 2, 3]</span>
+<span class="sd">    &gt;&gt;&gt; list(it)</span>
+<span class="sd">    []</span>
+
+<span class="sd">    &gt;&gt;&gt; cursor = iter([1, 2, 3]).__next__</span>
+<span class="sd">    &gt;&gt;&gt; assert isinstance(cursor, CursorFunc)</span>
+<span class="sd">    &gt;&gt;&gt; it = to_iterator(cursor)</span>
+<span class="sd">    &gt;&gt;&gt; assert isinstance(it, Iterator)</span>
+<span class="sd">    &gt;&gt;&gt; list(it)</span>
+<span class="sd">    [1, 2, 3]</span>
+<span class="sd">    &gt;&gt;&gt; list(it)</span>
+<span class="sd">    []</span>
+
+<span class="sd">    You can use sentinels too</span>
+
+<span class="sd">    &gt;&gt;&gt; list(to_iterator([1, 2, None, 4], sentinel=None))</span>
+<span class="sd">    [1, 2]</span>
+<span class="sd">    &gt;&gt;&gt; cursor = iter([1, 2, 3, 4, 5]).__next__</span>
+<span class="sd">    &gt;&gt;&gt; list(to_iterator(cursor, sentinel=4))</span>
+<span class="sd">    [1, 2, 3]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">sentinel</span> <span class="ow">is</span> <span class="n">no_sentinel</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="fm">__next__</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">sentinel</span><span class="p">)</span></div>
+
+
+<span class="nd">@to_iterator</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">IterableType</span><span class="p">,</span> <span class="n">sentinel</span><span class="o">=</span><span class="n">no_sentinel</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">to_iterator</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">sentinel</span><span class="p">)</span>
+    <span class="c1"># TODO: Use of __wrapped__ seems hacky. Better way?</span>
+    <span class="c1"># TODO: Why does to_iterator(iter(x), sentinel) lead to infinite recursion?</span>
+
+
+<span class="nd">@to_iterator</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">CursorFunc</span><span class="p">,</span> <span class="n">sentinel</span><span class="o">=</span><span class="n">no_sentinel</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sentinel</span><span class="p">)</span>
 
 
 <span class="c1"># ---------------------------------------------------------------------------------------</span>

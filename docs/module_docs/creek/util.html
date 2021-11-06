@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.util &mdash; creek 0.1.16 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>creek.util &mdash; creek 0.1.17 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -43,10 +43,10 @@
               <p><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../creek.html">creek</a></li>
-<li class="toctree-l1"><a class="reference internal" href="async_utils.html">creek.async_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="base.html">creek.base</a></li>
 <li class="toctree-l1"><a class="reference internal" href="infinite_sequence.html">creek.infinite_sequence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="labeling.html">creek.labeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scrap/async_utils.html">creek.scrap.async_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
@@ -82,9 +82,35 @@
   <section id="module-creek.util">
 <span id="creek-util"></span><h1>creek.util<a class="headerlink" href="#module-creek.util" title="Permalink to this headline">¶</a></h1>
 <p>Utils for creek</p>
+<dl class="py class">
+<dt id="creek.util.CursorFunc">
+<em class="property">class </em><code class="sig-prename descclassname">creek.util.</code><code class="sig-name descname">CursorFunc</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/util.html#CursorFunc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.util.CursorFunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>An argument-less function returning an iterator’s values</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="creek.util.IterableType">
+<em class="property">class </em><code class="sig-prename descclassname">creek.util.</code><code class="sig-name descname">IterableType</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/util.html#IterableType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.util.IterableType" title="Permalink to this definition">¶</a></dt>
+<dd><p>An iterable type that can actually be used in singledispatch</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">IterableType</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">IterableType</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt id="creek.util.IteratorType">
+<em class="property">class </em><code class="sig-prename descclassname">creek.util.</code><code class="sig-name descname">IteratorType</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/util.html#IteratorType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.util.IteratorType" title="Permalink to this definition">¶</a></dt>
+<dd><p>An iterator type that can actually be used in singledispatch</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="n">IteratorType</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">IteratorType</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="py function">
 <dt id="creek.util.cursor_to_iterator">
-<code class="sig-prename descclassname">creek.util.</code><code class="sig-name descname">cursor_to_iterator</code><span class="sig-paren">(</span><em class="sig-param">cursor: NewType.&lt;locals&gt;.new_type</em>, <em class="sig-param">sentinel=&lt;creek.util.no_sentinel object&gt;</em><span class="sig-paren">)</span> &#x2192; Iterator<a class="reference internal" href="../../_modules/creek/util.html#cursor_to_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.util.cursor_to_iterator" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">creek.util.</code><code class="sig-name descname">cursor_to_iterator</code><span class="sig-paren">(</span><em class="sig-param">cursor: creek.util.CursorFunc</em>, <em class="sig-param">sentinel=&lt;creek.util.no_sentinel object&gt;</em><span class="sig-paren">)</span> &#x2192; Iterator<a class="reference internal" href="../../_modules/creek/util.html#cursor_to_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.util.cursor_to_iterator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get an iterator ferom a cursor function.</p>
 <p>A cursor function is a callable that you call (without arguments) to get items of
 data one by one.</p>
@@ -115,7 +141,7 @@ particular element (called a sentinel), say it:</p>
 
 <dl class="py function">
 <dt id="creek.util.iterable_to_cursor">
-<code class="sig-prename descclassname">creek.util.</code><code class="sig-name descname">iterable_to_cursor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span></em><span class="sig-paren">)</span> &#x2192; NewType.&lt;locals&gt;.new_type<a class="reference internal" href="../../_modules/creek/util.html#iterable_to_cursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.util.iterable_to_cursor" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">creek.util.</code><code class="sig-name descname">iterable_to_cursor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#creek.util.CursorFunc" title="creek.util.CursorFunc">creek.util.CursorFunc</a><a class="reference internal" href="../../_modules/creek/util.html#iterable_to_cursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.util.iterable_to_cursor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a cursor function from an iterable.</p>
 </dd></dl>
 
@@ -133,7 +159,7 @@ particular element (called a sentinel), say it:</p>
 
 <dl class="py function">
 <dt id="creek.util.iterator_to_cursor">
-<code class="sig-prename descclassname">creek.util.</code><code class="sig-name descname">iterator_to_cursor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterator</span><span class="p">:</span> <span class="n">Iterator</span></em><span class="sig-paren">)</span> &#x2192; NewType.&lt;locals&gt;.new_type<a class="reference internal" href="../../_modules/creek/util.html#iterator_to_cursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.util.iterator_to_cursor" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">creek.util.</code><code class="sig-name descname">iterator_to_cursor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterator</span><span class="p">:</span> <span class="n">Iterator</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#creek.util.CursorFunc" title="creek.util.CursorFunc">creek.util.CursorFunc</a><a class="reference internal" href="../../_modules/creek/util.html#iterator_to_cursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.util.iterator_to_cursor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a cursor function for the input iterator.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span> <span class="o">=</span> <span class="n">iterator_to_cursor</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
@@ -145,6 +171,43 @@ particular element (called a sentinel), say it:</p>
 <p>Note how we consumed the cursor till the end; by using cursor_to_iterator.
 Indeed, <cite>list(iter(cursor))</cite> wouldn’t have worked since a cursor isn’t a iterator,
 but a callable to get the items an the iterator would give you.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="creek.util.to_iterator">
+<code class="sig-prename descclassname">creek.util.</code><code class="sig-name descname">to_iterator</code><span class="sig-paren">(</span><em class="sig-param">x: creek.util.IteratorType</em>, <em class="sig-param">sentinel=&lt;creek.util.no_sentinel object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/util.html#to_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.util.to_iterator" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="sig-prename descclassname">creek.util.</code><code class="sig-name descname">to_iterator</code><span class="sig-paren">(</span><em class="sig-param">x: creek.util.IterableType</em>, <em class="sig-param">sentinel=&lt;creek.util.no_sentinel object&gt;</em><span class="sig-paren">)</span></dt>
+<dt>
+<code class="sig-prename descclassname">creek.util.</code><code class="sig-name descname">to_iterator</code><span class="sig-paren">(</span><em class="sig-param">x: creek.util.CursorFunc</em>, <em class="sig-param">sentinel=&lt;creek.util.no_sentinel object&gt;</em><span class="sig-paren">)</span></dt>
+<dd><p>Get an iterator from an iterable or a cursor function</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">it</span> <span class="o">=</span> <span class="n">to_iterator</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+<span class="go">[1, 2, 3]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="fm">__next__</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">CursorFunc</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">it</span> <span class="o">=</span> <span class="n">to_iterator</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+<span class="go">[1, 2, 3]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+<p>You can use sentinels too</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">sentinel</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
+<span class="go">[1, 2]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span><span class="o">.</span><span class="fm">__next__</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">sentinel</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+<span class="go">[1, 2, 3]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
