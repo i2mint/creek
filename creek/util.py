@@ -86,7 +86,7 @@ def iterator_to_cursor(iterator: Iterator) -> CursorFunc:
 
 
 def cursor_to_iterator(cursor: CursorFunc, sentinel=no_sentinel) -> Iterator:
-    """Get an iterator ferom a cursor function.
+    """Get an iterator from a cursor function.
 
     A cursor function is a callable that you call (without arguments) to get items of
     data one by one.
