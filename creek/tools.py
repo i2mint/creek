@@ -1,5 +1,6 @@
 """Tools to work with creek objects"""
 
+import time
 from typing import Union, Any, Callable, Tuple, TypeVar, Iterable
 from dataclasses import dataclass
 
@@ -50,6 +51,11 @@ def count_increments(current_idx, obj, step=1):
 
 def size_increments(current_idx, obj, size_func=len):
     return current_idx + size_func(obj)
+
+
+def current_time(current_idx, obj):
+    """Doesn't even look at current_idx or obj. Just gives the current time"""
+    return time.time()
 
 
 @dataclass
