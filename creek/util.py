@@ -56,20 +56,33 @@ wraps = partial(_wraps, assigned=wrapper_assignments)
 # ---------------------------------------------------------------------------------------
 # iteratable, iterator, cursors
 no_sentinel = type('no_sentinel', (), {})()
+no_default = type('no_default', (), {})()
 
 
-def iterable_to_iterator(iterable: Iterable) -> Iterator:
+def iterable_to_iterator(iterable: Iterable, sentinel=no_sentinel) -> Iterator:
     """Get an iterator from an iterable
 
     >>> iterable = [1, 2, 3]
     >>> iterator = iterable_to_iterator(iterable)
     >>> assert isinstance(iterator, Iterator)
     >>> assert list(iterator) == iterable
+
+    You can also specify a sentinel, which will result in the iterator stoping just
+    before it encounters that sentinel value
+
+    >>> iterable = [1, 2, 3, 4, None, None, 7]
+    >>> iterator = iterable_to_iterator(iterable, None)
+    >>> assert isinstance(iterator, Iterator)
+    >>> list(iterator)
+    [1, 2, 3, 4]
     """
-    return iter(iterable)
+    if sentinel is no_sentinel:
+        return iter(iterable)
+    else:
+        return iter(iter(iterable).__next__, sentinel)
 
 
-def iterator_to_cursor(iterator: Iterator) -> CursorFunc:
+def iterator_to_cursor(iterator: Iterator, default=no_default) -> CursorFunc:
     """Get a cursor function for the input iterator.
 
     >>> iterator = iter([1, 2, 3])
@@ -81,8 +94,31 @@ def iterator_to_cursor(iterator: Iterator) -> CursorFunc:
     Note how we consumed the cursor till the end; by using cursor_to_iterator.
     Indeed, `list(iter(cursor))` wouldn't have worked since a cursor isn't a iterator,
     but a callable to get the items an the iterator would give you.
+
+    You can specify a default. The default has the same role that it has for the
+    `next` function: It makes the cursor function return that default when the iterator
+    has been "consumed" (i.e. would raise a `StopIteration`).
+
+    >>> iterator = iter([1, 2])
+    >>> cursor = iterator_to_cursor(iterator, None)
+    >>> assert callable(cursor)
+    >>> cursor()
+    1
+    >>> cursor()
+    2
+
+    And then...
+
+    >>> assert cursor() is None
+    >>> assert cursor() is None
+
+    forever.
+
     """
-    return partial(next, iterator)
+    if default is no_default:
+        return partial(next, iterator)
+    else:
+        return partial(next, iterator, default)
 
 
 def cursor_to_iterator(cursor: CursorFunc, sentinel=no_sentinel) -> Iterator:
