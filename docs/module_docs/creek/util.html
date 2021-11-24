@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.util &mdash; creek 0.1.19 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>creek.util &mdash; creek 0.1.20 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -46,6 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="base.html">creek.base</a></li>
 <li class="toctree-l1"><a class="reference internal" href="infinite_sequence.html">creek.infinite_sequence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="labeling.html">creek.labeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_streams.html">creek.multi_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scrap/async_utils.html">creek.scrap.async_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
@@ -98,6 +99,17 @@
 </div>
 </dd></dl>
 
+<dl class="py exception">
+<dt id="creek.util.IteratorExit">
+<em class="property">exception </em><code class="sig-prename descclassname">creek.util.</code><code class="sig-name descname">IteratorExit</code><a class="reference internal" href="../../_modules/creek/util.html#IteratorExit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.util.IteratorExit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when an iterator should quit being iterated on, signaling this event
+any process that cares to catch the signal.
+We chose to inherit directly from <cite>BaseException</cite> instead of <cite>Exception</cite>
+for the same reason that <cite>GeneratorExit</cite> does: Because it’s not technically
+an error.</p>
+<p>See: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#GeneratorExit">https://docs.python.org/3/library/exceptions.html#GeneratorExit</a></p>
+</dd></dl>
+
 <dl class="py class">
 <dt id="creek.util.IteratorType">
 <em class="property">class </em><code class="sig-prename descclassname">creek.util.</code><code class="sig-name descname">IteratorType</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/util.html#IteratorType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.util.IteratorType" title="Permalink to this definition">¶</a></dt>
@@ -106,6 +118,24 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">IteratorType</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py class">
+<dt id="creek.util.Pipe">
+<em class="property">class </em><code class="sig-prename descclassname">creek.util.</code><code class="sig-name descname">Pipe</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">funcs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/util.html#Pipe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.util.Pipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple function composition. That is, gives you a callable that implements input -&gt; f_1 -&gt; … -&gt; f_n -&gt; output.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">Pipe</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;x: </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">x: 5</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Pipe instances don’t have a __name__ etc. So some expectations of normal functions are not met.</p></li>
+<li><p>Pipe instance are pickalable (as long as the functions that compose them are)</p></li>
+</ul>
 </dd></dl>
 
 <dl class="py function">

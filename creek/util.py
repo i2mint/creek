@@ -58,6 +58,7 @@ wraps = partial(_wraps, assigned=wrapper_assignments)
 no_sentinel = type('no_sentinel', (), {})()
 no_default = type('no_default', (), {})()
 
+
 class IteratorExit(BaseException):
     """Raised when an iterator should quit being iterated on, signaling this event
     any process that cares to catch the signal.
@@ -67,6 +68,7 @@ class IteratorExit(BaseException):
 
     See: https://docs.python.org/3/library/exceptions.html#GeneratorExit
     """
+
 
 DFLT_INTERRUPT_EXCEPTIONS = (StopIteration, IteratorExit, KeyboardInterrupt)
 

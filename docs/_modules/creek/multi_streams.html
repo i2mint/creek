@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>creek.multi_streams &mdash; creek 0.1.20 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/toggleprompt.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> creek
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek.html">creek</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/base.html">creek.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/infinite_sequence.html">creek.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/labeling.html">creek.labeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/multi_streams.html">creek.multi_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/async_utils.html">creek.scrap.async_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/labeling.html">creek.tests.labeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tools.html">creek.tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/util.html">creek.util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">creek</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>creek.multi_streams</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for creek.multi_streams</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Tools for multi-streams&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">import</span> <span class="nn">heapq</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">itemgetter</span>
+
+<span class="kn">from</span> <span class="nn">creek.util</span> <span class="kn">import</span> <span class="n">Pipe</span><span class="p">,</span> <span class="n">identity_func</span>
+
+<span class="n">StreamsMap</span> <span class="o">=</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">]</span>  <span class="c1"># a map of {name: stream} pairs</span>
+
+
+<div class="viewcode-block" id="MergedStreams"><a class="viewcode-back" href="../../module_docs/creek/multi_streams.html#creek.multi_streams.MergedStreams">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">MergedStreams</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Creates an iterable of (stream_id, stream_item) pairs from a stream Mapping,</span>
+<span class="sd">    that is, {stream_id: stream, ...}.</span>
+
+<span class="sd">    The stream_item will be yield in sorted order.</span>
+<span class="sd">    Sort behavior can be modified by the ``sort_key`` argument which behaves like ``key``</span>
+<span class="sd">    arguments of built-in like ``sorted``, ``heapq.merge``, ``itertools.groupby``, etc.</span>
+
+<span class="sd">    If given, the `sort_key` function applies to ``stream_item`` (not to ``stream_id``).</span>
+
+<span class="sd">    Important: To function as expected, the streams should be already sorted (according</span>
+<span class="sd">    to the ``sort_key`` order).</span>
+
+<span class="sd">    The cannonical use case of this function is to &quot;flatten&quot;, or &quot;weave together&quot;</span>
+<span class="sd">    multiple streams of timestamped data. We&#39;re given several streams that provide</span>
+<span class="sd">    ``(timestamp, data)`` items (where timestamps arrive in order within each stream)</span>
+<span class="sd">    and we get a single stream of ``(stream_id, (timestamp, data))`` items where</span>
+<span class="sd">    the ``timestamp``s are yield in sorted order.</span>
+
+<span class="sd">    The following example uses a dict pointing to a fixed-size list as the ``stream_map``</span>
+<span class="sd">    but in general the ``stream_map`` will be a ``Mapping`` (not necessarily a dict)</span>
+<span class="sd">    whose values are potentially bound-less streams.</span>
+
+<span class="sd">    &gt;&gt;&gt; streams_map = {</span>
+<span class="sd">    ...     &#39;hello&#39;: [(2, &#39;two&#39;), (3, &#39;three&#39;), (5, &#39;five&#39;)],</span>
+<span class="sd">    ...     &#39;world&#39;: [(0, &#39;zero&#39;), (1, &#39;one&#39;), (3, &#39;three&#39;), (6, &#39;six&#39;)]</span>
+<span class="sd">    ... }</span>
+<span class="sd">    &gt;&gt;&gt; streams_items = MergedStreams(streams_map)</span>
+<span class="sd">    &gt;&gt;&gt; it = iter(streams_items)</span>
+<span class="sd">    &gt;&gt;&gt; list(it)  # doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">    [(&#39;world&#39;, (0, &#39;zero&#39;)),</span>
+<span class="sd">     (&#39;world&#39;, (1, &#39;one&#39;)),</span>
+<span class="sd">     (&#39;hello&#39;, (2, &#39;two&#39;)),</span>
+<span class="sd">     (&#39;hello&#39;, (3, &#39;three&#39;)),</span>
+<span class="sd">     (&#39;world&#39;, (3, &#39;three&#39;)),</span>
+<span class="sd">     (&#39;hello&#39;, (5, &#39;five&#39;)),</span>
+<span class="sd">     (&#39;world&#39;, (6, &#39;six&#39;))]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">streams_map</span><span class="p">:</span> <span class="n">StreamsMap</span>
+    <span class="n">sort_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">effective_sort_key</span> <span class="o">=</span> <span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">effective_sort_key</span> <span class="o">=</span> <span class="n">Pipe</span><span class="p">(</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_key</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">heapq</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">multi_stream_items</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">streams_map</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">effective_sort_key</span>
+        <span class="p">):</span>
+            <span class="k">yield</span> <span class="n">item</span></div>
+
+
+<div class="viewcode-block" id="multi_stream_items"><a class="viewcode-back" href="../../module_docs/creek/multi_streams.html#creek.multi_streams.multi_stream_items">[docs]</a><span class="k">def</span> <span class="nf">multi_stream_items</span><span class="p">(</span><span class="n">streams_map</span><span class="p">:</span> <span class="n">StreamsMap</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Provides a iterable of (k1, v1_1), (k1, v1_2), ...</span>
+<span class="sd">    &gt;&gt;&gt; streams_map = {&#39;hello&#39;: &#39;abc&#39;, &#39;world&#39;: [1, 2]}</span>
+<span class="sd">    &gt;&gt;&gt; hello_items, world_items = multi_stream_items(streams_map)</span>
+<span class="sd">    &gt;&gt;&gt; list(hello_items)</span>
+<span class="sd">    [(&#39;hello&#39;, &#39;a&#39;), (&#39;hello&#39;, &#39;b&#39;), (&#39;hello&#39;, &#39;c&#39;)]</span>
+<span class="sd">    &gt;&gt;&gt; list(world_items)</span>
+<span class="sd">    [(&#39;world&#39;, 1), (&#39;world&#39;, 2)]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">stream_id</span><span class="p">,</span> <span class="n">stream</span> <span class="ow">in</span> <span class="n">streams_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">yield</span> <span class="n">product</span><span class="p">([</span><span class="n">stream_id</span><span class="p">],</span> <span class="n">stream</span><span class="p">)</span></div>
+
+
+<span class="k">class</span> <span class="nc">SortKeys</span><span class="p">:</span>
+    <span class="n">all_but_last</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">itemgetter</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright NO COPYRIGHT.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
