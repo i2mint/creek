@@ -58,6 +58,27 @@ wraps = partial(_wraps, assigned=wrapper_assignments)
 no_sentinel = type('no_sentinel', (), {})()
 no_default = type('no_default', (), {})()
 
+class IteratorExit(BaseException):
+    """Raised when an iterator should quit being iterated on, signaling this event
+    any process that cares to catch the signal.
+    We chose to inherit directly from `BaseException` instead of `Exception`
+    for the same reason that `GeneratorExit` does: Because it's not technically
+    an error.
+
+    See: https://docs.python.org/3/library/exceptions.html#GeneratorExit
+    """
+
+DFLT_INTERRUPT_EXCEPTIONS = (StopIteration, IteratorExit, KeyboardInterrupt)
+
+
+def iterate_until_exception(iterator, interrupt_exceptions=DFLT_INTERRUPT_EXCEPTIONS):
+    while True:
+        try:
+            next(iterator)
+        except interrupt_exceptions:
+            print('ending')
+            break
+
 
 def iterable_to_iterator(iterable: Iterable, sentinel=no_sentinel) -> Iterator:
     """Get an iterator from an iterable
@@ -269,3 +290,36 @@ static_identity_method = staticmethod(identity_func)
 # @iterable_to_iterator.register
 # def _(iterable: AsyncIterable) -> AsyncIterator:
 #     return aiter(iterable)
+class Pipe:
+    """Simple function composition. That is, gives you a callable that implements input -> f_1 -> ... -> f_n -> output.
+
+    >>> def foo(a, b=2):
+    ...     return a + b
+    >>> f = Pipe(foo, lambda x: print(f"x: {x}"))
+    >>> f(3)
+    x: 5
+
+    Notes:
+        - Pipe instances don't have a __name__ etc. So some expectations of normal functions are not met.
+        - Pipe instance are pickalable (as long as the functions that compose them are)
+    """
+
+    def __init__(self, *funcs):
+
+        n_funcs = len(funcs)
+        other_funcs = ()
+        if n_funcs == 0:
+            raise ValueError('You need to specify at least one function!')
+        elif n_funcs == 1:
+            first_func = last_func = funcs[0]
+        else:
+            first_func, *other_funcs, last_func = funcs
+
+        self.first_func = first_func
+        self.other_funcs = tuple(other_funcs) + (last_func,)
+
+    def __call__(self, *args, **kwargs):
+        out = self.first_func(*args, **kwargs)
+        for func in self.other_funcs:
+            out = func(out)
+        return out
