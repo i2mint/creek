@@ -4,6 +4,7 @@ from itertools import product
 from typing import Mapping, Iterable, Any, Optional, Callable
 import heapq
 from dataclasses import dataclass
+from functools import partial
 from operator import itemgetter
 
 from creek.util import Pipe, identity_func
@@ -80,5 +81,37 @@ def multi_stream_items(streams_map: StreamsMap):
         yield product([stream_id], stream)
 
 
+def transform_methods(cls, method_trans=staticmethod):
+    """Applies method_trans to all the methods of `cls`
+
+    >>> from functools import partial
+    >>> staticmethods = partial(transform_methods, method_trans=staticmethod)
+
+    Now staticmethods is a class decorator that can be used to make all methods
+    be defined as staticmethods in bulk
+
+    >>> @staticmethods
+    ... class C:
+    ...     foo = lambda x: x + 1
+    ...     bar = lambda y: y * 2
+    >>> c = C()
+    >>> c.foo(6)
+    7
+    >>> c.bar(6)
+    12
+    """
+    for attr_name in vars(cls):
+        attr = getattr(cls, attr_name)
+        if callable(attr):
+            setattr(cls, attr_name, method_trans(attr))
+
+    return cls
+
+
+staticmethods = partial(transform_methods, method_trans=staticmethod)
+
+
+@staticmethods
 class SortKeys:
     all_but_last = staticmethod(itemgetter(-1))
+    second_item = staticmethod(itemgetter(1))
