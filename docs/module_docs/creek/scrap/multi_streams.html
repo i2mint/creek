@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.scrap.multi_streams &mdash; creek 0.1.19 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <title>creek.scrap.multi_streams &mdash; creek 0.1.20 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
@@ -47,6 +47,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../base.html">creek.base</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../infinite_sequence.html">creek.infinite_sequence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../labeling.html">creek.labeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multi_streams.html">creek.multi_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="async_utils.html">creek.scrap.async_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="creek_layers.html">creek.scrap.creek_layers</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">creek.scrap.multi_streams</a></li>
@@ -82,73 +83,6 @@
              
   <section id="module-creek.scrap.multi_streams">
 <span id="creek-scrap-multi-streams"></span><h1>creek.scrap.multi_streams<a class="headerlink" href="#module-creek.scrap.multi_streams" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt id="creek.scrap.multi_streams.MergedStreams">
-<em class="property">class </em><code class="sig-prename descclassname">creek.scrap.multi_streams.</code><code class="sig-name descname">MergedStreams</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">streams_map</span><span class="p">:</span> <span class="n">Mapping<span class="p">[</span>Any<span class="p">, </span>Iterable<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">sort_key</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Callable<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/creek/scrap/multi_streams.html#MergedStreams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.scrap.multi_streams.MergedStreams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates an iterable of (stream_id, stream_item) pairs from a stream Mapping,
-that is, {stream_id: stream, …}.</p>
-<p>The stream_item will be yield in sorted order.
-Sort behavior can be modified by the <code class="docutils literal notranslate"><span class="pre">sort_key</span></code> argument which behaves like <code class="docutils literal notranslate"><span class="pre">key</span></code>
-arguments of built-in like <code class="docutils literal notranslate"><span class="pre">sorted</span></code>, <code class="docutils literal notranslate"><span class="pre">heapq.merge</span></code>, <code class="docutils literal notranslate"><span class="pre">itertools.groupby</span></code>, etc.</p>
-<p>If given, the <cite>sort_key</cite> function applies to <code class="docutils literal notranslate"><span class="pre">stream_item</span></code> (not to <code class="docutils literal notranslate"><span class="pre">stream_id</span></code>).</p>
-<p>Important: To function as expected, the streams should be already sorted (according
-to the <code class="docutils literal notranslate"><span class="pre">sort_key</span></code> order).</p>
-<p>The cannonical use case of this function is to “flatten”, or “weave together”
-multiple streams of timestamped data. We’re given several streams that provide
-<code class="docutils literal notranslate"><span class="pre">(timestamp,</span> <span class="pre">data)</span></code> items (where timestamps arrive in order within each stream)
-and we get a single stream of <code class="docutils literal notranslate"><span class="pre">(stream_id,</span> <span class="pre">(timestamp,</span> <span class="pre">data))</span></code> items where
-the <a href="#id1"><span class="problematic" id="id2">``</span></a>timestamp``s are yield in sorted order.</p>
-<p>The following example uses a dict pointing to a fixed-size list as the <code class="docutils literal notranslate"><span class="pre">stream_map</span></code>
-but in general the <code class="docutils literal notranslate"><span class="pre">stream_map</span></code> will be a <code class="docutils literal notranslate"><span class="pre">Mapping</span></code> (not necessarily a dict)
-whose values are potentially bound-less streams.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">streams_map</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>    <span class="s1">&#39;hello&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;two&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;three&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;five&#39;</span><span class="p">)],</span>
-<span class="gp">... </span>    <span class="s1">&#39;world&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;zero&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;one&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;three&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;six&#39;</span><span class="p">)]</span>
-<span class="gp">... </span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">streams_items</span> <span class="o">=</span> <span class="n">MergedStreams</span><span class="p">(</span><span class="n">streams_map</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">streams_items</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>  
-<span class="go">[(&#39;world&#39;, (0, &#39;zero&#39;)),</span>
-<span class="go"> (&#39;world&#39;, (1, &#39;one&#39;)),</span>
-<span class="go"> (&#39;hello&#39;, (2, &#39;two&#39;)),</span>
-<span class="go"> (&#39;hello&#39;, (3, &#39;three&#39;)),</span>
-<span class="go"> (&#39;world&#39;, (3, &#39;three&#39;)),</span>
-<span class="go"> (&#39;hello&#39;, (5, &#39;five&#39;)),</span>
-<span class="go"> (&#39;world&#39;, (6, &#39;six&#39;))]</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py class">
-<dt id="creek.scrap.multi_streams.Pipe">
-<em class="property">class </em><code class="sig-prename descclassname">creek.scrap.multi_streams.</code><code class="sig-name descname">Pipe</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">funcs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/creek/scrap/multi_streams.html#Pipe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.scrap.multi_streams.Pipe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Simple function composition. That is, gives you a callable that implements input -&gt; f_1 -&gt; … -&gt; f_n -&gt; output.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">Pipe</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;x: </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="go">x: 5</span>
-</pre></div>
-</div>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>Pipe instances don’t have a __name__ etc. So some expectations of normal functions are not met.</p></li>
-<li><p>Pipe instance are pickalable (as long as the functions that compose them are)</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py function">
-<dt id="creek.scrap.multi_streams.multi_stream_items">
-<code class="sig-prename descclassname">creek.scrap.multi_streams.</code><code class="sig-name descname">multi_stream_items</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">streams_map</span><span class="p">:</span> <span class="n">Mapping<span class="p">[</span>Any<span class="p">, </span>Iterable<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/creek/scrap/multi_streams.html#multi_stream_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.scrap.multi_streams.multi_stream_items" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides a iterable of (k1, v1_1), (k1, v1_2), …
-&gt;&gt;&gt; streams_map = {‘hello’: ‘abc’, ‘world’: [1, 2]}
-&gt;&gt;&gt; hello_items, world_items = multi_stream_items(streams_map)
-&gt;&gt;&gt; list(hello_items)
-[(‘hello’, ‘a’), (‘hello’, ‘b’), (‘hello’, ‘c’)]
-&gt;&gt;&gt; list(world_items)
-[(‘world’, 1), (‘world’, 2)]</p>
-</dd></dl>
-
 </section>
 
 

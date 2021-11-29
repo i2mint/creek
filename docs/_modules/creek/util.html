@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.util &mdash; creek 0.1.19 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>creek.util &mdash; creek 0.1.20 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -44,6 +44,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/base.html">creek.base</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/infinite_sequence.html">creek.infinite_sequence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/labeling.html">creek.labeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/multi_streams.html">creek.multi_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/async_utils.html">creek.scrap.async_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
@@ -137,6 +138,29 @@
 <span class="c1"># iteratable, iterator, cursors</span>
 <span class="n">no_sentinel</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="s1">&#39;no_sentinel&#39;</span><span class="p">,</span> <span class="p">(),</span> <span class="p">{})()</span>
 <span class="n">no_default</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="s1">&#39;no_default&#39;</span><span class="p">,</span> <span class="p">(),</span> <span class="p">{})()</span>
+
+
+<div class="viewcode-block" id="IteratorExit"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.IteratorExit">[docs]</a><span class="k">class</span> <span class="nc">IteratorExit</span><span class="p">(</span><span class="ne">BaseException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when an iterator should quit being iterated on, signaling this event</span>
+<span class="sd">    any process that cares to catch the signal.</span>
+<span class="sd">    We chose to inherit directly from `BaseException` instead of `Exception`</span>
+<span class="sd">    for the same reason that `GeneratorExit` does: Because it&#39;s not technically</span>
+<span class="sd">    an error.</span>
+
+<span class="sd">    See: https://docs.python.org/3/library/exceptions.html#GeneratorExit</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+<span class="n">DFLT_INTERRUPT_EXCEPTIONS</span> <span class="o">=</span> <span class="p">(</span><span class="ne">StopIteration</span><span class="p">,</span> <span class="n">IteratorExit</span><span class="p">,</span> <span class="ne">KeyboardInterrupt</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">iterate_until_exception</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="n">interrupt_exceptions</span><span class="o">=</span><span class="n">DFLT_INTERRUPT_EXCEPTIONS</span><span class="p">):</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">next</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">interrupt_exceptions</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ending&#39;</span><span class="p">)</span>
+            <span class="k">break</span>
 
 
 <div class="viewcode-block" id="iterable_to_iterator"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.iterable_to_iterator">[docs]</a><span class="k">def</span> <span class="nf">iterable_to_iterator</span><span class="p">(</span><span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">sentinel</span><span class="o">=</span><span class="n">no_sentinel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">:</span>
@@ -349,6 +373,39 @@
 <span class="c1"># @iterable_to_iterator.register</span>
 <span class="c1"># def _(iterable: AsyncIterable) -&gt; AsyncIterator:</span>
 <span class="c1">#     return aiter(iterable)</span>
+<div class="viewcode-block" id="Pipe"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.Pipe">[docs]</a><span class="k">class</span> <span class="nc">Pipe</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Simple function composition. That is, gives you a callable that implements input -&gt; f_1 -&gt; ... -&gt; f_n -&gt; output.</span>
+
+<span class="sd">    &gt;&gt;&gt; def foo(a, b=2):</span>
+<span class="sd">    ...     return a + b</span>
+<span class="sd">    &gt;&gt;&gt; f = Pipe(foo, lambda x: print(f&quot;x: {x}&quot;))</span>
+<span class="sd">    &gt;&gt;&gt; f(3)</span>
+<span class="sd">    x: 5</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        - Pipe instances don&#39;t have a __name__ etc. So some expectations of normal functions are not met.</span>
+<span class="sd">        - Pipe instance are pickalable (as long as the functions that compose them are)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">funcs</span><span class="p">):</span>
+
+        <span class="n">n_funcs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">funcs</span><span class="p">)</span>
+        <span class="n">other_funcs</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="k">if</span> <span class="n">n_funcs</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You need to specify at least one function!&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">n_funcs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">first_func</span> <span class="o">=</span> <span class="n">last_func</span> <span class="o">=</span> <span class="n">funcs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">first_func</span><span class="p">,</span> <span class="o">*</span><span class="n">other_funcs</span><span class="p">,</span> <span class="n">last_func</span> <span class="o">=</span> <span class="n">funcs</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">first_func</span> <span class="o">=</span> <span class="n">first_func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">other_funcs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">other_funcs</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">last_func</span><span class="p">,)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">other_funcs</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span></div>
 </pre></div>
 
            </div>
