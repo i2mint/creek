@@ -391,7 +391,8 @@ class IndexedBuffer:
             return tuple(x - self.min_idx for x in idx)
         else:
             raise TypeError(
-                f'{type(idx)} are not handled. You requested the outer_to_buffer_idx of {idx}'
+                f'{type(idx)} are not handled. '
+                f'You requested the outer_to_buffer_idx of {idx}'
             )
 
     def __getitem__(self, item):

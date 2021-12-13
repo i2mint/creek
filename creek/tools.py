@@ -4,10 +4,9 @@ import time
 from typing import Union, Any, Callable, Tuple, TypeVar, Iterable
 from dataclasses import dataclass
 
-
-Number = Union[int, float]
-Index = Number
+Index = Any
 DataItem = TypeVar('DataItem')
+# TODO: Could have more args. How to specify this in typing?
 IndexUpdater = Callable[[Index, DataItem], Index]
 Indexer = Callable[[DataItem], Tuple[Index, DataItem]]
 
@@ -45,12 +44,25 @@ def filter_and_index_stream(
     return filter(lambda x: data_item_filt(x[1]), timestamper(stream))
 
 
-def count_increments(current_idx, obj, step=1):
+# TODO: Refactor dynamic indexing set up so that
+#  IndexUpdater = Callable[[DataItem, Index, ...], Index] (data and index inversed)
+#  Rationale: One can (and usually would want to) have a default current_idx, which
+#  can be used as the start index too.
+count_increments: IndexUpdater
+
+
+def count_increments(current_idx: Index, obj: DataItem, step=1):
     return current_idx + step
 
 
-def size_increments(current_idx, obj, size_func=len):
+size_increments: IndexUpdater
+
+
+def size_increments(current_idx, obj: DataItem, size_func=len):
     return current_idx + size_func(obj)
+
+
+current_time: IndexUpdater
 
 
 def current_time(current_idx, obj):
@@ -66,7 +78,6 @@ class DynamicIndexer:
 
     Let's take a finite stream of finite iterables (strings here):
 
-    >>> stream = ['stream', 'of', 'different', 'sized', 'chunks']
 
     The default ``DynamicIndexer`` just does what ``enumerate`` does:
 
@@ -153,6 +164,33 @@ def dynamically_index(iterable: Iterable, start=0, idx_updater=count_increments)
     """
     dynamic_indexer = DynamicIndexer(start, idx_updater)
     return map(dynamic_indexer, iterable)
+
+
+# Alternative to the above implementation:
+
+from functools import partial
+from itertools import accumulate
+
+
+def _dynamic_indexer(stream, idx_updater: IndexUpdater = count_increments, start=0):
+    index_func = partial(accumulate, func=idx_updater, initial=start)
+    obj = zip(index_func(stream), stream)
+    return obj
+
+
+def alt_dynamically_index(idx_updater: IndexUpdater = count_increments, start=0):
+    """Alternative to dynamically_index using itertools and partial
+
+    >>> def size_increments(current_idx, data_item, size_func=len):
+    ...     return current_idx + size_func(data_item)
+    ...
+    >>> stream = ['stream', 'of', 'different', 'sized', 'chunks']
+    >>> indexer = alt_dynamically_index(size_increments)
+    >>> t = list(indexer(stream))
+    >>> assert t == [(0, 'stream'), (6, 'of'), (8, 'different'), (17, 'sized'),
+    ...              (22, 'chunks')]
+    """
+    return partial(_dynamic_indexer, idx_updater=idx_updater, start=start)
 
 
 # ---------------------------------------------------------------------------------------

@@ -102,7 +102,7 @@ class Creek:
 
     def __dir__(self):
         return list(
-            set((*dir(self.__class__), *dir(self.stream)))
+            {*dir(self.__class__), *dir(self.stream)}
         )  # to forward dir to delegated stream as well
         # return list(set(dir(self.__class__)).union(self.stream.__dir__()))  # to forward dir to delegated stream as well
 
@@ -132,7 +132,6 @@ class Creek:
 
     def __next__(self):  # TODO: Pros and cons of having a __next__?
         """by default: next(iter(self))
-        Expect to
         """
         return next(iter(self))
 

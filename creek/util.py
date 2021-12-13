@@ -8,10 +8,11 @@ from functools import (
 )
 from itertools import islice
 
-from typing import Any, Iterable, Iterator, Union
+from typing import Any, Iterable, Iterator, Union, NewType
+from typing import Protocol, runtime_checkable
+
 from functools import singledispatch, partial
 
-from typing import Protocol, runtime_checkable
 
 IteratorItem = Any
 
@@ -47,6 +48,9 @@ class CursorFunc(Protocol):
     def __call__(self) -> IteratorItem:
         """Get the next iterator's item and increment the cursor"""
 
+
+IterType = NewType('IterType', Union[IteratorType, IterableType, CursorFunc])
+IterType.__doc__ = "A type that can be made into an iterator"
 
 wrapper_assignments = (*WRAPPER_ASSIGNMENTS, '__defaults__', '__kwdefaults__')
 update_wrapper = partial(_update_wrapper, assigned=wrapper_assignments)
