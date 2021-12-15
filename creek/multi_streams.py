@@ -116,4 +116,3 @@ staticmethods = partial(transform_methods, method_trans=staticmethod)
 class SortKeys:
     all_but_last = itemgetter(-1)
     second_item = itemgetter(1)
-

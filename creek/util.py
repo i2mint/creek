@@ -50,7 +50,7 @@ class CursorFunc(Protocol):
 
 
 IterType = NewType('IterType', Union[IteratorType, IterableType, CursorFunc])
-IterType.__doc__ = "A type that can be made into an iterator"
+IterType.__doc__ = 'A type that can be made into an iterator'
 
 wrapper_assignments = (*WRAPPER_ASSIGNMENTS, '__defaults__', '__kwdefaults__')
 update_wrapper = partial(_update_wrapper, assigned=wrapper_assignments)

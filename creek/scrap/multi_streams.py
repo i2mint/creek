@@ -2,7 +2,7 @@ from creek.multi_streams import *
 
 from warnings import warn
 
-warn(f"Moved to creek.multi_streams")
+warn(f'Moved to creek.multi_streams')
 
 from dataclasses import dataclass
 
@@ -25,6 +25,7 @@ def MyType(
     if aka is not None:
         new_tp._aka = aka
     return new_tp
+
 
 TimeIndex = MyType(
     'TimeIndex',
@@ -61,7 +62,7 @@ RetrievedIntervals = Intervals
 QueryInterval = Intervals
 IntervalsRetriever = Callable[[QueryInterval, BufferedIntervals], RetrievedIntervals]
 
+
 @dataclass
 class IntervalSlicer:
     match_intervals: IntervalsRetriever
-
