@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.scrap.creek_layers &mdash; creek 0.1.21 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <title>creek.scrap.creek_layers &mdash; creek 0.1.22 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
@@ -50,7 +50,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../multi_streams.html">creek.multi_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="async_utils.html">creek.scrap.async_utils</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">creek.scrap.creek_layers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id21">)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wrapper-interfaces">Wrapper interfaces</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#inner-class">Inner-class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#decorators">Decorators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fluid-interfaces">Fluid interfaces</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="multi_streams.html">creek.scrap.multi_streams</a></li>
@@ -86,52 +91,49 @@
              
   <section id="module-creek.scrap.creek_layers">
 <span id="creek-scrap-creek-layers"></span><h1>creek.scrap.creek_layers<a class="headerlink" href="#module-creek.scrap.creek_layers" title="Permalink to this headline">¶</a></h1>
-<p># Wrapper interfaces</p>
-<p>## Inner-class</p>
-<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python
-def intify(self, data):</p>
-<blockquote>
-<div><p>return tuple(map(int, data))</p>
-</div></blockquote>
-<dl>
-<dt>class D(Creek):</dt><dd><p># subclassing <cite>CreekLayer</cite> indicates that this class is a layering class
-# could also use decorator for this: Allowing simple injection of external classes
-class Lay(CreekLayer):</p>
-<blockquote>
-<div><p># name indicates what kind of layer this is (i.e. where/how to apply it)
-def pre_iter(stream):</p>
-<blockquote>
-<div><p>next(stream)  # skip one</p>
-</div></blockquote>
-<p>&#64;data_to_obj  # decorator to indicate what kind of layer this is (i.e. where/how to apply it
-def strip_and_split(data):  # function can be a method (first arg is instance) or static (data_to_obj figures it out)</p>
-<blockquote>
-<div><p>return data.strip().split(‘,’)</p>
-</div></blockquote>
-<p>another_data_to_obj_layer = data_to_obj(intify)  # decorator can be used to inject function defined externally</p>
-</div></blockquote>
-</dd>
-</dl>
-<p><a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
-<p>## Decorators</p>
-<p><a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a>python
-&#64;lay(kind=’pre_iter’, func=func)
-&#64;lay.data_to_obj(func=func)
-class D(Creek):</p>
-<blockquote>
-<div><p>pass</p>
-</div></blockquote>
-<p><a href="#id13"><span class="problematic" id="id14">``</span></a><a href="#id15"><span class="problematic" id="id16">`</span></a></p>
-<p>## Fluid interfaces</p>
-<p><a href="#id17"><span class="problematic" id="id18">``</span></a><a href="#id19"><span class="problematic" id="id20">`</span></a>python
-D = (Creek</p>
-<blockquote>
-<div><p>.lay(‘pre_iter’, func)
-.lay.data_to_obj(func)…</p>
-</div></blockquote>
-<section id="id21">
-<h2>)<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h2>
-<p># Backend</p>
+<section id="wrapper-interfaces">
+<h2>Wrapper interfaces<a class="headerlink" href="#wrapper-interfaces" title="Permalink to this headline">¶</a></h2>
+<section id="inner-class">
+<h3>Inner-class<a class="headerlink" href="#inner-class" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">intify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">data</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">D</span><span class="p">(</span><span class="n">Creek</span><span class="p">):</span>
+    <span class="c1"># subclassing `CreekLayer` indicates that this class is a layering class</span>
+    <span class="c1"># could also use decorator for this: Allowing simple injection of external classes</span>
+    <span class="k">class</span> <span class="nc">Lay</span><span class="p">(</span><span class="n">CreekLayer</span><span class="p">):</span>
+        <span class="c1"># name indicates what kind of layer this is (i.e. where/how to apply it)</span>
+        <span class="k">def</span> <span class="nf">pre_iter</span><span class="p">(</span><span class="n">stream</span><span class="p">):</span>
+            <span class="nb">next</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>  <span class="c1"># skip one</span>
+
+        <span class="nd">@data_to_obj</span>  <span class="c1"># decorator to indicate what kind of layer this is (i.e. where/how to apply it</span>
+        <span class="k">def</span> <span class="nf">strip_and_split</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>  <span class="c1"># function can be a method (first arg is instance) or static (data_to_obj figures it out)</span>
+            <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+
+        <span class="n">another_data_to_obj_layer</span> <span class="o">=</span> <span class="n">data_to_obj</span><span class="p">(</span><span class="n">intify</span><span class="p">)</span>  <span class="c1"># decorator can be used to inject function defined externally</span>
+</pre></div>
+</div>
+</section>
+<section id="decorators">
+<h3>Decorators<a class="headerlink" href="#decorators" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@lay</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;pre_iter&#39;</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">)</span>
+<span class="nd">@lay</span><span class="o">.</span><span class="n">data_to_obj</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">D</span><span class="p">(</span><span class="n">Creek</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="fluid-interfaces">
+<h3>Fluid interfaces<a class="headerlink" href="#fluid-interfaces" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="p">(</span><span class="n">Creek</span>
+    <span class="o">.</span><span class="n">lay</span><span class="p">(</span><span class="s1">&#39;pre_iter&#39;</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">lay</span><span class="o">.</span><span class="n">data_to_obj</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">...</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Backend
+###</p>
 <p>Use lists to stack layers.</p>
 <p>Compile the layers to increase resource use.</p>
 <p>Uncompile to increase debugibility.</p>
@@ -140,6 +142,7 @@ D = (Creek</p>
 <em class="property">class </em><code class="sig-prename descclassname">creek.scrap.creek_layers.</code><code class="sig-name descname">CreekLayer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pre_iters</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Callable<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em>, <em class="sig-param"><span class="n">data_to_objs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Callable<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em>, <em class="sig-param"><span class="n">post_iters</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Callable<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/creek/scrap/creek_layers.html#CreekLayer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.scrap.creek_layers.CreekLayer" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</section>
 </section>
 </section>
 
