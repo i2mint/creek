@@ -77,7 +77,8 @@ class DynamicIndexer:
     :param idx_updater: The (Index, DataItem) -> Index
 
     Let's take a finite stream of finite iterables (strings here):
-
+    
+    >>> stream = ['stream', 'of', 'different', 'sized', 'chunks']
 
     The default ``DynamicIndexer`` just does what ``enumerate`` does:
 
