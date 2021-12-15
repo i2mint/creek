@@ -70,6 +70,7 @@ class MergedStreams:
 
 def multi_stream_items(streams_map: StreamsMap):
     """Provides a iterable of (k1, v1_1), (k1, v1_2), ...
+    
     >>> streams_map = {'hello': 'abc', 'world': [1, 2]}
     >>> hello_items, world_items = multi_stream_items(streams_map)
     >>> list(hello_items)
