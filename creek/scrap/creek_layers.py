@@ -1,47 +1,58 @@
 """
-# Wrapper interfaces
+Wrapper interfaces
+##################
 
-## Inner-class
+Inner-class
+***********
 
-```python
-def intify(self, data):
-    return tuple(map(int, data))
+.. code-block:: python
 
-class D(Creek):
-    # subclassing `CreekLayer` indicates that this class is a layering class
-    # could also use decorator for this: Allowing simple injection of external classes
-    class Lay(CreekLayer):
-        # name indicates what kind of layer this is (i.e. where/how to apply it)
-        def pre_iter(stream):
-            next(stream)  # skip one
-
-        @data_to_obj  # decorator to indicate what kind of layer this is (i.e. where/how to apply it
-        def strip_and_split(data):  # function can be a method (first arg is instance) or static (data_to_obj figures it out)
-            return data.strip().split(',')
-
-        another_data_to_obj_layer = data_to_obj(intify)  # decorator can be used to inject function defined externally
-```
-
-## Decorators
-
-```python
-@lay(kind='pre_iter', func=func)
-@lay.data_to_obj(func=func)
-class D(Creek):
-    pass
-```
-
-## Fluid interfaces
-
-```python
-D = (Creek
-    .lay('pre_iter', func)
-    .lay.data_to_obj(func)...
-)
-```
+   def intify(self, data):
+       return tuple(map(int, data))
 
 
-# Backend
+.. code-block:: python
+
+    class D(Creek):
+        # subclassing `CreekLayer` indicates that this class is a layering class
+        # could also use decorator for this: Allowing simple injection of external classes
+        class Lay(CreekLayer):
+            # name indicates what kind of layer this is (i.e. where/how to apply it)
+            def pre_iter(stream):
+                next(stream)  # skip one
+
+            @data_to_obj  # decorator to indicate what kind of layer this is (i.e. where/how to apply it
+            def strip_and_split(data):  # function can be a method (first arg is instance) or static (data_to_obj figures it out)
+                return data.strip().split(',')
+
+            another_data_to_obj_layer = data_to_obj(intify)  # decorator can be used to inject function defined externally
+
+
+Decorators
+**********
+
+.. code-block:: python
+
+    @lay(kind='pre_iter', func=func)
+    @lay.data_to_obj(func=func)
+    class D(Creek):
+        pass
+
+
+Fluid interfaces
+****
+
+.. code-block:: python
+
+    D = (Creek
+        .lay('pre_iter', func)
+        .lay.data_to_obj(func)...
+    )
+
+
+
+Backend
+###
 
 Use lists to stack layers.
 
