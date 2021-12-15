@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.scrap.async_utils &mdash; creek 0.1.24 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <title>creek.scrap.async_utils &mdash; creek 0.1.25 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
@@ -84,71 +84,71 @@
 
 <span class="sd">Making singledispatch work:</span>
 
-<span class="sd">```</span>
-<span class="sd">from typing import Generator, Iterator, Iterable, AsyncIterable, AsyncIterator</span>
-<span class="sd">from functools import singledispatch, partial</span>
+<span class="sd">.. code-block:: python</span>
 
-<span class="sd">from typing import Protocol, runtime_checkable</span>
+<span class="sd">    from typing import Generator, Iterator, Iterable, AsyncIterable, AsyncIterator</span>
+<span class="sd">    from functools import singledispatch, partial</span>
 
-<span class="sd">@runtime_checkable</span>
-<span class="sd">class IterableType(Protocol):</span>
-<span class="sd">    def __iter__(self):</span>
-<span class="sd">        pass</span>
+<span class="sd">    from typing import Protocol, runtime_checkable</span>
 
-<span class="sd">@runtime_checkable</span>
-<span class="sd">class CursorFunc(Protocol):</span>
-<span class="sd">    def __call__(self):</span>
-<span class="sd">        pass</span>
+<span class="sd">    @runtime_checkable</span>
+<span class="sd">    class IterableType(Protocol):</span>
+<span class="sd">        def __iter__(self):</span>
+<span class="sd">            pass</span>
 
-<span class="sd">@singledispatch</span>
-<span class="sd">def to_iterator(x: IterableType):</span>
-<span class="sd">    return iter(x)</span>
+<span class="sd">    @runtime_checkable</span>
+<span class="sd">    class CursorFunc(Protocol):</span>
+<span class="sd">        def __call__(self):</span>
+<span class="sd">            pass</span>
 
-<span class="sd">will_never_happen = object()</span>
+<span class="sd">    @singledispatch</span>
+<span class="sd">    def to_iterator(x: IterableType):</span>
+<span class="sd">        return iter(x)</span>
 
-<span class="sd">@to_iterator.register</span>
-<span class="sd">def _(x: CursorFunc):</span>
-<span class="sd">    return iter(x, will_never_happen)</span>
+<span class="sd">    will_never_happen = object()</span>
 
-<span class="sd">assert list(to_iterator([1,2,3])) == [1, 2, 3]</span>
+<span class="sd">    @to_iterator.register</span>
+<span class="sd">    def _(x: CursorFunc):</span>
+<span class="sd">        return iter(x, will_never_happen)</span>
 
-<span class="sd">f = partial(next, iter([1,2,3]))</span>
-<span class="sd">assert list(to_iterator(f)) == [1, 2, 3]</span>
-<span class="sd">```</span>
+<span class="sd">    assert list(to_iterator([1,2,3])) == [1, 2, 3]</span>
+
+<span class="sd">    f = partial(next, iter([1,2,3]))</span>
+<span class="sd">    assert list(to_iterator(f)) == [1, 2, 3]</span>
 
 <span class="sd">Trying to make async iterators/iterables/cursor_funcs utils</span>
 
-<span class="sd">```</span>
-<span class="sd">import asyncio</span>
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    import asyncio</span>
 
 
-<span class="sd">async def ticker(to=3, delay=0.5):</span>
-<span class="sd">    # Yield numbers from 0 to `to` every `delay` seconds.</span>
-<span class="sd">    for i in range(to):</span>
-<span class="sd">        yield i</span>
-<span class="sd">        await asyncio.sleep(delay)</span>
+<span class="sd">    async def ticker(to=3, delay=0.5):</span>
+<span class="sd">        # Yield numbers from 0 to `to` every `delay` seconds.</span>
+<span class="sd">        for i in range(to):</span>
+<span class="sd">            yield i</span>
+<span class="sd">            await asyncio.sleep(delay)</span>
 
-<span class="sd">async def my_aiter(async_iterable):</span>
-<span class="sd">    async for i in async_iterable:</span>
-<span class="sd">        yield i</span>
+<span class="sd">    async def my_aiter(async_iterable):</span>
+<span class="sd">        async for i in async_iterable:</span>
+<span class="sd">            yield i</span>
 
-<span class="sd">t = [i async for i in my_aiter(ticker(3, 0.2))]</span>
-<span class="sd">assert t == [0, 1, 2]</span>
+<span class="sd">    t = [i async for i in my_aiter(ticker(3, 0.2))]</span>
+<span class="sd">    assert t == [0, 1, 2]</span>
 
-<span class="sd"># t = list(my_aiter(ticker(3, 0.2)))</span>
-<span class="sd"># # TypeError: &#39;async_generator&#39; object is not iterable</span>
-<span class="sd"># # and</span>
-<span class="sd"># t = await list(ticker(3, 0.2))</span>
-<span class="sd"># # TypeError: &#39;async_generator&#39; object is not iterable</span>
+<span class="sd">    # t = list(my_aiter(ticker(3, 0.2)))</span>
+<span class="sd">    # # TypeError: &#39;async_generator&#39; object is not iterable</span>
+<span class="sd">    # # and</span>
+<span class="sd">    # t = await list(ticker(3, 0.2))</span>
+<span class="sd">    # # TypeError: &#39;async_generator&#39; object is not iterable</span>
 
-<span class="sd"># But...</span>
+<span class="sd">    # But...</span>
 
-<span class="sd">async def alist(async_iterable):</span>
-<span class="sd">    return [i async for i in async_iterable]</span>
+<span class="sd">    async def alist(async_iterable):</span>
+<span class="sd">        return [i async for i in async_iterable]</span>
 
-<span class="sd">t = await alist(ticker(3, 0.2))</span>
-<span class="sd">assert t == [0, 1, 2]</span>
-<span class="sd">```</span>
+<span class="sd">    t = await alist(ticker(3, 0.2))</span>
+<span class="sd">    assert t == [0, 1, 2]</span>
 
 
 <span class="sd">&quot;&quot;&quot;</span>

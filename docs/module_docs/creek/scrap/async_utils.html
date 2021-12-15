@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.scrap.async_utils &mdash; creek 0.1.24 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <title>creek.scrap.async_utils &mdash; creek 0.1.25 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
@@ -85,73 +85,69 @@
 <span id="creek-scrap-async-utils"></span><h1>creek.scrap.async_utils<a class="headerlink" href="#module-creek.scrap.async_utils" title="Permalink to this headline">¶</a></h1>
 <p>Utils to deal with async iteration</p>
 <p>Making singledispatch work:</p>
-<p><a href="#id1"><span class="problematic" id="id2">``</span></a>`
-from typing import Generator, Iterator, Iterable, AsyncIterable, AsyncIterator
-from functools import singledispatch, partial</p>
-<p>from typing import Protocol, runtime_checkable</p>
-<p>&#64;runtime_checkable
-class IterableType(Protocol):</p>
-<blockquote>
-<div><dl class="simple">
-<dt>def __iter__(self):</dt><dd><p>pass</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>&#64;runtime_checkable
-class CursorFunc(Protocol):</p>
-<blockquote>
-<div><dl class="simple">
-<dt>def __call__(self):</dt><dd><p>pass</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>&#64;singledispatch
-def to_iterator(x: IterableType):</p>
-<blockquote>
-<div><p>return iter(x)</p>
-</div></blockquote>
-<p>will_never_happen = object()</p>
-<p>&#64;to_iterator.register
-def _(x: CursorFunc):</p>
-<blockquote>
-<div><p>return iter(x, will_never_happen)</p>
-</div></blockquote>
-<p>assert list(to_iterator([1,2,3])) == [1, 2, 3]</p>
-<p>f = partial(next, iter([1,2,3]))
-assert list(to_iterator(f)) == [1, 2, 3]
-<a href="#id3"><span class="problematic" id="id4">``</span></a><a href="#id5"><span class="problematic" id="id6">`</span></a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">AsyncIterable</span><span class="p">,</span> <span class="n">AsyncIterator</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">singledispatch</span><span class="p">,</span> <span class="n">partial</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">runtime_checkable</span>
+
+<span class="nd">@runtime_checkable</span>
+<span class="k">class</span> <span class="nc">IterableType</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="nd">@runtime_checkable</span>
+<span class="k">class</span> <span class="nc">CursorFunc</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="nd">@singledispatch</span>
+<span class="k">def</span> <span class="nf">to_iterator</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">IterableType</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="n">will_never_happen</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
+
+<span class="nd">@to_iterator</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">CursorFunc</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">will_never_happen</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]))</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="nb">next</span><span class="p">,</span> <span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]))</span>
+<span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
 <p>Trying to make async iterators/iterables/cursor_funcs utils</p>
-<p><a href="#id7"><span class="problematic" id="id8">``</span></a>`
-import asyncio</p>
-<dl>
-<dt>async def ticker(to=3, delay=0.5):</dt><dd><p># Yield numbers from 0 to <cite>to</cite> every <cite>delay</cite> seconds.
-for i in range(to):</p>
-<blockquote>
-<div><p>yield i
-await asyncio.sleep(delay)</p>
-</div></blockquote>
-</dd>
-<dt>async def my_aiter(async_iterable):</dt><dd><dl class="simple">
-<dt>async for i in async_iterable:</dt><dd><p>yield i</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>t = [i async for i in my_aiter(ticker(3, 0.2))]
-assert t == [0, 1, 2]</p>
-<p># t = list(my_aiter(ticker(3, 0.2)))
-# # TypeError: ‘async_generator’ object is not iterable
-# # and
-# t = await list(ticker(3, 0.2))
-# # TypeError: ‘async_generator’ object is not iterable</p>
-<p># But…</p>
-<dl class="simple">
-<dt>async def alist(async_iterable):</dt><dd><p>return [i async for i in async_iterable]</p>
-</dd>
-</dl>
-<p>t = await alist(ticker(3, 0.2))
-assert t == [0, 1, 2]
-<a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">ticker</span><span class="p">(</span><span class="n">to</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="c1"># Yield numbers from 0 to `to` every `delay` seconds.</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">to</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">i</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">my_aiter</span><span class="p">(</span><span class="n">async_iterable</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">async_iterable</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">i</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">async</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">my_aiter</span><span class="p">(</span><span class="n">ticker</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">))]</span>
+<span class="k">assert</span> <span class="n">t</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+
+<span class="c1"># t = list(my_aiter(ticker(3, 0.2)))</span>
+<span class="c1"># # TypeError: &#39;async_generator&#39; object is not iterable</span>
+<span class="c1"># # and</span>
+<span class="c1"># t = await list(ticker(3, 0.2))</span>
+<span class="c1"># # TypeError: &#39;async_generator&#39; object is not iterable</span>
+
+<span class="c1"># But...</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">alist</span><span class="p">(</span><span class="n">async_iterable</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">i</span> <span class="k">async</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">async_iterable</span><span class="p">]</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="k">await</span> <span class="n">alist</span><span class="p">(</span><span class="n">ticker</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">))</span>
+<span class="k">assert</span> <span class="n">t</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+</pre></div>
+</div>
 <dl class="py function">
 <dt id="creek.scrap.async_utils.aiter_with_sentinel">
 <code class="sig-prename descclassname">creek.scrap.async_utils.</code><code class="sig-name descname">aiter_with_sentinel</code><span class="sig-paren">(</span><em class="sig-param">cursor_func: NewType.&lt;locals&gt;.new_type</em>, <em class="sig-param">sentinel: Any</em><span class="sig-paren">)</span> &#x2192; AsyncIterator<a class="reference internal" href="../../../_modules/creek/scrap/async_utils.html#aiter_with_sentinel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.scrap.async_utils.aiter_with_sentinel" title="Permalink to this definition">¶</a></dt>
