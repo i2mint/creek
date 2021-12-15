@@ -6,20 +6,22 @@ that we need to segment, according to the detection of an event.
 
 For example, take a stream of integers and detect the event "multiple of 5":
 
-```
-1->2->3->4->'multiple of 5'->6->7->...
+.. code-block:: python
 
-```
+    1->2->3->4->'multiple of 5'->6->7->...
+
+
 
 When the stream is "live", we don't want to process it immediately, but instead
 we prefer to annotate it on the fly, by adding some metadata to it.
 
 The simplest addition of metadata information could look like:
 
-```
-3->4->('multiple of 5', 5) -> 6 -> ...
+.. code-block:: python
 
-```
+    3->4->('multiple of 5', 5) -> 6 -> ...
+
+
 
 This module treats the more complicated case of "multilabelling":
 a LabelledElement x has an attribute **x.element**,
@@ -27,10 +29,11 @@ and a container of labels **x.labels** (list, set or dict).
 
 Multilabels can be used to segments streams into overlapping segments.
 
-```
-(group0)->(group0)->(group0, group1)->(group0, group1)-> (group1)->(group1)->...
+.. code-block:: python
 
-```
+    (group0)->(group0)->(group0, group1)->(group0, group1)-> (group1)->(group1)->...
+
+
 
 """
 
