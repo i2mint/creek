@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.labeling &mdash; creek 0.1.23 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>creek.labeling &mdash; creek 0.1.24 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -87,22 +87,22 @@
 <p>The motivating example is the case of an incoming stream
 that we need to segment, according to the detection of an event.</p>
 <p>For example, take a stream of integers and detect the event “multiple of 5”:</p>
-<p><a href="#id1"><span class="problematic" id="id2">``</span></a>`
-1-&gt;2-&gt;3-&gt;4-&gt;’multiple of 5’-&gt;6-&gt;7-&gt;…</p>
-<p><a href="#id3"><span class="problematic" id="id4">``</span></a><a href="#id5"><span class="problematic" id="id6">`</span></a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span><span class="o">-&gt;</span><span class="mi">2</span><span class="o">-&gt;</span><span class="mi">3</span><span class="o">-&gt;</span><span class="mi">4</span><span class="o">-&gt;</span><span class="s1">&#39;multiple of 5&#39;</span><span class="o">-&gt;</span><span class="mi">6</span><span class="o">-&gt;</span><span class="mi">7</span><span class="o">-&gt;...</span>
+</pre></div>
+</div>
 <p>When the stream is “live”, we don’t want to process it immediately, but instead
 we prefer to annotate it on the fly, by adding some metadata to it.</p>
 <p>The simplest addition of metadata information could look like:</p>
-<p><a href="#id7"><span class="problematic" id="id8">``</span></a>`
-3-&gt;4-&gt;(‘multiple of 5’, 5) -&gt; 6 -&gt; …</p>
-<p><a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="mi">3</span><span class="o">-&gt;</span><span class="mi">4</span><span class="o">-&gt;</span><span class="p">(</span><span class="s1">&#39;multiple of 5&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="mi">6</span> <span class="o">-&gt;</span> <span class="o">...</span>
+</pre></div>
+</div>
 <p>This module treats the more complicated case of “multilabelling”:
 a LabelledElement x has an attribute <strong>x.element</strong>,
 and a container of labels <strong>x.labels</strong> (list, set or dict).</p>
 <p>Multilabels can be used to segments streams into overlapping segments.</p>
-<p><a href="#id13"><span class="problematic" id="id14">``</span></a>`
-(group0)-&gt;(group0)-&gt;(group0, group1)-&gt;(group0, group1)-&gt; (group1)-&gt;(group1)-&gt;…</p>
-<p><a href="#id15"><span class="problematic" id="id16">``</span></a><a href="#id17"><span class="problematic" id="id18">`</span></a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">group0</span><span class="p">)</span><span class="o">-&gt;</span><span class="p">(</span><span class="n">group0</span><span class="p">)</span><span class="o">-&gt;</span><span class="p">(</span><span class="n">group0</span><span class="p">,</span> <span class="n">group1</span><span class="p">)</span><span class="o">-&gt;</span><span class="p">(</span><span class="n">group0</span><span class="p">,</span> <span class="n">group1</span><span class="p">)</span><span class="o">-&gt;</span> <span class="p">(</span><span class="n">group1</span><span class="p">)</span><span class="o">-&gt;</span><span class="p">(</span><span class="n">group1</span><span class="p">)</span><span class="o">-&gt;...</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt id="creek.labeling.DictLabeledElement">
 <em class="property">class </em><code class="sig-prename descclassname">creek.labeling.</code><code class="sig-name descname">DictLabeledElement</code><span class="sig-paren">(</span><em class="sig-param">element: NewType.&lt;locals&gt;.new_type</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/labeling.html#DictLabeledElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.labeling.DictLabeledElement" title="Permalink to this definition">¶</a></dt>
