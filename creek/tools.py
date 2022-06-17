@@ -1,14 +1,90 @@
 """Tools to work with creek objects"""
 
 import time
-from typing import Union, Any, Callable, Tuple, TypeVar, Iterable
+from typing import Any, Callable, Tuple, TypeVar, Callable, Any, Iterable, Sequence
 from dataclasses import dataclass
+from itertools import chain
+from operator import itemgetter
+from functools import partial
+
+from creek.util import Pipe
 
 Index = Any
 DataItem = TypeVar('DataItem')
 # TODO: Could have more args. How to specify this in typing?
 IndexUpdater = Callable[[Index, DataItem], Index]
 Indexer = Callable[[DataItem], Tuple[Index, DataItem]]
+
+
+def apply_and_fanout(
+    seq: Sequence, func: Callable[[Any], Iterable], idx: int
+) -> Iterable[tuple]:
+    """Apply function (that returns an Iterable) to an element of a sequence
+    and fanout (broadcast) the resulting items, to produce an iterable of tuples each
+    containing
+    one of these items along with 'a copy' of the other tuple elements
+
+    >>> list(apply_and_fanout([1, 'abc', 3], iter, 1))
+    [(1, 'a', 3), (1, 'b', 3), (1, 'c', 3)]
+    >>> list(apply_and_fanout(['bob', 'alice', 2], lambda x: x * ['hi'], 2))
+    [('bob', 'alice', 'hi'), ('bob', 'alice', 'hi')]
+
+    See Also:
+        ``fanout_and_flatten`` and ``fanout_and_flatten_dicts``
+    """
+    seq = tuple(seq)  # TODO: Overhead: Should we impose seq to be tuple?
+    left_seq = seq[0 : max(idx, 0)]
+    right_seq = seq[(idx + 1) :]
+    return (left_seq + (item,) + right_seq for item in func(seq[idx]))
+
+
+def fanout_and_flatten(iterable_of_seqs, func, idx, aggregator=chain.from_iterable):
+    """Apply apply_and_fanout to an iterable of sequences.
+
+    >>> seq_iterable = [('abcdef', 'first'), ('ghij', 'second')]
+    >>> func = lambda a: zip(*([iter(a)] * 2))  # func is a chunker
+    >>> assert list(fanout_and_flatten(seq_iterable, func, 0)) == [
+    ...     (('a', 'b'), 'first'),
+    ...     (('c', 'd'), 'first'),
+    ...     (('e', 'f'), 'first'),
+    ...     (('g', 'h'), 'second'),
+    ...     (('i', 'j'), 'second')
+    ... ]
+    """
+    apply = partial(apply_and_fanout, func=func, idx=idx)
+    return aggregator(map(apply, iterable_of_seqs))
+
+
+def fanout_and_flatten_dicts(
+    iterable_of_dicts, func, fields, idx_field, aggregator=chain.from_iterable
+):
+    """Apply apply_and_fanout to an iterable of dicts.
+
+    >>> iterable_of_dicts = [
+    ...     {'wf': 'abcdef', 'tag': 'first'}, {'wf': 'ghij', 'tag': 'second'}
+    ... ]
+    >>> func = lambda a: zip(*([iter(a)] * 2))  # func is a chunker
+    >>> fields = ['wf', 'tag']
+    >>> idx_field = 'wf'
+    >>> assert list(
+    ...     fanout_and_flatten_dicts(iterable_of_dicts, func, fields, idx_field)) == [
+    ...         {'wf': ('a', 'b'), 'tag': 'first'},
+    ...         {'wf': ('c', 'd'), 'tag': 'first'},
+    ...         {'wf': ('e', 'f'), 'tag': 'first'},
+    ...         {'wf': ('g', 'h'), 'tag': 'second'},
+    ...         {'wf': ('i', 'j'), 'tag': 'second'}
+    ... ]
+    """
+    egress = Pipe(partial(zip, fields), dict)
+    return map(
+        egress,
+        fanout_and_flatten(
+            map(itemgetter(*fields), iterable_of_dicts),
+            func=func,
+            idx=fields.index(idx_field),
+            aggregator=aggregator,
+        ),
+    )
 
 
 def filter_and_index_stream(
@@ -169,7 +245,6 @@ def dynamically_index(iterable: Iterable, start=0, idx_updater=count_increments)
 
 # Alternative to the above implementation:
 
-from functools import partial
 from itertools import accumulate
 
 

@@ -288,14 +288,23 @@ def identity_func(x):
 static_identity_method = staticmethod(identity_func)
 
 
-# TODO: Understand why this doesn't work:
-# --> TypeError: Invalid annotation for 'iterable'. typing.AsyncIterable is not a class.
-# @singledispatch
-# def iterable_to_iterator(iterable: Iterable) -> Iterator:
-#     return iter(iterable)
-# @iterable_to_iterator.register
-# def _(iterable: AsyncIterable) -> AsyncIterator:
-#     return aiter(iterable)
+from inspect import signature, Signature
+
+_dflt_signature = Signature.from_callable(lambda *args, **kwargs: None)
+
+
+def _signature_from_first_and_last_func(first_func, last_func):
+    try:
+        input_params = signature(first_func).parameters.values()
+    except ValueError:  # function doesn't have a signature, so take default
+        input_params = _dflt_signature.parameters.values()
+    try:
+        return_annotation = signature(last_func).return_annotation
+    except ValueError:  # function doesn't have a signature, so take default
+        return_annotation = _dflt_signature.return_annotation
+    return Signature(input_params, return_annotation=return_annotation)
+
+
 class Pipe:
     """Simple function composition. That is, gives you a callable that implements input -> f_1 -> ... -> f_n -> output.
 
@@ -304,28 +313,65 @@ class Pipe:
     >>> f = Pipe(foo, lambda x: print(f"x: {x}"))
     >>> f(3)
     x: 5
+    >>> len(f)
+    2
+
+    You can name functions, but this would just be for documentation purposes.
+    The names are completely ignored.
+
+    >>> g = Pipe(
+    ...     add_numbers = lambda x, y: x + y,
+    ...     multiply_by_2 = lambda x: x * 2,
+    ...     stringify = str
+    ... )
+    >>> g(2, 3)
+    '10'
+    >>> len(g)
+    3
 
     Notes:
         - Pipe instances don't have a __name__ etc. So some expectations of normal functions are not met.
         - Pipe instance are pickalable (as long as the functions that compose them are)
+
+    You can specify a single functions:
+
+    >>> Pipe(lambda x: x + 1)(2)
+    3
+
+    but
+
+    >>> Pipe()
+    Traceback (most recent call last):
+      ...
+    ValueError: You need to specify at least one function!
+
     """
 
-    def __init__(self, *funcs):
+    funcs = ()
 
+    def __init__(self, *funcs, **named_funcs):
+        funcs = list(funcs) + list(named_funcs.values())
+        self.funcs = funcs
         n_funcs = len(funcs)
-        other_funcs = ()
         if n_funcs == 0:
             raise ValueError('You need to specify at least one function!')
+
         elif n_funcs == 1:
+            other_funcs = ()
             first_func = last_func = funcs[0]
         else:
-            first_func, *other_funcs, last_func = funcs
+            first_func, *other_funcs = funcs
+            *_, last_func = other_funcs
 
+        self.__signature__ = _signature_from_first_and_last_func(first_func, last_func)
         self.first_func = first_func
-        self.other_funcs = tuple(other_funcs) + (last_func,)
+        self.other_funcs = other_funcs
 
     def __call__(self, *args, **kwargs):
         out = self.first_func(*args, **kwargs)
         for func in self.other_funcs:
             out = func(out)
         return out
+
+    def __len__(self):
+        return len(self.funcs)
