@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.tools &mdash; creek 0.1.25 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>creek.tools &mdash; creek 0.1.26 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -82,14 +82,90 @@
 <span></span><span class="sd">&quot;&quot;&quot;Tools to work with creek objects&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">itemgetter</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+
+<span class="kn">from</span> <span class="nn">creek.util</span> <span class="kn">import</span> <span class="n">Pipe</span>
 
 <span class="n">Index</span> <span class="o">=</span> <span class="n">Any</span>
 <span class="n">DataItem</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;DataItem&#39;</span><span class="p">)</span>
 <span class="c1"># TODO: Could have more args. How to specify this in typing?</span>
 <span class="n">IndexUpdater</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Index</span><span class="p">,</span> <span class="n">DataItem</span><span class="p">],</span> <span class="n">Index</span><span class="p">]</span>
 <span class="n">Indexer</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">DataItem</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Index</span><span class="p">,</span> <span class="n">DataItem</span><span class="p">]]</span>
+
+
+<div class="viewcode-block" id="apply_and_fanout"><a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.apply_and_fanout">[docs]</a><span class="k">def</span> <span class="nf">apply_and_fanout</span><span class="p">(</span>
+    <span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">],</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Apply function (that returns an Iterable) to an element of a sequence</span>
+<span class="sd">    and fanout (broadcast) the resulting items, to produce an iterable of tuples each</span>
+<span class="sd">    containing</span>
+<span class="sd">    one of these items along with &#39;a copy&#39; of the other tuple elements</span>
+
+<span class="sd">    &gt;&gt;&gt; list(apply_and_fanout([1, &#39;abc&#39;, 3], iter, 1))</span>
+<span class="sd">    [(1, &#39;a&#39;, 3), (1, &#39;b&#39;, 3), (1, &#39;c&#39;, 3)]</span>
+<span class="sd">    &gt;&gt;&gt; list(apply_and_fanout([&#39;bob&#39;, &#39;alice&#39;, 2], lambda x: x * [&#39;hi&#39;], 2))</span>
+<span class="sd">    [(&#39;bob&#39;, &#39;alice&#39;, &#39;hi&#39;), (&#39;bob&#39;, &#39;alice&#39;, &#39;hi&#39;)]</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        ``fanout_and_flatten`` and ``fanout_and_flatten_dicts``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">seq</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>  <span class="c1"># TODO: Overhead: Should we impose seq to be tuple?</span>
+    <span class="n">left_seq</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[</span><span class="mi">0</span> <span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
+    <span class="n">right_seq</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[(</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">:]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">left_seq</span> <span class="o">+</span> <span class="p">(</span><span class="n">item</span><span class="p">,)</span> <span class="o">+</span> <span class="n">right_seq</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">func</span><span class="p">(</span><span class="n">seq</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span></div>
+
+
+<div class="viewcode-block" id="fanout_and_flatten"><a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.fanout_and_flatten">[docs]</a><span class="k">def</span> <span class="nf">fanout_and_flatten</span><span class="p">(</span><span class="n">iterable_of_seqs</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">aggregator</span><span class="o">=</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Apply apply_and_fanout to an iterable of sequences.</span>
+
+<span class="sd">    &gt;&gt;&gt; seq_iterable = [(&#39;abcdef&#39;, &#39;first&#39;), (&#39;ghij&#39;, &#39;second&#39;)]</span>
+<span class="sd">    &gt;&gt;&gt; func = lambda a: zip(*([iter(a)] * 2))  # func is a chunker</span>
+<span class="sd">    &gt;&gt;&gt; assert list(fanout_and_flatten(seq_iterable, func, 0)) == [</span>
+<span class="sd">    ...     ((&#39;a&#39;, &#39;b&#39;), &#39;first&#39;),</span>
+<span class="sd">    ...     ((&#39;c&#39;, &#39;d&#39;), &#39;first&#39;),</span>
+<span class="sd">    ...     ((&#39;e&#39;, &#39;f&#39;), &#39;first&#39;),</span>
+<span class="sd">    ...     ((&#39;g&#39;, &#39;h&#39;), &#39;second&#39;),</span>
+<span class="sd">    ...     ((&#39;i&#39;, &#39;j&#39;), &#39;second&#39;)</span>
+<span class="sd">    ... ]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">apply</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">apply_and_fanout</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="n">idx</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">aggregator</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">apply</span><span class="p">,</span> <span class="n">iterable_of_seqs</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="fanout_and_flatten_dicts"><a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.fanout_and_flatten_dicts">[docs]</a><span class="k">def</span> <span class="nf">fanout_and_flatten_dicts</span><span class="p">(</span>
+    <span class="n">iterable_of_dicts</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">idx_field</span><span class="p">,</span> <span class="n">aggregator</span><span class="o">=</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Apply apply_and_fanout to an iterable of dicts.</span>
+
+<span class="sd">    &gt;&gt;&gt; iterable_of_dicts = [</span>
+<span class="sd">    ...     {&#39;wf&#39;: &#39;abcdef&#39;, &#39;tag&#39;: &#39;first&#39;}, {&#39;wf&#39;: &#39;ghij&#39;, &#39;tag&#39;: &#39;second&#39;}</span>
+<span class="sd">    ... ]</span>
+<span class="sd">    &gt;&gt;&gt; func = lambda a: zip(*([iter(a)] * 2))  # func is a chunker</span>
+<span class="sd">    &gt;&gt;&gt; fields = [&#39;wf&#39;, &#39;tag&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; idx_field = &#39;wf&#39;</span>
+<span class="sd">    &gt;&gt;&gt; assert list(</span>
+<span class="sd">    ...     fanout_and_flatten_dicts(iterable_of_dicts, func, fields, idx_field)) == [</span>
+<span class="sd">    ...         {&#39;wf&#39;: (&#39;a&#39;, &#39;b&#39;), &#39;tag&#39;: &#39;first&#39;},</span>
+<span class="sd">    ...         {&#39;wf&#39;: (&#39;c&#39;, &#39;d&#39;), &#39;tag&#39;: &#39;first&#39;},</span>
+<span class="sd">    ...         {&#39;wf&#39;: (&#39;e&#39;, &#39;f&#39;), &#39;tag&#39;: &#39;first&#39;},</span>
+<span class="sd">    ...         {&#39;wf&#39;: (&#39;g&#39;, &#39;h&#39;), &#39;tag&#39;: &#39;second&#39;},</span>
+<span class="sd">    ...         {&#39;wf&#39;: (&#39;i&#39;, &#39;j&#39;), &#39;tag&#39;: &#39;second&#39;}</span>
+<span class="sd">    ... ]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">egress</span> <span class="o">=</span> <span class="n">Pipe</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="nb">zip</span><span class="p">,</span> <span class="n">fields</span><span class="p">),</span> <span class="nb">dict</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span>
+        <span class="n">egress</span><span class="p">,</span>
+        <span class="n">fanout_and_flatten</span><span class="p">(</span>
+            <span class="nb">map</span><span class="p">(</span><span class="n">itemgetter</span><span class="p">(</span><span class="o">*</span><span class="n">fields</span><span class="p">),</span> <span class="n">iterable_of_dicts</span><span class="p">),</span>
+            <span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">,</span>
+            <span class="n">idx</span><span class="o">=</span><span class="n">fields</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">idx_field</span><span class="p">),</span>
+            <span class="n">aggregator</span><span class="o">=</span><span class="n">aggregator</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="filter_and_index_stream"><a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.filter_and_index_stream">[docs]</a><span class="k">def</span> <span class="nf">filter_and_index_stream</span><span class="p">(</span>
@@ -250,7 +326,6 @@
 
 <span class="c1"># Alternative to the above implementation:</span>
 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">accumulate</span>
 
 
