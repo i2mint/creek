@@ -30,6 +30,7 @@ def apply_and_fanout(
     [('bob', 'alice', 'hi'), ('bob', 'alice', 'hi')]
     >>> list(apply_and_fanout(["bob", "alice", 2], lambda x: x.upper(), 1))
     [('bob', 'A', 2), ('bob', 'L', 2), ('bob', 'I', 2), ('bob', 'C', 2), ('bob', 'E', 2)]
+
     See Also:
         ``fanout_and_flatten`` and ``fanout_and_flatten_dicts``
     """
