@@ -10,7 +10,7 @@ from functools import partial
 from creek.util import Pipe
 
 Index = Any
-DataItem = TypeVar("DataItem")
+DataItem = TypeVar('DataItem')
 # TODO: Could have more args. How to specify this in typing?
 IndexUpdater = Callable[[Index, DataItem], Index]
 Indexer = Callable[[DataItem], Tuple[Index, DataItem]]

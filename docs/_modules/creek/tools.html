@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.tools &mdash; creek 0.1.26 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>creek.tools &mdash; creek 0.1.27 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -109,6 +109,8 @@
 <span class="sd">    [(1, &#39;a&#39;, 3), (1, &#39;b&#39;, 3), (1, &#39;c&#39;, 3)]</span>
 <span class="sd">    &gt;&gt;&gt; list(apply_and_fanout([&#39;bob&#39;, &#39;alice&#39;, 2], lambda x: x * [&#39;hi&#39;], 2))</span>
 <span class="sd">    [(&#39;bob&#39;, &#39;alice&#39;, &#39;hi&#39;), (&#39;bob&#39;, &#39;alice&#39;, &#39;hi&#39;)]</span>
+<span class="sd">    &gt;&gt;&gt; list(apply_and_fanout([&quot;bob&quot;, &quot;alice&quot;, 2], lambda x: x.upper(), 1))</span>
+<span class="sd">    [(&#39;bob&#39;, &#39;A&#39;, 2), (&#39;bob&#39;, &#39;L&#39;, 2), (&#39;bob&#39;, &#39;I&#39;, 2), (&#39;bob&#39;, &#39;C&#39;, 2), (&#39;bob&#39;, &#39;E&#39;, 2)]</span>
 
 <span class="sd">    See Also:</span>
 <span class="sd">        ``fanout_and_flatten`` and ``fanout_and_flatten_dicts``</span>
@@ -234,7 +236,7 @@
 <span class="sd">    :param idx_updater: The (Index, DataItem) -&gt; Index</span>
 
 <span class="sd">    Let&#39;s take a finite stream of finite iterables (strings here):</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; stream = [&#39;stream&#39;, &#39;of&#39;, &#39;different&#39;, &#39;sized&#39;, &#39;chunks&#39;]</span>
 
 <span class="sd">    The default ``DynamicIndexer`` just does what ``enumerate`` does:</span>
