@@ -1,7 +1,8 @@
 """Tools to work with creek objects"""
 
 import time
-from typing import Any, Callable, Tuple, TypeVar, Callable, Any, Iterable, Sequence
+from collections import deque
+from typing import Any, Callable, Tuple, TypeVar, Callable, Any, Iterable, Sequence, cast
 from dataclasses import dataclass
 from itertools import chain
 from operator import itemgetter
@@ -307,3 +308,155 @@ def segment_overlaps(bt_tt_segment, query_bt, query_tt):
         or query_bt <= bt < query_tt  # the bottom part of the segment intersects
         # If it's both, the interval is entirely inside the query
     )
+
+
+Stats = Any
+_no_value_specified_sentinel = cast(int, object())
+
+
+class BufferStats(deque):
+    """A callable (fifo) buffer. Calls add input to it, but also returns some results
+    computed from it's contents.
+
+    What "add" means is configurable (through ``add_new_val`` arg). Default
+    is append, but can be extend etc.
+
+    >>> bs = BufferStats(maxlen=4, func=sum)
+    >>> list(map(bs, range(7)))
+    [0, 1, 3, 6, 10, 14, 18]
+
+    See what happens when you feed the same sequence again:
+
+    >>> list(map(bs, range(7)))
+    [15, 12, 9, 6, 10, 14, 18]
+
+    More examples:
+
+    >>> list(map(BufferStats(maxlen=4, func=''.join), 'abcdefgh'))
+    ['a', 'ab', 'abc', 'abcd', 'bcde', 'cdef', 'defg', 'efgh']
+
+    >>> from math import prod
+    >>> list(map(BufferStats(maxlen=4, func=prod), range(7)))
+    [0, 0, 0, 0, 24, 120, 360]
+
+    With a different ``add_new_val`` choice.
+
+    >>> bs = BufferStats(maxlen=4, func=''.join, add_new_val=deque.appendleft)
+    >>> list(map(bs, 'abcdefgh'))
+    ['a', 'ba', 'cba', 'dcba', 'edcb', 'fedc', 'gfed', 'hgfe']
+
+    With ``add_new_val=deque.extend``, data can be fed in chunks.
+    In the following, also see how we use iterize to get a function that
+    takes an iterator and returns an iterator
+
+    >>> from lined import iterize
+    >>> window_stats = iterize(BufferStats(
+    ... maxlen=4, func=''.join, add_new_val=deque.extend))
+    >>> chks = ['a', 'bc', 'def', 'gh']
+    >>> for x in window_stats(chks):
+    ...     print(x)
+    a
+    abc
+    cdef
+    efgh
+
+    Note: To those who might think that they can optimize this for special
+    cases: Yes you can.
+    But SHOULD you? Is it worth the increase in complexity and reduction in
+    flexibility?
+    See https://github.com/thorwhalen/umpyre/blob/master/misc
+    /performance_of_rolling_window_stats.md
+
+    """
+
+    # __name__ = 'BufferStats'
+
+    def __init__(
+        self,
+        values=(),
+        maxlen: int = _no_value_specified_sentinel,
+        func: Callable = sum,
+        add_new_val: Callable = deque.append,
+    ):
+        """
+
+        :param maxlen: Size of the buffer
+        :param func: The function to be computed (on buffer contents) and
+        returned when buffer is "called"
+        :param add_new_val: The function that adds values on the buffer.
+        Signature must be (self, new_val)
+            Is usually a deque method (``deque.append`` by default, but could
+            be ``deque.extend``, ``deque.appendleft`` etc.).
+            Can also be any other function that
+            has a valid (self, new_val) signature.
+        """
+        if maxlen is _no_value_specified_sentinel:
+            raise TypeError("You are required to specify maxlen")
+        if not isinstance(maxlen, int):
+            raise TypeError(f"maxlen must be an integer, was: {maxlen}")
+
+        super().__init__(values, maxlen=maxlen)
+        self.func = func
+        if isinstance(add_new_val, str):
+            # assume add_new_val is a method of deque:
+            add_new_val = getattr(self, add_new_val)
+        self.add_new_val = add_new_val
+        self.__name__ = "BufferStats"
+
+    def __call__(self, new_val) -> Stats:
+        self.add_new_val(self, new_val)  # add the new value
+        return self.func(self)
+
+
+def is_not_none(x):
+    return x is not None
+
+
+def return_buffer_on_stats_condition(
+    stats: Stats, buffer: Iterable, cond: Callable = is_not_none, else_val=None
+):
+    """
+
+    >>> return_buffer_on_stats_condition(stats=3, buffer=[1,2,3,4], cond=lambda x: x%2 == 1)
+    [1, 2, 3, 4]
+    >>> return_buffer_on_stats_condition(stats=3, buffer=[1,2,3,4], cond=lambda x: x%2 == 0, else_val='3 is not even!')
+    '3 is not even!'
+    """
+
+    if cond(stats):
+        return buffer
+    else:
+        return else_val
+
+
+@dataclass
+class Segmenter:
+    """
+
+    >>> gen = iter(range(200))
+    >>> bs = BufferStats(maxlen=10, func=sum)
+    >>> return_if_stats_is_odd = partial(return_buffer_on_stats_condition, cond=lambda x: x%2 == 1, else_val='The sum is not odd!')
+    >>> seg = Segmenter(buffer=bs, stats_buffer_callback=return_if_stats_is_odd)
+    >>> seg(new_val=1) # since the sum of the values in the buffer [1] is odd, the buffer is returned
+    [1]
+
+    Adding 1 + 2 is still odd so:
+
+    >>> seg(new_val=2)
+    [1, 2]
+
+    Now since 1 + 2 + 5 is even, the else_val of return_if_stats_is_odd is returned instead
+
+    >>> seg(new_val=5)
+    'The sum is not odd!'
+    """
+
+    buffer: BufferStats
+    stats_buffer_callback: Callable[
+        [Stats, Iterable], Any
+    ] = return_buffer_on_stats_condition
+    __name__ = "Segmenter"
+
+    def __call__(self, new_val):
+        stats = self.buffer(new_val)
+        return self.stats_buffer_callback(stats, list(self.buffer))

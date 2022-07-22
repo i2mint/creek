@@ -8,4 +8,6 @@ from creek.tools import (
     DynamicIndexer,
     count_increments,
     size_increments,
+    BufferStats,
+    Segmenter,
 )
