@@ -366,8 +366,7 @@ class BufferStats(deque):
     cases: Yes you can.
     But SHOULD you? Is it worth the increase in complexity and reduction in
     flexibility?
-    See https://github.com/thorwhalen/umpyre/blob/master/misc
-    /performance_of_rolling_window_stats.md
+    See https://github.com/thorwhalen/umpyre/blob/master/misc/performance_of_rolling_window_stats.md
 
     """
 
@@ -419,9 +418,13 @@ def return_buffer_on_stats_condition(
 ):
     """
 
-    >>> return_buffer_on_stats_condition(stats=3, buffer=[1,2,3,4], cond=lambda x: x%2 == 1)
+    >>> return_buffer_on_stats_condition(
+    ... stats=3, buffer=[1,2,3,4], cond=lambda x: x%2 == 1
+    ... )
     [1, 2, 3, 4]
-    >>> return_buffer_on_stats_condition(stats=3, buffer=[1,2,3,4], cond=lambda x: x%2 == 0, else_val='3 is not even!')
+    >>> return_buffer_on_stats_condition(
+    ... stats=3, buffer=[1,2,3,4], cond=lambda x: x%2 == 0, else_val='3 is not even!'
+    ... )
     '3 is not even!'
     """
 
@@ -437,17 +440,24 @@ class Segmenter:
 
     >>> gen = iter(range(200))
     >>> bs = BufferStats(maxlen=10, func=sum)
-    >>> return_if_stats_is_odd = partial(return_buffer_on_stats_condition, cond=lambda x: x%2 == 1, else_val='The sum is not odd!')
+    >>> return_if_stats_is_odd = partial(
+    ...     return_buffer_on_stats_condition,
+    ...     cond=lambda x: x%2 == 1, else_val='The sum is not odd!'
+    ... )
     >>> seg = Segmenter(buffer=bs, stats_buffer_callback=return_if_stats_is_odd)
-    >>> seg(new_val=1) # since the sum of the values in the buffer [1] is odd, the buffer is returned
+
+    Since the sum of the values in the buffer [1] is odd, the buffer is returned:
+
+    >>> seg(new_val=1)
     [1]
 
-    Adding 1 + 2 is still odd so:
+    Adding ``1 + 2`` is still odd so:
 
     >>> seg(new_val=2)
     [1, 2]
 
-    Now since 1 + 2 + 5 is even, the else_val of return_if_stats_is_odd is returned instead
+    Now since ``1 + 2 + 5`` is even, the ``else_val`` of ``return_if_stats_is_odd``
+    is returned instead
 
     >>> seg(new_val=5)
     'The sum is not odd!'
