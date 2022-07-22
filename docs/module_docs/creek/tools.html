@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.tools &mdash; creek 0.1.25 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>creek.tools &mdash; creek 0.1.27 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -159,6 +159,27 @@ depends on the (number of, sizes of, etc.) items that came before it.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="creek.tools.apply_and_fanout">
+<code class="sig-prename descclassname">creek.tools.</code><code class="sig-name descname">apply_and_fanout</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span></em>, <em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>Any<span class="p">]</span><span class="p">, </span>Iterable<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">idx</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span>tuple<span class="p">]</span><a class="reference internal" href="../../_modules/creek/tools.html#apply_and_fanout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.tools.apply_and_fanout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply function (that returns an Iterable) to an element of a sequence
+and fanout (broadcast) the resulting items, to produce an iterable of tuples each
+containing
+one of these items along with ‘a copy’ of the other tuple elements</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">apply_and_fanout</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;abc&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="nb">iter</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="go">[(1, &#39;a&#39;, 3), (1, &#39;b&#39;, 3), (1, &#39;c&#39;, 3)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">apply_and_fanout</span><span class="p">([</span><span class="s1">&#39;bob&#39;</span><span class="p">,</span> <span class="s1">&#39;alice&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="p">[</span><span class="s1">&#39;hi&#39;</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
+<span class="go">[(&#39;bob&#39;, &#39;alice&#39;, &#39;hi&#39;), (&#39;bob&#39;, &#39;alice&#39;, &#39;hi&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">apply_and_fanout</span><span class="p">([</span><span class="s2">&quot;bob&quot;</span><span class="p">,</span> <span class="s2">&quot;alice&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="mi">1</span><span class="p">))</span>
+<span class="go">[(&#39;bob&#39;, &#39;A&#39;, 2), (&#39;bob&#39;, &#39;L&#39;, 2), (&#39;bob&#39;, &#39;I&#39;, 2), (&#39;bob&#39;, &#39;C&#39;, 2), (&#39;bob&#39;, &#39;E&#39;, 2)]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="docutils literal notranslate"><span class="pre">fanout_and_flatten</span></code> and <code class="docutils literal notranslate"><span class="pre">fanout_and_flatten_dicts</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt id="creek.tools.current_time">
 <code class="sig-prename descclassname">creek.tools.</code><code class="sig-name descname">current_time</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">current_idx</span></em>, <em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/tools.html#current_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.tools.current_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Doesn’t even look at current_idx or obj. Just gives the current time</p>
@@ -184,6 +205,45 @@ instead of just incrementing by 1 at every iteration tick…</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">size_index</span> <span class="o">=</span> <span class="n">DynamicIndexer</span><span class="p">(</span><span class="n">idx_updater</span><span class="o">=</span><span class="n">DynamicIndexer</span><span class="o">.</span><span class="n">size_increments</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">size_index</span><span class="p">,</span> <span class="n">stream</span><span class="p">))</span>
 <span class="go">[(0, &#39;stream&#39;), (6, &#39;of&#39;), (8, &#39;different&#39;), (17, &#39;sized&#39;), (22, &#39;chunks&#39;)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="creek.tools.fanout_and_flatten">
+<code class="sig-prename descclassname">creek.tools.</code><code class="sig-name descname">fanout_and_flatten</code><span class="sig-paren">(</span><em class="sig-param">iterable_of_seqs</em>, <em class="sig-param">func</em>, <em class="sig-param">idx</em>, <em class="sig-param">aggregator=&lt;built-in method from_iterable of type object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/tools.html#fanout_and_flatten"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.tools.fanout_and_flatten" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply apply_and_fanout to an iterable of sequences.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">seq_iterable</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;abcdef&#39;</span><span class="p">,</span> <span class="s1">&#39;first&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;ghij&#39;</span><span class="p">,</span> <span class="s1">&#39;second&#39;</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">([</span><span class="nb">iter</span><span class="p">(</span><span class="n">a</span><span class="p">)]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>  <span class="c1"># func is a chunker</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">fanout_and_flatten</span><span class="p">(</span><span class="n">seq_iterable</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">==</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="p">((</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">),</span> <span class="s1">&#39;first&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">((</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">),</span> <span class="s1">&#39;first&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">((</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">),</span> <span class="s1">&#39;first&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">((</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">),</span> <span class="s1">&#39;second&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">((</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">),</span> <span class="s1">&#39;second&#39;</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="creek.tools.fanout_and_flatten_dicts">
+<code class="sig-prename descclassname">creek.tools.</code><code class="sig-name descname">fanout_and_flatten_dicts</code><span class="sig-paren">(</span><em class="sig-param">iterable_of_dicts</em>, <em class="sig-param">func</em>, <em class="sig-param">fields</em>, <em class="sig-param">idx_field</em>, <em class="sig-param">aggregator=&lt;built-in method from_iterable of type object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/tools.html#fanout_and_flatten_dicts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.tools.fanout_and_flatten_dicts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply apply_and_fanout to an iterable of dicts.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">iterable_of_dicts</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;wf&#39;</span><span class="p">:</span> <span class="s1">&#39;abcdef&#39;</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="s1">&#39;first&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;wf&#39;</span><span class="p">:</span> <span class="s1">&#39;ghij&#39;</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="s1">&#39;second&#39;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">([</span><span class="nb">iter</span><span class="p">(</span><span class="n">a</span><span class="p">)]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>  <span class="c1"># func is a chunker</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;wf&#39;</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">idx_field</span> <span class="o">=</span> <span class="s1">&#39;wf&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">list</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">fanout_and_flatten_dicts</span><span class="p">(</span><span class="n">iterable_of_dicts</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">idx_field</span><span class="p">))</span> <span class="o">==</span> <span class="p">[</span>
+<span class="gp">... </span>        <span class="p">{</span><span class="s1">&#39;wf&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">),</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="s1">&#39;first&#39;</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="p">{</span><span class="s1">&#39;wf&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">),</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="s1">&#39;first&#39;</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="p">{</span><span class="s1">&#39;wf&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">),</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="s1">&#39;first&#39;</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="p">{</span><span class="s1">&#39;wf&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">),</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="s1">&#39;second&#39;</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="p">{</span><span class="s1">&#39;wf&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">),</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="s1">&#39;second&#39;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">]</span>
 </pre></div>
 </div>
 </dd></dl>

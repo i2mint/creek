@@ -29,6 +29,8 @@ def apply_and_fanout(
     [(1, 'a', 3), (1, 'b', 3), (1, 'c', 3)]
     >>> list(apply_and_fanout(['bob', 'alice', 2], lambda x: x * ['hi'], 2))
     [('bob', 'alice', 'hi'), ('bob', 'alice', 'hi')]
+    >>> list(apply_and_fanout(["bob", "alice", 2], lambda x: x.upper(), 1))
+    [('bob', 'A', 2), ('bob', 'L', 2), ('bob', 'I', 2), ('bob', 'C', 2), ('bob', 'E', 2)]
 
     See Also:
         ``fanout_and_flatten`` and ``fanout_and_flatten_dicts``
@@ -154,7 +156,7 @@ class DynamicIndexer:
     :param idx_updater: The (Index, DataItem) -> Index
 
     Let's take a finite stream of finite iterables (strings here):
-    
+
     >>> stream = ['stream', 'of', 'different', 'sized', 'chunks']
 
     The default ``DynamicIndexer`` just does what ``enumerate`` does:
