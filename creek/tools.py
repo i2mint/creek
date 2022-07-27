@@ -2,7 +2,17 @@
 
 import time
 from collections import deque
-from typing import Any, Callable, Tuple, TypeVar, Callable, Any, Iterable, Sequence, cast
+from typing import (
+    Any,
+    Callable,
+    Tuple,
+    TypeVar,
+    Callable,
+    Any,
+    Iterable,
+    Sequence,
+    cast,
+)
 from dataclasses import dataclass
 from itertools import chain
 from operator import itemgetter
@@ -15,6 +25,34 @@ DataItem = TypeVar('DataItem')
 # TODO: Could have more args. How to specify this in typing?
 IndexUpdater = Callable[[Index, DataItem], Index]
 Indexer = Callable[[DataItem], Tuple[Index, DataItem]]
+
+from itertools import chain
+
+
+# TODO: Possible performance enhancement by using class with precompiled slices
+# TODO: Compare with apply_and_fanout (no cast here, and slice instead of :)
+def apply_func_to_index(seq, apply_to_idx, func):
+    """
+    >>> apply_func_to_index([1,2,3], 1, lambda x: x * 10)
+    (1, 20, 3)
+    >>> from functools import partial
+
+    If you're going to apply the same function to the same index, you might
+    want to partialize ``apply_func_to_index`` to be able to reuse it simply:
+
+    >>> f = partial(apply_func_to_index, apply_to_idx=0, func=str.upper)
+    >>> list(map(f, ['abc', 'defgh']))
+    [('A', 'b', 'c'), ('D', 'e', 'f', 'g', 'h')]
+
+    """
+    apply_to_element, *_ = seq[slice(apply_to_idx, apply_to_idx + 1)]
+    return tuple(
+        chain(
+            seq[slice(None, apply_to_idx)],
+            [func(apply_to_element)],
+            seq[slice(apply_to_idx + 1, None)],
+        )
+    )
 
 
 def apply_and_fanout(
@@ -36,7 +74,8 @@ def apply_and_fanout(
         ``fanout_and_flatten`` and ``fanout_and_flatten_dicts``
     """
     seq = tuple(seq)  # TODO: Overhead: Should we impose seq to be tuple?
-    left_seq = seq[0 : max(idx, 0)]
+    # TODO: See how apply_func_to_index takes care of this problem with chain
+    left_seq = seq[0 : max(idx, 0)]  # TODO: Use seq[None:idx] instead?
     right_seq = seq[(idx + 1) :]
     return (left_seq + (item,) + right_seq for item in func(seq[idx]))
 
@@ -392,9 +431,9 @@ class BufferStats(deque):
             has a valid (self, new_val) signature.
         """
         if maxlen is _no_value_specified_sentinel:
-            raise TypeError("You are required to specify maxlen")
+            raise TypeError('You are required to specify maxlen')
         if not isinstance(maxlen, int):
-            raise TypeError(f"maxlen must be an integer, was: {maxlen}")
+            raise TypeError(f'maxlen must be an integer, was: {maxlen}')
 
         super().__init__(values, maxlen=maxlen)
         self.func = func
@@ -402,7 +441,7 @@ class BufferStats(deque):
             # assume add_new_val is a method of deque:
             add_new_val = getattr(self, add_new_val)
         self.add_new_val = add_new_val
-        self.__name__ = "BufferStats"
+        self.__name__ = 'BufferStats'
 
     def __call__(self, new_val) -> Stats:
         self.add_new_val(self, new_val)  # add the new value
@@ -467,7 +506,7 @@ class Segmenter:
     stats_buffer_callback: Callable[
         [Stats, Iterable], Any
     ] = return_buffer_on_stats_condition
-    __name__ = "Segmenter"
+    __name__ = 'Segmenter'
 
     def __call__(self, new_val):
         stats = self.buffer(new_val)
