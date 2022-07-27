@@ -31,15 +31,18 @@ from itertools import chain
 
 # TODO: Possible performance enhancement by using class with precompiled slices
 # TODO: Compare with apply_and_fanout (no cast here, and slice instead of :)
+# Note: I hesitated to make the signature (func, apply_to_idx, seq) instead
+# Note: This would have allowed to use partial(apply_func_to_index, func, idx)
+# Note: instead, but NOT partial(apply_func_to_index, func=func, apply_to_idx=idx)!!
 def apply_func_to_index(seq, apply_to_idx, func):
     """
-    >>> apply_func_to_index([1,2,3], 1, lambda x: x * 10)
+    >>> apply_func_to_index([1, 2, 3], 1, lambda x: x * 10)
     (1, 20, 3)
-    >>> from functools import partial
 
     If you're going to apply the same function to the same index, you might
     want to partialize ``apply_func_to_index`` to be able to reuse it simply:
 
+    >>> from functools import partial
     >>> f = partial(apply_func_to_index, apply_to_idx=0, func=str.upper)
     >>> list(map(f, ['abc', 'defgh']))
     [('A', 'b', 'c'), ('D', 'e', 'f', 'g', 'h')]
