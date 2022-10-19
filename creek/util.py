@@ -290,21 +290,12 @@ static_identity_method = staticmethod(identity_func)
 
 from inspect import signature, Signature
 
-_dflt_signature = Signature.from_callable(lambda *args, **kwargs: None)
 
-
-def _signature_from_first_and_last_func(first_func, last_func):
-    try:
-        input_params = signature(first_func).parameters.values()
-    except ValueError:  # function doesn't have a signature, so take default
-        input_params = _dflt_signature.parameters.values()
-    try:
-        return_annotation = signature(last_func).return_annotation
-    except ValueError:  # function doesn't have a signature, so take default
-        return_annotation = _dflt_signature.return_annotation
-    return Signature(input_params, return_annotation=return_annotation)
-
-
+# Note: Pipe code is completely independent (with inspect imports signature & Signature)
+#  If you only need simple pipelines, use this, or even copy/paste it where needed.
+# TODO: Public interface mis-aligned with i2. funcs list here, in i2 it's dict. Align?
+#  If we do so, it would be a breaking change since any dependents that expect funcs
+#  to be a list of funcs will iterate over a iterable of names instead.
 class Pipe:
     """Simple function composition. That is, gives you a callable that implements input -> f_1 -> ... -> f_n -> output.
 
@@ -345,11 +336,23 @@ class Pipe:
       ...
     ValueError: You need to specify at least one function!
 
+    You can specify an instance name and/or doc with the special (reserved) argument
+    names ``__name__`` and ``__doc__`` (which therefore can't be used as function names):
+
+    >>> f = Pipe(map, add_it=sum, __name__='map_and_sum', __doc__='Apply func and add')
+    >>> f(lambda x: x * 10, [1, 2, 3])
+    60
+    >>> f.__name__
+    'map_and_sum'
+    >>> f.__doc__
+    'Apply func and add'
+
     """
 
     funcs = ()
 
     def __init__(self, *funcs, **named_funcs):
+        named_funcs = self._process_reserved_names(named_funcs)
         funcs = list(funcs) + list(named_funcs.values())
         self.funcs = funcs
         n_funcs = len(funcs)
@@ -363,9 +366,18 @@ class Pipe:
             first_func, *other_funcs = funcs
             *_, last_func = other_funcs
 
-        self.__signature__ = _signature_from_first_and_last_func(first_func, last_func)
-        self.first_func = first_func
-        self.other_funcs = other_funcs
+        self.__signature__ = Pipe._signature_from_first_and_last_func(
+            first_func, last_func
+        )
+        self.first_func, self.other_funcs = first_func, other_funcs
+
+    _reserved_names = ('__name__', '__doc__')
+
+    def _process_reserved_names(self, named_funcs):
+        for name in self._reserved_names:
+            if (value := named_funcs.pop(name, None)) is not None:
+                setattr(self, name, value)
+        return named_funcs
 
     def __call__(self, *args, **kwargs):
         out = self.first_func(*args, **kwargs)
@@ -375,3 +387,17 @@ class Pipe:
 
     def __len__(self):
         return len(self.funcs)
+
+    _dflt_signature = Signature.from_callable(lambda *args, **kwargs: None)
+
+    @staticmethod
+    def _signature_from_first_and_last_func(first_func, last_func):
+        try:
+            input_params = signature(first_func).parameters.values()
+        except ValueError:  # function doesn't have a signature, so take default
+            input_params = Pipe._dflt_signature.parameters.values()
+        try:
+            return_annotation = signature(last_func).return_annotation
+        except ValueError:  # function doesn't have a signature, so take default
+            return_annotation = Pipe._dflt_signature.return_annotation
+        return Signature(tuple(input_params), return_annotation=return_annotation)
