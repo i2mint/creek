@@ -22,17 +22,21 @@ The simplest addition of metadata information could look like:
     3->4->('multiple of 5', 5) -> 6 -> ...
 
 
+One critique of using  tuples to contain both annotated (here, ``5``) and annotation (here, ``'multiple of 5'``)
+is that the semantics aren't explicit.
+The fact that the original element was annotated the distinction of annotation and annotated is based on an
+implicit convention.
+This is not too much of a problem here, but becomes unwieldy in more complex situations, for example,
+if we want to accommodate for multiple labels.
 
-This module treats the more complicated case of "multilabelling":
-a LabelledElement x has an attribute **x.element**,
-and a container of labels **x.labels** (list, set or dict).
+A ``LabelledElement`` ``x`` has an attribute ``x.element``,
+and a container of labels ``x.labels`` (list, set or dict).
 
-Multilabels can be used to segments streams into overlapping segments.
+``Multilabels`` can be used to segment streams into overlapping segments.
 
 .. code-block:: python
 
     (group0)->(group0)->(group0, group1)->(group0, group1)-> (group1)->(group1)->...
-
 
 
 """
