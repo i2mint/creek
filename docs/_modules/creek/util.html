@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.util &mdash; creek 0.1.27 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>creek.util &mdash; creek 0.1.28 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -48,6 +48,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/async_utils.html">creek.scrap.async_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/sequences.html">creek.scrap.sequences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/slabs.html">creek.slabs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/labeling.html">creek.tests.labeling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tools.html">creek.tools</a></li>
@@ -67,9 +69,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>creek.util</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">creek.util</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -95,12 +97,29 @@
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">singledispatch</span><span class="p">,</span> <span class="n">partial</span>
 
 
+<div class="viewcode-block" id="iterize"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.iterize">[docs]</a><span class="k">def</span> <span class="nf">iterize</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;From an In-&gt;Out function, makes a Iterator[In]-&gt;Itertor[Out] function.</span>
+
+<span class="sd">    &gt;&gt;&gt; f = lambda x: x * 10</span>
+<span class="sd">    &gt;&gt;&gt; f(2)</span>
+<span class="sd">    20</span>
+<span class="sd">    &gt;&gt;&gt; iterized_f = iterize(f)</span>
+<span class="sd">    &gt;&gt;&gt; list(iterized_f(iter([1,2,3])))</span>
+<span class="sd">    [10, 20, 30]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">iterized_func</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">iterized_func</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="k">return</span> <span class="n">iterized_func</span></div>
+
+
 <span class="n">IteratorItem</span> <span class="o">=</span> <span class="n">Any</span>
 
 
 <div class="viewcode-block" id="IterableType"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.IterableType">[docs]</a><span class="nd">@runtime_checkable</span>
 <span class="k">class</span> <span class="nc">IterableType</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An iterable type that can actually be used in singledispatch</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An iterable type that can actually be used in singledispatch</span>
 
 <span class="sd">    &gt;&gt;&gt; assert isinstance([1, 2, 3], IterableType)</span>
 <span class="sd">    &gt;&gt;&gt; assert not isinstance(2, IterableType)</span>
@@ -112,7 +131,7 @@
 
 <div class="viewcode-block" id="IteratorType"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.IteratorType">[docs]</a><span class="nd">@runtime_checkable</span>
 <span class="k">class</span> <span class="nc">IteratorType</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An iterator type that can actually be used in singledispatch</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An iterator type that can actually be used in singledispatch</span>
 
 <span class="sd">    &gt;&gt;&gt; assert isinstance(iter([1, 2, 3]), IteratorType)</span>
 <span class="sd">    &gt;&gt;&gt; assert not isinstance([1, 2, 3], IteratorType)</span>
@@ -124,10 +143,10 @@
 
 <div class="viewcode-block" id="CursorFunc"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.CursorFunc">[docs]</a><span class="nd">@runtime_checkable</span>
 <span class="k">class</span> <span class="nc">CursorFunc</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An argument-less function returning an iterator&#39;s values&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An argument-less function returning an iterator&#39;s values&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IteratorItem</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the next iterator&#39;s item and increment the cursor&quot;&quot;&quot;</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the next iterator&#39;s item and increment the cursor&quot;&quot;&quot;</span></div>
 
 
 <span class="n">IterType</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s1">&#39;IterType&#39;</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">IteratorType</span><span class="p">,</span> <span class="n">IterableType</span><span class="p">,</span> <span class="n">CursorFunc</span><span class="p">])</span>
@@ -140,12 +159,13 @@
 
 <span class="c1"># ---------------------------------------------------------------------------------------</span>
 <span class="c1"># iteratable, iterator, cursors</span>
+<span class="c1"># TODO: If bring i2 as dependency, use mk_sentinel here</span>
 <span class="n">no_sentinel</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="s1">&#39;no_sentinel&#39;</span><span class="p">,</span> <span class="p">(),</span> <span class="p">{})()</span>
 <span class="n">no_default</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="s1">&#39;no_default&#39;</span><span class="p">,</span> <span class="p">(),</span> <span class="p">{})()</span>
 
 
 <div class="viewcode-block" id="IteratorExit"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.IteratorExit">[docs]</a><span class="k">class</span> <span class="nc">IteratorExit</span><span class="p">(</span><span class="ne">BaseException</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Raised when an iterator should quit being iterated on, signaling this event</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when an iterator should quit being iterated on, signaling this event</span>
 <span class="sd">    any process that cares to catch the signal.</span>
 <span class="sd">    We chose to inherit directly from `BaseException` instead of `Exception`</span>
 <span class="sd">    for the same reason that `GeneratorExit` does: Because it&#39;s not technically</span>
@@ -168,7 +188,7 @@
 
 
 <div class="viewcode-block" id="iterable_to_iterator"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.iterable_to_iterator">[docs]</a><span class="k">def</span> <span class="nf">iterable_to_iterator</span><span class="p">(</span><span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">sentinel</span><span class="o">=</span><span class="n">no_sentinel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Get an iterator from an iterable</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get an iterator from an iterable</span>
 
 <span class="sd">    &gt;&gt;&gt; iterable = [1, 2, 3]</span>
 <span class="sd">    &gt;&gt;&gt; iterator = iterable_to_iterator(iterable)</span>
@@ -191,7 +211,7 @@
 
 
 <div class="viewcode-block" id="iterator_to_cursor"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.iterator_to_cursor">[docs]</a><span class="k">def</span> <span class="nf">iterator_to_cursor</span><span class="p">(</span><span class="n">iterator</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">no_default</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CursorFunc</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Get a cursor function for the input iterator.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a cursor function for the input iterator.</span>
 
 <span class="sd">    &gt;&gt;&gt; iterator = iter([1, 2, 3])</span>
 <span class="sd">    &gt;&gt;&gt; cursor = iterator_to_cursor(iterator)</span>
@@ -230,7 +250,7 @@
 
 
 <div class="viewcode-block" id="cursor_to_iterator"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.cursor_to_iterator">[docs]</a><span class="k">def</span> <span class="nf">cursor_to_iterator</span><span class="p">(</span><span class="n">cursor</span><span class="p">:</span> <span class="n">CursorFunc</span><span class="p">,</span> <span class="n">sentinel</span><span class="o">=</span><span class="n">no_sentinel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Get an iterator from a cursor function.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get an iterator from a cursor function.</span>
 
 <span class="sd">    A cursor function is a callable that you call (without arguments) to get items of</span>
 <span class="sd">    data one by one.</span>
@@ -263,7 +283,7 @@
 
 
 <div class="viewcode-block" id="iterable_to_cursor"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.iterable_to_cursor">[docs]</a><span class="k">def</span> <span class="nf">iterable_to_cursor</span><span class="p">(</span><span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CursorFunc</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Get a cursor function from an iterable.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a cursor function from an iterable.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">iterator</span> <span class="o">=</span> <span class="n">iterable_to_iterator</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">iterator_to_cursor</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span></div>
@@ -271,7 +291,7 @@
 
 <div class="viewcode-block" id="to_iterator"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.to_iterator">[docs]</a><span class="nd">@singledispatch</span>
 <span class="k">def</span> <span class="nf">to_iterator</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">IteratorType</span><span class="p">,</span> <span class="n">sentinel</span><span class="o">=</span><span class="n">no_sentinel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get an iterator from an iterable or a cursor function</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get an iterator from an iterable or a cursor function</span>
 
 <span class="sd">    &gt;&gt;&gt; from typing import Iterator</span>
 <span class="sd">    &gt;&gt;&gt; it = to_iterator([1, 2, 3])</span>
@@ -371,23 +391,14 @@
 
 <span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">signature</span><span class="p">,</span> <span class="n">Signature</span>
 
-<span class="n">_dflt_signature</span> <span class="o">=</span> <span class="n">Signature</span><span class="o">.</span><span class="n">from_callable</span><span class="p">(</span><span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="kc">None</span><span class="p">)</span>
 
-
-<span class="k">def</span> <span class="nf">_signature_from_first_and_last_func</span><span class="p">(</span><span class="n">first_func</span><span class="p">,</span> <span class="n">last_func</span><span class="p">):</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">input_params</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">first_func</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>  <span class="c1"># function doesn&#39;t have a signature, so take default</span>
-        <span class="n">input_params</span> <span class="o">=</span> <span class="n">_dflt_signature</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">return_annotation</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">last_func</span><span class="p">)</span><span class="o">.</span><span class="n">return_annotation</span>
-    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>  <span class="c1"># function doesn&#39;t have a signature, so take default</span>
-        <span class="n">return_annotation</span> <span class="o">=</span> <span class="n">_dflt_signature</span><span class="o">.</span><span class="n">return_annotation</span>
-    <span class="k">return</span> <span class="n">Signature</span><span class="p">(</span><span class="n">input_params</span><span class="p">,</span> <span class="n">return_annotation</span><span class="o">=</span><span class="n">return_annotation</span><span class="p">)</span>
-
-
+<span class="c1"># Note: Pipe code is completely independent (with inspect imports signature &amp; Signature)</span>
+<span class="c1">#  If you only need simple pipelines, use this, or even copy/paste it where needed.</span>
+<span class="c1"># TODO: Public interface mis-aligned with i2. funcs list here, in i2 it&#39;s dict. Align?</span>
+<span class="c1">#  If we do so, it would be a breaking change since any dependents that expect funcs</span>
+<span class="c1">#  to be a list of funcs will iterate over a iterable of names instead.</span>
 <div class="viewcode-block" id="Pipe"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.Pipe">[docs]</a><span class="k">class</span> <span class="nc">Pipe</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Simple function composition. That is, gives you a callable that implements input -&gt; f_1 -&gt; ... -&gt; f_n -&gt; output.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple function composition. That is, gives you a callable that implements input -&gt; f_1 -&gt; ... -&gt; f_n -&gt; output.</span>
 
 <span class="sd">    &gt;&gt;&gt; def foo(a, b=2):</span>
 <span class="sd">    ...     return a + b</span>
@@ -426,11 +437,23 @@
 <span class="sd">      ...</span>
 <span class="sd">    ValueError: You need to specify at least one function!</span>
 
+<span class="sd">    You can specify an instance name and/or doc with the special (reserved) argument</span>
+<span class="sd">    names ``__name__`` and ``__doc__`` (which therefore can&#39;t be used as function names):</span>
+
+<span class="sd">    &gt;&gt;&gt; f = Pipe(map, add_it=sum, __name__=&#39;map_and_sum&#39;, __doc__=&#39;Apply func and add&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; f(lambda x: x * 10, [1, 2, 3])</span>
+<span class="sd">    60</span>
+<span class="sd">    &gt;&gt;&gt; f.__name__</span>
+<span class="sd">    &#39;map_and_sum&#39;</span>
+<span class="sd">    &gt;&gt;&gt; f.__doc__</span>
+<span class="sd">    &#39;Apply func and add&#39;</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">funcs</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">funcs</span><span class="p">,</span> <span class="o">**</span><span class="n">named_funcs</span><span class="p">):</span>
+        <span class="n">named_funcs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_reserved_names</span><span class="p">(</span><span class="n">named_funcs</span><span class="p">)</span>
         <span class="n">funcs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">funcs</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">named_funcs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">funcs</span> <span class="o">=</span> <span class="n">funcs</span>
         <span class="n">n_funcs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">funcs</span><span class="p">)</span>
@@ -444,9 +467,18 @@
             <span class="n">first_func</span><span class="p">,</span> <span class="o">*</span><span class="n">other_funcs</span> <span class="o">=</span> <span class="n">funcs</span>
             <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="n">last_func</span> <span class="o">=</span> <span class="n">other_funcs</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__signature__</span> <span class="o">=</span> <span class="n">_signature_from_first_and_last_func</span><span class="p">(</span><span class="n">first_func</span><span class="p">,</span> <span class="n">last_func</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">first_func</span> <span class="o">=</span> <span class="n">first_func</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">other_funcs</span> <span class="o">=</span> <span class="n">other_funcs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__signature__</span> <span class="o">=</span> <span class="n">Pipe</span><span class="o">.</span><span class="n">_signature_from_first_and_last_func</span><span class="p">(</span>
+            <span class="n">first_func</span><span class="p">,</span> <span class="n">last_func</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">first_func</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">other_funcs</span> <span class="o">=</span> <span class="n">first_func</span><span class="p">,</span> <span class="n">other_funcs</span>
+
+    <span class="n">_reserved_names</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;__name__&#39;</span><span class="p">,</span> <span class="s1">&#39;__doc__&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_process_reserved_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">named_funcs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reserved_names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">:=</span> <span class="n">named_funcs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">named_funcs</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -455,7 +487,21 @@
         <span class="k">return</span> <span class="n">out</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">funcs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">funcs</span><span class="p">)</span>
+
+    <span class="n">_dflt_signature</span> <span class="o">=</span> <span class="n">Signature</span><span class="o">.</span><span class="n">from_callable</span><span class="p">(</span><span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_signature_from_first_and_last_func</span><span class="p">(</span><span class="n">first_func</span><span class="p">,</span> <span class="n">last_func</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">input_params</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">first_func</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>  <span class="c1"># function doesn&#39;t have a signature, so take default</span>
+            <span class="n">input_params</span> <span class="o">=</span> <span class="n">Pipe</span><span class="o">.</span><span class="n">_dflt_signature</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">return_annotation</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">last_func</span><span class="p">)</span><span class="o">.</span><span class="n">return_annotation</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>  <span class="c1"># function doesn&#39;t have a signature, so take default</span>
+            <span class="n">return_annotation</span> <span class="o">=</span> <span class="n">Pipe</span><span class="o">.</span><span class="n">_dflt_signature</span><span class="o">.</span><span class="n">return_annotation</span>
+        <span class="k">return</span> <span class="n">Signature</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">input_params</span><span class="p">),</span> <span class="n">return_annotation</span><span class="o">=</span><span class="n">return_annotation</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

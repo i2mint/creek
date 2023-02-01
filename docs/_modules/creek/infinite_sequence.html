@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.infinite_sequence &mdash; creek 0.1.27 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>creek.infinite_sequence &mdash; creek 0.1.28 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -48,6 +48,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/async_utils.html">creek.scrap.async_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/sequences.html">creek.scrap.sequences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/slabs.html">creek.slabs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/labeling.html">creek.tests.labeling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tools.html">creek.tools</a></li>
@@ -67,9 +69,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>creek.infinite_sequence</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">creek.infinite_sequence</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -108,7 +110,7 @@
 
 <span class="c1"># TODO: Check performance for string versus int enum values</span>
 <div class="viewcode-block" id="Relations"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.Relations">[docs]</a><span class="k">class</span> <span class="nc">Relations</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Point-interval and interval-interval relations.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Point-interval and interval-interval relations.</span>
 
 <span class="sd">    See Allen&#39;s interval algebra for (some of the) interval relations</span>
 <span class="sd">    (https://en.wikipedia.org/wiki/Allen%27s_interval_algebra).</span>
@@ -130,7 +132,7 @@
 
 
 <div class="viewcode-block" id="validate_interval"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.validate_interval">[docs]</a><span class="k">def</span> <span class="nf">validate_interval</span><span class="p">(</span><span class="n">interval</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Asserts that input is a valid interval, raising a ValueError if not&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Asserts that input is a valid interval, raising a ValueError if not&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">bt</span><span class="p">,</span> <span class="n">tt</span> <span class="o">=</span> <span class="n">interval</span>
         <span class="k">assert</span> <span class="n">bt</span> <span class="o">&lt;=</span> <span class="n">tt</span>
@@ -146,7 +148,7 @@
     <span class="n">above_bt</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">ge</span><span class="p">,</span>
     <span class="n">below_tt</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">lt</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get the simple relationship between intervals x and y.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the simple relationship between intervals x and y.</span>
 
 <span class="sd">    :param x: An point (a number) or an interval (a 2-tuple of numbers).</span>
 <span class="sd">    :param y: An interval; a 2-tuple of numbers.</span>
@@ -233,7 +235,7 @@
 
 <span class="c1"># Error handling #######################################################################################################</span>
 <div class="viewcode-block" id="ExceptionRaiserCallbackMixin"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.ExceptionRaiserCallbackMixin">[docs]</a><span class="k">class</span> <span class="nc">ExceptionRaiserCallbackMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Make the instance callable and have the effect of raising the instance.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Make the instance callable and have the effect of raising the instance.</span>
 <span class="sd">    Meant to add to an exception class so that instances of this class can be used as callbacks that raise the error&quot;&quot;&quot;</span>
 
     <span class="n">dflt_args</span> <span class="o">=</span> <span class="p">()</span>
@@ -252,28 +254,28 @@
 <span class="c1"># TODO: Include all 13 of Allen&#39;s interval algebra relations? Enum/sentinels and errors for these events?</span>
 <span class="c1">#  (https://en.wikipedia.org/wiki/Allen%27s_interval_algebra#Relations)</span>
 <div class="viewcode-block" id="NotDuringError"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.NotDuringError">[docs]</a><span class="k">class</span> <span class="nc">NotDuringError</span><span class="p">(</span><span class="n">ExceptionRaiserCallbackMixin</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;IndexError that indicates that there was an attempt to index some data that is not contained in the buffer</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;IndexError that indicates that there was an attempt to index some data that is not contained in the buffer</span>
 <span class="sd">    (i.e. is that a part of the request is NO LONGER, or NOT YET covered by the buffer)&quot;&quot;&quot;</span>
 
     <span class="n">dflt_args</span> <span class="o">=</span> <span class="s1">&#39;Some of the data requested was in the past or in the future&#39;</span></div>
 
 
 <div class="viewcode-block" id="OverlapsPastError"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.OverlapsPastError">[docs]</a><span class="k">class</span> <span class="nc">OverlapsPastError</span><span class="p">(</span><span class="n">NotDuringError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;IndexError that indicates that there was an attempt to index some data that is in the PAST</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;IndexError that indicates that there was an attempt to index some data that is in the PAST</span>
 <span class="sd">    (i.e. is NO LONGER completely covered by the buffer)&quot;&quot;&quot;</span>
 
     <span class="n">dlft_args</span> <span class="o">=</span> <span class="s1">&#39;Some of the data requested is in the past&#39;</span></div>
 
 
 <div class="viewcode-block" id="OverlapsFutureError"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.OverlapsFutureError">[docs]</a><span class="k">class</span> <span class="nc">OverlapsFutureError</span><span class="p">(</span><span class="n">NotDuringError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;IndexError that indicates that there was an attempt to index some data that is in the FUTURE</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;IndexError that indicates that there was an attempt to index some data that is in the FUTURE</span>
 <span class="sd">    (i.e. is NOT YET completely covered by the buffer)&quot;&quot;&quot;</span>
 
     <span class="n">dlft_args</span> <span class="o">=</span> <span class="s1">&#39;Some of the data requested is in the future&#39;</span></div>
 
 
 <div class="viewcode-block" id="RelationNotHandledError"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.RelationNotHandledError">[docs]</a><span class="k">class</span> <span class="nc">RelationNotHandledError</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;TypeError that indicates that a relation is either not a valid one, or not handled by conditional clause.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;TypeError that indicates that a relation is either not a valid one, or not handled by conditional clause.&quot;&quot;&quot;</span></div>
 
 
 <span class="n">not_during_error</span> <span class="o">=</span> <span class="n">NotDuringError</span><span class="p">()</span>
@@ -290,7 +292,7 @@
 
 <span class="c1"># ram heavier, cpu lighter extend</span>
 <span class="k">def</span> <span class="nf">_extend_cpu_lighter_ram_heavier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Extend buffer with an iterable of items&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extend buffer with an iterable of items&quot;&quot;&quot;</span>
     <span class="n">iterable</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
     <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
@@ -299,7 +301,7 @@
 
 <span class="c1"># cpu heavier, ram lighter extend</span>
 <span class="k">def</span> <span class="nf">_extend_ram_lighter_cpu_heavier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Extend buffer with an iterable of items&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extend buffer with an iterable of items&quot;&quot;&quot;</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">count</span><span class="p">()</span>
     <span class="n">counting_iter</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="nb">zip</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
     <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
@@ -308,7 +310,7 @@
 
 
 <div class="viewcode-block" id="none_safe_addition"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.none_safe_addition">[docs]</a><span class="k">def</span> <span class="nf">none_safe_addition</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Adds the two numbers if x is not None, or return None if not&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds the two numbers if x is not None, or return None if not&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="k">else</span><span class="p">:</span>
@@ -328,7 +330,7 @@
 
 
 <div class="viewcode-block" id="absolute_item"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.absolute_item">[docs]</a><span class="k">def</span> <span class="nf">absolute_item</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">max_idx</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns an item with absolute references: i.e. with negative indices idx</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an item with absolute references: i.e. with negative indices idx</span>
 <span class="sd">    resolved to max_idx + idx</span>
 
 <span class="sd">    &gt;&gt;&gt; absolute_item(-1, 10)</span>
@@ -357,7 +359,7 @@
 
 
 <div class="viewcode-block" id="IndexedBuffer"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.IndexedBuffer">[docs]</a><span class="k">class</span> <span class="nc">IndexedBuffer</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A list-like object that gives a limited-past read view of an unbounded stream</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A list-like object that gives a limited-past read view of an unbounded stream</span>
 
 <span class="sd">    For example, say we had the stream of increasing integers 0, 1, 2, ...</span>
 <span class="sd">    that is being fed to indexedBuffer</span>
@@ -533,7 +535,7 @@
 
 
 <div class="viewcode-block" id="consume"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.consume">[docs]</a><span class="k">def</span> <span class="nf">consume</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Consume n iterations of generator (without returning elements)&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Consume n iterations of generator (without returning elements)&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
             <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)</span>
@@ -549,7 +551,7 @@
 <span class="c1">#   iterables</span>
 <div class="viewcode-block" id="InfiniteSeq"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.InfiniteSeq">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">InfiniteSeq</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A list-like (read) view of an unbounded sequence/stream.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A list-like (read) view of an unbounded sequence/stream.</span>
 
 <span class="sd">    It is the combination of `IndexedBuffer` and an iterator that will be used to</span>
 <span class="sd">    source the buffer according to the slices that are requested.</span>
@@ -627,7 +629,7 @@
 
 
 <span class="sd">    &gt;&gt;&gt; from creek.infinite_sequence import InfiniteSeq</span>
-<span class="sd">    &gt;&gt;&gt; from collections import Mapping</span>
+<span class="sd">    &gt;&gt;&gt; from typing import Mapping</span>
 <span class="sd">    &gt;&gt;&gt;</span>
 <span class="sd">    &gt;&gt;&gt; class Source(Mapping):</span>
 <span class="sd">    ...     n = 100</span>
@@ -736,7 +738,7 @@
 
 <span class="c1"># TODO: Finish up and document</span>
 <div class="viewcode-block" id="BufferedGetter"><a class="viewcode-back" href="../../module_docs/creek/infinite_sequence.html#creek.infinite_sequence.BufferedGetter">[docs]</a><span class="k">class</span> <span class="nc">BufferedGetter</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    `BufferedGetter` is intended to be a more general (but not optimized) class that</span>
 <span class="sd">    offers a query-interface to a buffer, intended to be used when the buffer is</span>
 <span class="sd">    being filled by a (possibly live) stream of data items.</span>

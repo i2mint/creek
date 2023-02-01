@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.tools &mdash; creek 0.1.27 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>creek.tools &mdash; creek 0.1.28 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -48,6 +48,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/async_utils.html">creek.scrap.async_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/sequences.html">creek.scrap.sequences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/slabs.html">creek.slabs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/labeling.html">creek.tests.labeling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tools.html">creek.tools</a></li>
@@ -67,9 +69,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>creek.tools</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">creek.tools</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -82,7 +84,18 @@
 <span></span><span class="sd">&quot;&quot;&quot;Tools to work with creek objects&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">Callable</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
+    <span class="n">TypeVar</span><span class="p">,</span>
+    <span class="n">Callable</span><span class="p">,</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">Iterable</span><span class="p">,</span>
+    <span class="n">Sequence</span><span class="p">,</span>
+    <span class="n">cast</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
 <span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">itemgetter</span>
@@ -96,11 +109,42 @@
 <span class="n">IndexUpdater</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Index</span><span class="p">,</span> <span class="n">DataItem</span><span class="p">],</span> <span class="n">Index</span><span class="p">]</span>
 <span class="n">Indexer</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">DataItem</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Index</span><span class="p">,</span> <span class="n">DataItem</span><span class="p">]]</span>
 
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+
+
+<span class="c1"># TODO: Possible performance enhancement by using class with precompiled slices</span>
+<span class="c1"># TODO: Compare with apply_and_fanout (no cast here, and slice instead of :)</span>
+<span class="c1"># Note: I hesitated to make the signature (func, apply_to_idx, seq) instead</span>
+<span class="c1"># Note: This would have allowed to use partial(apply_func_to_index, func, idx)</span>
+<span class="c1"># Note: instead, but NOT partial(apply_func_to_index, func=func, apply_to_idx=idx)!!</span>
+<div class="viewcode-block" id="apply_func_to_index"><a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.apply_func_to_index">[docs]</a><span class="k">def</span> <span class="nf">apply_func_to_index</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">apply_to_idx</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &gt;&gt;&gt; apply_func_to_index([1, 2, 3], 1, lambda x: x * 10)</span>
+<span class="sd">    (1, 20, 3)</span>
+
+<span class="sd">    If you&#39;re going to apply the same function to the same index, you might</span>
+<span class="sd">    want to partialize ``apply_func_to_index`` to be able to reuse it simply:</span>
+
+<span class="sd">    &gt;&gt;&gt; from functools import partial</span>
+<span class="sd">    &gt;&gt;&gt; f = partial(apply_func_to_index, apply_to_idx=0, func=str.upper)</span>
+<span class="sd">    &gt;&gt;&gt; list(map(f, [&#39;abc&#39;, &#39;defgh&#39;]))</span>
+<span class="sd">    [(&#39;A&#39;, &#39;b&#39;, &#39;c&#39;), (&#39;D&#39;, &#39;e&#39;, &#39;f&#39;, &#39;g&#39;, &#39;h&#39;)]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">apply_to_element</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="n">apply_to_idx</span><span class="p">,</span> <span class="n">apply_to_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+        <span class="n">chain</span><span class="p">(</span>
+            <span class="n">seq</span><span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">apply_to_idx</span><span class="p">)],</span>
+            <span class="p">[</span><span class="n">func</span><span class="p">(</span><span class="n">apply_to_element</span><span class="p">)],</span>
+            <span class="n">seq</span><span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="n">apply_to_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">)],</span>
+        <span class="p">)</span>
+    <span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="apply_and_fanout"><a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.apply_and_fanout">[docs]</a><span class="k">def</span> <span class="nf">apply_and_fanout</span><span class="p">(</span>
     <span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">],</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Apply function (that returns an Iterable) to an element of a sequence</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply function (that returns an Iterable) to an element of a sequence</span>
 <span class="sd">    and fanout (broadcast) the resulting items, to produce an iterable of tuples each</span>
 <span class="sd">    containing</span>
 <span class="sd">    one of these items along with &#39;a copy&#39; of the other tuple elements</span>
@@ -116,13 +160,14 @@
 <span class="sd">        ``fanout_and_flatten`` and ``fanout_and_flatten_dicts``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">seq</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>  <span class="c1"># TODO: Overhead: Should we impose seq to be tuple?</span>
-    <span class="n">left_seq</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[</span><span class="mi">0</span> <span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
+    <span class="c1"># TODO: See how apply_func_to_index takes care of this problem with chain</span>
+    <span class="n">left_seq</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[</span><span class="mi">0</span> <span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>  <span class="c1"># TODO: Use seq[None:idx] instead?</span>
     <span class="n">right_seq</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[(</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">:]</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">left_seq</span> <span class="o">+</span> <span class="p">(</span><span class="n">item</span><span class="p">,)</span> <span class="o">+</span> <span class="n">right_seq</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">func</span><span class="p">(</span><span class="n">seq</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span></div>
 
 
 <div class="viewcode-block" id="fanout_and_flatten"><a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.fanout_and_flatten">[docs]</a><span class="k">def</span> <span class="nf">fanout_and_flatten</span><span class="p">(</span><span class="n">iterable_of_seqs</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">aggregator</span><span class="o">=</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Apply apply_and_fanout to an iterable of sequences.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply apply_and_fanout to an iterable of sequences.</span>
 
 <span class="sd">    &gt;&gt;&gt; seq_iterable = [(&#39;abcdef&#39;, &#39;first&#39;), (&#39;ghij&#39;, &#39;second&#39;)]</span>
 <span class="sd">    &gt;&gt;&gt; func = lambda a: zip(*([iter(a)] * 2))  # func is a chunker</span>
@@ -141,7 +186,7 @@
 <div class="viewcode-block" id="fanout_and_flatten_dicts"><a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.fanout_and_flatten_dicts">[docs]</a><span class="k">def</span> <span class="nf">fanout_and_flatten_dicts</span><span class="p">(</span>
     <span class="n">iterable_of_dicts</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">idx_field</span><span class="p">,</span> <span class="n">aggregator</span><span class="o">=</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Apply apply_and_fanout to an iterable of dicts.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply apply_and_fanout to an iterable of dicts.</span>
 
 <span class="sd">    &gt;&gt;&gt; iterable_of_dicts = [</span>
 <span class="sd">    ...     {&#39;wf&#39;: &#39;abcdef&#39;, &#39;tag&#39;: &#39;first&#39;}, {&#39;wf&#39;: &#39;ghij&#39;, &#39;tag&#39;: &#39;second&#39;}</span>
@@ -173,7 +218,7 @@
 <div class="viewcode-block" id="filter_and_index_stream"><a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.filter_and_index_stream">[docs]</a><span class="k">def</span> <span class="nf">filter_and_index_stream</span><span class="p">(</span>
     <span class="n">stream</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">data_item_filt</span><span class="p">,</span> <span class="n">timestamper</span><span class="p">:</span> <span class="n">Indexer</span> <span class="o">=</span> <span class="nb">enumerate</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Index a stream and filter it (based only on the data items).</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Index a stream and filter it (based only on the data items).</span>
 
 <span class="sd">    &gt;&gt;&gt; assert (</span>
 <span class="sd">    ... list(filter_and_index_stream(&#39;this  is   a   stream&#39;, data_item_filt=&#39; &#39;)) == [</span>
@@ -225,13 +270,13 @@
 
 
 <div class="viewcode-block" id="current_time"><a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.current_time">[docs]</a><span class="k">def</span> <span class="nf">current_time</span><span class="p">(</span><span class="n">current_idx</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Doesn&#39;t even look at current_idx or obj. Just gives the current time&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Doesn&#39;t even look at current_idx or obj. Just gives the current time&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="DynamicIndexer"><a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.DynamicIndexer">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">DynamicIndexer</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    :param start: The index to start at (the first data item will have this index)</span>
 <span class="sd">    :param idx_updater: The (Index, DataItem) -&gt; Index</span>
 
@@ -301,7 +346,7 @@
 
 
 <div class="viewcode-block" id="dynamically_index"><a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.dynamically_index">[docs]</a><span class="k">def</span> <span class="nf">dynamically_index</span><span class="p">(</span><span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">idx_updater</span><span class="o">=</span><span class="n">count_increments</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generalization of `enumerate(iterable)` that allows one to specify how the</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generalization of `enumerate(iterable)` that allows one to specify how the</span>
 <span class="sd">    indices should be updated.</span>
 
 <span class="sd">    The default is the sae behavior as `enumerate`: Starts with 0 and increments by 1.</span>
@@ -338,7 +383,7 @@
 
 
 <div class="viewcode-block" id="alt_dynamically_index"><a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.alt_dynamically_index">[docs]</a><span class="k">def</span> <span class="nf">alt_dynamically_index</span><span class="p">(</span><span class="n">idx_updater</span><span class="p">:</span> <span class="n">IndexUpdater</span> <span class="o">=</span> <span class="n">count_increments</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Alternative to dynamically_index using itertools and partial</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Alternative to dynamically_index using itertools and partial</span>
 
 <span class="sd">    &gt;&gt;&gt; def size_increments(current_idx, data_item, size_func=len):</span>
 <span class="sd">    ...     return current_idx + size_func(data_item)</span>
@@ -357,7 +402,7 @@
 
 
 <div class="viewcode-block" id="segment_overlaps"><a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.segment_overlaps">[docs]</a><span class="k">def</span> <span class="nf">segment_overlaps</span><span class="p">(</span><span class="n">bt_tt_segment</span><span class="p">,</span> <span class="n">query_bt</span><span class="p">,</span> <span class="n">query_tt</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns True if, and only if, bt_tt_segment overlaps query interval.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns True if, and only if, bt_tt_segment overlaps query interval.</span>
 
 <span class="sd">    A `bt_tt_segment` will need to be of the ``(bt, tt, *data)`` format.</span>
 <span class="sd">    That is, an iterable of at least two elements (the ``bt`` and ``tt``) followed with</span>
@@ -390,6 +435,169 @@
         <span class="ow">or</span> <span class="n">query_bt</span> <span class="o">&lt;=</span> <span class="n">bt</span> <span class="o">&lt;</span> <span class="n">query_tt</span>  <span class="c1"># the bottom part of the segment intersects</span>
         <span class="c1"># If it&#39;s both, the interval is entirely inside the query</span>
     <span class="p">)</span></div>
+
+
+<span class="n">Stats</span> <span class="o">=</span> <span class="n">Any</span>
+<span class="n">_no_value_specified_sentinel</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">object</span><span class="p">())</span>
+
+
+<div class="viewcode-block" id="BufferStats"><a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.BufferStats">[docs]</a><span class="k">class</span> <span class="nc">BufferStats</span><span class="p">(</span><span class="n">deque</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A callable (fifo) buffer. Calls add input to it, but also returns some results</span>
+<span class="sd">    computed from it&#39;s contents.</span>
+
+<span class="sd">    What &quot;add&quot; means is configurable (through ``add_new_val`` arg). Default</span>
+<span class="sd">    is append, but can be extend etc.</span>
+
+<span class="sd">    &gt;&gt;&gt; bs = BufferStats(maxlen=4, func=sum)</span>
+<span class="sd">    &gt;&gt;&gt; list(map(bs, range(7)))</span>
+<span class="sd">    [0, 1, 3, 6, 10, 14, 18]</span>
+
+<span class="sd">    See what happens when you feed the same sequence again:</span>
+
+<span class="sd">    &gt;&gt;&gt; list(map(bs, range(7)))</span>
+<span class="sd">    [15, 12, 9, 6, 10, 14, 18]</span>
+
+<span class="sd">    More examples:</span>
+
+<span class="sd">    &gt;&gt;&gt; list(map(BufferStats(maxlen=4, func=&#39;&#39;.join), &#39;abcdefgh&#39;))</span>
+<span class="sd">    [&#39;a&#39;, &#39;ab&#39;, &#39;abc&#39;, &#39;abcd&#39;, &#39;bcde&#39;, &#39;cdef&#39;, &#39;defg&#39;, &#39;efgh&#39;]</span>
+
+<span class="sd">    &gt;&gt;&gt; from math import prod</span>
+<span class="sd">    &gt;&gt;&gt; list(map(BufferStats(maxlen=4, func=prod), range(7)))</span>
+<span class="sd">    [0, 0, 0, 0, 24, 120, 360]</span>
+
+<span class="sd">    With a different ``add_new_val`` choice.</span>
+
+<span class="sd">    &gt;&gt;&gt; bs = BufferStats(maxlen=4, func=&#39;&#39;.join, add_new_val=deque.appendleft)</span>
+<span class="sd">    &gt;&gt;&gt; list(map(bs, &#39;abcdefgh&#39;))</span>
+<span class="sd">    [&#39;a&#39;, &#39;ba&#39;, &#39;cba&#39;, &#39;dcba&#39;, &#39;edcb&#39;, &#39;fedc&#39;, &#39;gfed&#39;, &#39;hgfe&#39;]</span>
+
+<span class="sd">    With ``add_new_val=deque.extend``, data can be fed in chunks.</span>
+<span class="sd">    In the following, also see how we use iterize to get a function that</span>
+<span class="sd">    takes an iterator and returns an iterator</span>
+
+<span class="sd">    &gt;&gt;&gt; from creek.util import iterize</span>
+<span class="sd">    &gt;&gt;&gt; window_stats = iterize(BufferStats(</span>
+<span class="sd">    ...     maxlen=4, func=&#39;&#39;.join, add_new_val=deque.extend)</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; chks = [&#39;a&#39;, &#39;bc&#39;, &#39;def&#39;, &#39;gh&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; for x in window_stats(chks):</span>
+<span class="sd">    ...     print(x)</span>
+<span class="sd">    a</span>
+<span class="sd">    abc</span>
+<span class="sd">    cdef</span>
+<span class="sd">    efgh</span>
+
+<span class="sd">    Note: To those who might think that they can optimize this for special</span>
+<span class="sd">    cases: Yes you can.</span>
+<span class="sd">    But SHOULD you? Is it worth the increase in complexity and reduction in</span>
+<span class="sd">    flexibility?</span>
+<span class="sd">    See https://github.com/thorwhalen/umpyre/blob/master/misc/performance_of_rolling_window_stats.md</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># __name__ = &#39;BufferStats&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">values</span><span class="o">=</span><span class="p">(),</span>
+        <span class="n">maxlen</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">_no_value_specified_sentinel</span><span class="p">,</span>
+        <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">,</span>
+        <span class="n">add_new_val</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">deque</span><span class="o">.</span><span class="n">append</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param maxlen: Size of the buffer</span>
+<span class="sd">        :param func: The function to be computed (on buffer contents) and</span>
+<span class="sd">        returned when buffer is &quot;called&quot;</span>
+<span class="sd">        :param add_new_val: The function that adds values on the buffer.</span>
+<span class="sd">        Signature must be (self, new_val)</span>
+<span class="sd">            Is usually a deque method (``deque.append`` by default, but could</span>
+<span class="sd">            be ``deque.extend``, ``deque.appendleft`` etc.).</span>
+<span class="sd">            Can also be any other function that</span>
+<span class="sd">            has a valid (self, new_val) signature.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">maxlen</span> <span class="ow">is</span> <span class="n">_no_value_specified_sentinel</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;You are required to specify maxlen&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">maxlen</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;maxlen must be an integer, was: </span><span class="si">{</span><span class="n">maxlen</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">maxlen</span><span class="o">=</span><span class="n">maxlen</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">add_new_val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># assume add_new_val is a method of deque:</span>
+            <span class="n">add_new_val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">add_new_val</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_new_val</span> <span class="o">=</span> <span class="n">add_new_val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;BufferStats&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_val</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Stats</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_new_val</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_val</span><span class="p">)</span>  <span class="c1"># add the new value</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">is_not_none</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="return_buffer_on_stats_condition"><a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.return_buffer_on_stats_condition">[docs]</a><span class="k">def</span> <span class="nf">return_buffer_on_stats_condition</span><span class="p">(</span>
+    <span class="n">stats</span><span class="p">:</span> <span class="n">Stats</span><span class="p">,</span> <span class="n">buffer</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">cond</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">is_not_none</span><span class="p">,</span> <span class="n">else_val</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &gt;&gt;&gt; return_buffer_on_stats_condition(</span>
+<span class="sd">    ... stats=3, buffer=[1,2,3,4], cond=lambda x: x%2 == 1</span>
+<span class="sd">    ... )</span>
+<span class="sd">    [1, 2, 3, 4]</span>
+<span class="sd">    &gt;&gt;&gt; return_buffer_on_stats_condition(</span>
+<span class="sd">    ... stats=3, buffer=[1,2,3,4], cond=lambda x: x%2 == 0, else_val=&#39;3 is not even!&#39;</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &#39;3 is not even!&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">cond</span><span class="p">(</span><span class="n">stats</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">buffer</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">else_val</span></div>
+
+
+<div class="viewcode-block" id="Segmenter"><a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.Segmenter">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Segmenter</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &gt;&gt;&gt; gen = iter(range(200))</span>
+<span class="sd">    &gt;&gt;&gt; bs = BufferStats(maxlen=10, func=sum)</span>
+<span class="sd">    &gt;&gt;&gt; return_if_stats_is_odd = partial(</span>
+<span class="sd">    ...     return_buffer_on_stats_condition,</span>
+<span class="sd">    ...     cond=lambda x: x%2 == 1, else_val=&#39;The sum is not odd!&#39;</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; seg = Segmenter(buffer=bs, stats_buffer_callback=return_if_stats_is_odd)</span>
+
+<span class="sd">    Since the sum of the values in the buffer [1] is odd, the buffer is returned:</span>
+
+<span class="sd">    &gt;&gt;&gt; seg(new_val=1)</span>
+<span class="sd">    [1]</span>
+
+<span class="sd">    Adding ``1 + 2`` is still odd so:</span>
+
+<span class="sd">    &gt;&gt;&gt; seg(new_val=2)</span>
+<span class="sd">    [1, 2]</span>
+
+<span class="sd">    Now since ``1 + 2 + 5`` is even, the ``else_val`` of ``return_if_stats_is_odd``</span>
+<span class="sd">    is returned instead</span>
+
+<span class="sd">    &gt;&gt;&gt; seg(new_val=5)</span>
+<span class="sd">    &#39;The sum is not odd!&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">buffer</span><span class="p">:</span> <span class="n">BufferStats</span>
+    <span class="n">stats_buffer_callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span>
+        <span class="p">[</span><span class="n">Stats</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">],</span> <span class="n">Any</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="n">return_buffer_on_stats_condition</span>
+    <span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;Segmenter&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_val</span><span class="p">):</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="n">new_val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats_buffer_callback</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">))</span></div>
 </pre></div>
 
            </div>
