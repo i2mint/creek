@@ -546,7 +546,7 @@ class InfiniteSeq:
 
 
     >>> from creek.infinite_sequence import InfiniteSeq
-    >>> from collections import Mapping
+    >>> from typing import Mapping
     >>>
     >>> class Source(Mapping):
     ...     n = 100
