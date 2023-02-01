@@ -393,9 +393,10 @@ class BufferStats(deque):
     In the following, also see how we use iterize to get a function that
     takes an iterator and returns an iterator
 
-    >>> from lined import iterize
+    >>> from creek.util import iterize
     >>> window_stats = iterize(BufferStats(
-    ... maxlen=4, func=''.join, add_new_val=deque.extend))
+    ...     maxlen=4, func=''.join, add_new_val=deque.extend)
+    ... )
     >>> chks = ['a', 'bc', 'def', 'gh']
     >>> for x in window_stats(chks):
     ...     print(x)

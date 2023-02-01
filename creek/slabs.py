@@ -395,7 +395,7 @@ class SlabsIter:
 
     def dot_digraph(self):
         from i2 import Sig
-        from lined import LineParametrized  # replace with meshed when ready
+        from lined import LineParametrized  # TODO: replace with meshed when ready
 
         def normalize_components(components):
             for k, v in components.items():

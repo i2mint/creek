@@ -14,6 +14,23 @@ from typing import Protocol, runtime_checkable
 from functools import singledispatch, partial
 
 
+def iterize(func, name=None):
+    """From an In->Out function, makes a Iterator[In]->Itertor[Out] function.
+
+    >>> f = lambda x: x * 10
+    >>> f(2)
+    20
+    >>> iterized_f = iterize(f)
+    >>> list(iterized_f(iter([1,2,3])))
+    [10, 20, 30]
+
+    """
+    iterized_func = partial(map, func)
+    if name is not None:
+        iterized_func.__name__ = name
+    return iterized_func
+
+
 IteratorItem = Any
 
 
@@ -59,6 +76,7 @@ wraps = partial(_wraps, assigned=wrapper_assignments)
 
 # ---------------------------------------------------------------------------------------
 # iteratable, iterator, cursors
+# TODO: If bring i2 as dependency, use mk_sentinel here
 no_sentinel = type('no_sentinel', (), {})()
 no_default = type('no_default', (), {})()
 
