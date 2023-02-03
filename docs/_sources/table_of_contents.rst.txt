@@ -10,6 +10,8 @@
    module_docs/creek/scrap/async_utils
    module_docs/creek/scrap/creek_layers
    module_docs/creek/scrap/multi_streams
+   module_docs/creek/scrap/sequences
+   module_docs/creek/slabs
    module_docs/creek/tests/infinite_sequence
    module_docs/creek/tests/labeling
    module_docs/creek/tools

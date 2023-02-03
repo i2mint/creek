@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.multi_streams &mdash; creek 0.1.27 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>creek.multi_streams &mdash; creek 0.1.28 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -48,6 +48,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/async_utils.html">creek.scrap.async_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/sequences.html">creek.scrap.sequences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/slabs.html">creek.slabs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/labeling.html">creek.tests.labeling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tools.html">creek.tools</a></li>
@@ -67,9 +69,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>creek.multi_streams</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">creek.multi_streams</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -95,7 +97,7 @@
 
 <div class="viewcode-block" id="MergedStreams"><a class="viewcode-back" href="../../module_docs/creek/multi_streams.html#creek.multi_streams.MergedStreams">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">MergedStreams</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Creates an iterable of (stream_id, stream_item) pairs from a stream Mapping,</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates an iterable of (stream_id, stream_item) pairs from a stream Mapping,</span>
 <span class="sd">    that is, {stream_id: stream, ...}.</span>
 
 <span class="sd">    The stream_item will be yield in sorted order.</span>
@@ -150,7 +152,7 @@
 
 
 <div class="viewcode-block" id="multi_stream_items"><a class="viewcode-back" href="../../module_docs/creek/multi_streams.html#creek.multi_streams.multi_stream_items">[docs]</a><span class="k">def</span> <span class="nf">multi_stream_items</span><span class="p">(</span><span class="n">streams_map</span><span class="p">:</span> <span class="n">StreamsMap</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Provides a iterable of (k1, v1_1), (k1, v1_2), ...</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provides a iterable of (k1, v1_1), (k1, v1_2), ...</span>
 <span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; streams_map = {&#39;hello&#39;: &#39;abc&#39;, &#39;world&#39;: [1, 2]}</span>
 <span class="sd">    &gt;&gt;&gt; hello_items, world_items = multi_stream_items(streams_map)</span>
@@ -164,7 +166,7 @@
 
 
 <div class="viewcode-block" id="transform_methods"><a class="viewcode-back" href="../../module_docs/creek/multi_streams.html#creek.multi_streams.transform_methods">[docs]</a><span class="k">def</span> <span class="nf">transform_methods</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">method_trans</span><span class="o">=</span><span class="nb">staticmethod</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Applies method_trans to all the methods of `cls`</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies method_trans to all the methods of `cls`</span>
 
 <span class="sd">    &gt;&gt;&gt; from functools import partial</span>
 <span class="sd">    &gt;&gt;&gt; staticmethods = partial(transform_methods, method_trans=staticmethod)</span>

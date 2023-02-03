@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.labeling &mdash; creek 0.1.27 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>creek.labeling &mdash; creek 0.1.28 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -48,6 +48,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/async_utils.html">creek.scrap.async_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/sequences.html">creek.scrap.sequences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/slabs.html">creek.slabs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/labeling.html">creek.tests.labeling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tools.html">creek.tools</a></li>
@@ -67,9 +69,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>creek.labeling</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">creek.labeling</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -103,17 +105,21 @@
 <span class="sd">    3-&gt;4-&gt;(&#39;multiple of 5&#39;, 5) -&gt; 6 -&gt; ...</span>
 
 
+<span class="sd">One critique of using  tuples to contain both annotated (here, ``5``) and annotation (here, ``&#39;multiple of 5&#39;``)</span>
+<span class="sd">is that the semantics aren&#39;t explicit.</span>
+<span class="sd">The fact that the original element was annotated the distinction of annotation and annotated is based on an</span>
+<span class="sd">implicit convention.</span>
+<span class="sd">This is not too much of a problem here, but becomes unwieldy in more complex situations, for example,</span>
+<span class="sd">if we want to accommodate for multiple labels.</span>
 
-<span class="sd">This module treats the more complicated case of &quot;multilabelling&quot;:</span>
-<span class="sd">a LabelledElement x has an attribute **x.element**,</span>
-<span class="sd">and a container of labels **x.labels** (list, set or dict).</span>
+<span class="sd">A ``LabelledElement`` ``x`` has an attribute ``x.element``,</span>
+<span class="sd">and a container of labels ``x.labels`` (list, set or dict).</span>
 
-<span class="sd">Multilabels can be used to segments streams into overlapping segments.</span>
+<span class="sd">``Multilabels`` can be used to segment streams into overlapping segments.</span>
 
 <span class="sd">.. code-block:: python</span>
 
 <span class="sd">    (group0)-&gt;(group0)-&gt;(group0, group1)-&gt;(group0, group1)-&gt; (group1)-&gt;(group1)-&gt;...</span>
-
 
 
 <span class="sd">&quot;&quot;&quot;</span>
@@ -131,7 +137,7 @@
 
 
 <div class="viewcode-block" id="LabeledElement"><a class="viewcode-back" href="../../module_docs/creek/labeling.html#creek.labeling.LabeledElement">[docs]</a><span class="k">class</span> <span class="nc">LabeledElement</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Abstract class to label elements -- that is, associate some metadata to an element.</span>
 
 <span class="sd">    To make a concrete LabeledElement, one must subclass LabeledElement and provide</span>
@@ -170,7 +176,7 @@
 
 
 <div class="viewcode-block" id="DictLabeledElement"><a class="viewcode-back" href="../../module_docs/creek/labeling.html#creek.labeling.DictLabeledElement">[docs]</a><span class="k">class</span> <span class="nc">DictLabeledElement</span><span class="p">(</span><span class="n">LabeledElement</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A LabeledElement that uses a `dict` as the labels container.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A LabeledElement that uses a `dict` as the labels container.</span>
 <span class="sd">    Use this when you need to keep labels classified and have quick access to the</span>
 <span class="sd">    a specific class of labels.</span>
 <span class="sd">    Note that when adding a label, you need to specify it as a `{key: val, ...}`</span>
@@ -197,7 +203,7 @@
 
 
 <div class="viewcode-block" id="SetLabeledElement"><a class="viewcode-back" href="../../module_docs/creek/labeling.html#creek.labeling.SetLabeledElement">[docs]</a><span class="k">class</span> <span class="nc">SetLabeledElement</span><span class="p">(</span><span class="n">LabeledElement</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A LabeledElement that uses a `set` as the labels container.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A LabeledElement that uses a `set` as the labels container.</span>
 <span class="sd">    Use this when you want to get fast `label in labels` check and/or maintain the</span>
 <span class="sd">    labels unduplicated.</span>
 <span class="sd">    Note that since `set` is the container, the labels will have to be hashable.</span>
@@ -219,7 +225,7 @@
 
 
 <div class="viewcode-block" id="ListLabeledElement"><a class="viewcode-back" href="../../module_docs/creek/labeling.html#creek.labeling.ListLabeledElement">[docs]</a><span class="k">class</span> <span class="nc">ListLabeledElement</span><span class="p">(</span><span class="n">LabeledElement</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A LabeledElement that uses a `list` as the labels container.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A LabeledElement that uses a `list` as the labels container.</span>
 <span class="sd">    Use this when you need to use unhashable labels, or label insertion order matters,</span>
 <span class="sd">    or don&#39;t need fast `label in labels` checks or label deduplication.</span>
 
@@ -244,7 +250,7 @@
     <span class="n">label</span><span class="p">:</span> <span class="n">Label</span><span class="p">,</span>
     <span class="n">labeled_element_cls</span><span class="p">,</span>  <span class="c1"># TODO: LabeledElement annotation makes linter complain!?</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LabeledElement</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Label `element` with `label` (or add this label to the existing labels).</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Label `element` with `label` (or add this label to the existing labels).</span>
 
 <span class="sd">    The `labeled_element_cls`, the `LabeledElement` class to use to label the element,</span>
 <span class="sd">    is meant to be &quot;partialized out&quot;, like this:</span>

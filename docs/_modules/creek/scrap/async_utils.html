@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.scrap.async_utils &mdash; creek 0.1.27 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <title>creek.scrap.async_utils &mdash; creek 0.1.28 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
@@ -48,6 +48,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/creek/scrap/async_utils.html">creek.scrap.async_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/creek/scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/creek/scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/creek/scrap/sequences.html">creek.scrap.sequences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/creek/slabs.html">creek.slabs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/creek/tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/creek/tests/labeling.html">creek.tests.labeling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/creek/tools.html">creek.tools</a></li>
@@ -67,9 +69,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>creek.scrap.async_utils</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">creek.scrap.async_utils</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -189,13 +191,13 @@
 
 
 <div class="viewcode-block" id="aiter_with_sentinel"><a class="viewcode-back" href="../../../module_docs/creek/scrap/async_utils.html#creek.scrap.async_utils.aiter_with_sentinel">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">aiter_with_sentinel</span><span class="p">(</span><span class="n">cursor_func</span><span class="p">:</span> <span class="n">CursorFunc</span><span class="p">,</span> <span class="n">sentinel</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncIterator</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Like iter(async_callable, sentinel) builtin but for async callables&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Like iter(async_callable, sentinel) builtin but for async callables&quot;&quot;&quot;</span>
     <span class="k">while</span> <span class="p">(</span><span class="n">value</span> <span class="o">:=</span> <span class="k">await</span> <span class="n">cursor_func</span><span class="p">())</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">sentinel</span><span class="p">:</span>
         <span class="k">yield</span> <span class="n">value</span></div>
 
 
 <div class="viewcode-block" id="iterable_to_iterator"><a class="viewcode-back" href="../../../module_docs/creek/scrap/async_utils.html#creek.scrap.async_utils.iterable_to_iterator">[docs]</a><span class="k">def</span> <span class="nf">iterable_to_iterator</span><span class="p">(</span><span class="n">iterable</span><span class="p">:</span> <span class="n">IterableType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IteratorType</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Get an iterator from an iterable (whether async or not)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get an iterator from an iterable (whether async or not)</span>
 
 <span class="sd">    &gt;&gt;&gt; iterable = [1, 2, 3]</span>
 <span class="sd">    &gt;&gt;&gt; iterator = iterable_to_iterator(iterable)</span>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; creek 0.1.27 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <title>Index &mdash; creek 0.1.28 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
@@ -48,6 +48,8 @@
 <li class="toctree-l1"><a class="reference internal" href="module_docs/creek/scrap/async_utils.html">creek.scrap.async_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_docs/creek/scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_docs/creek/scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/scrap/sequences.html">creek.scrap.sequences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/slabs.html">creek.slabs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_docs/creek/tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_docs/creek/tests/labeling.html">creek.tests.labeling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_docs/creek/tools.html">creek.tools</a></li>
@@ -67,8 +69,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Index</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Index</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -118,6 +120,8 @@
 </li>
       <li><a href="module_docs/creek/tools.html#creek.tools.apply_and_fanout">apply_and_fanout() (in module creek.tools)</a>
 </li>
+      <li><a href="module_docs/creek/tools.html#creek.tools.apply_func_to_index">apply_func_to_index() (in module creek.tools)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -125,6 +129,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.BufferedGetter">BufferedGetter (class in creek.infinite_sequence)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="module_docs/creek/tools.html#creek.tools.BufferStats">BufferStats (class in creek.tools)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -185,13 +193,27 @@
         <li><a href="module_docs/creek/scrap/creek_layers.html#module-creek.scrap.creek_layers">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     creek.scrap.multi_streams
 
       <ul>
         <li><a href="module_docs/creek/scrap/multi_streams.html#module-creek.scrap.multi_streams">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    creek.scrap.sequences
+
+      <ul>
+        <li><a href="module_docs/creek/scrap/sequences.html#module-creek.scrap.sequences">module</a>
+</li>
+      </ul></li>
+      <li>
+    creek.slabs
+
+      <ul>
+        <li><a href="module_docs/creek/slabs.html#module-creek.slabs">module</a>
 </li>
       </ul></li>
       <li>
@@ -250,10 +272,12 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.ExceptionRaiserCallbackMixin">ExceptionRaiserCallbackMixin (class in creek.infinite_sequence)</a>
+      <li><a href="module_docs/creek/slabs.html#creek.slabs.ExceptionalException">ExceptionalException</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.ExceptionRaiserCallbackMixin">ExceptionRaiserCallbackMixin (class in creek.infinite_sequence)</a>
+</li>
       <li><a href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.IndexedBuffer.extend">extend() (creek.infinite_sequence.IndexedBuffer method)</a>
 </li>
   </ul></td>
@@ -296,9 +320,11 @@
 </li>
       <li><a href="module_docs/creek/util.html#creek.util.iterator_to_cursor">iterator_to_cursor() (in module creek.util)</a>
 </li>
-      <li><a href="module_docs/creek/util.html#creek.util.IteratorExit">IteratorExit</a>
+      <li><a href="module_docs/creek/slabs.html#creek.slabs.IteratorExit">IteratorExit</a>, <a href="module_docs/creek/util.html#creek.util.IteratorExit">[1]</a>
 </li>
       <li><a href="module_docs/creek/util.html#creek.util.IteratorType">IteratorType (class in creek.util)</a>
+</li>
+      <li><a href="module_docs/creek/util.html#creek.util.iterize">iterize() (in module creek.util)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -349,6 +375,10 @@
         <li><a href="module_docs/creek/scrap/creek_layers.html#module-creek.scrap.creek_layers">creek.scrap.creek_layers</a>
 </li>
         <li><a href="module_docs/creek/scrap/multi_streams.html#module-creek.scrap.multi_streams">creek.scrap.multi_streams</a>
+</li>
+        <li><a href="module_docs/creek/scrap/sequences.html#module-creek.scrap.sequences">creek.scrap.sequences</a>
+</li>
+        <li><a href="module_docs/creek/slabs.html#module-creek.slabs">creek.slabs</a>
 </li>
         <li><a href="module_docs/creek/tests/infinite_sequence.html#module-creek.tests.infinite_sequence">creek.tests.infinite_sequence</a>
 </li>
@@ -409,6 +439,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.Relations">Relations (class in creek.infinite_sequence)</a>
 </li>
+      <li><a href="module_docs/creek/tools.html#creek.tools.return_buffer_on_stats_condition">return_buffer_on_stats_condition() (in module creek.tools)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -417,13 +449,21 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="module_docs/creek/tools.html#creek.tools.segment_overlaps">segment_overlaps() (in module creek.tools)</a>
 </li>
+      <li><a href="module_docs/creek/tools.html#creek.tools.Segmenter">Segmenter (class in creek.tools)</a>
+</li>
+      <li><a href="module_docs/creek/scrap/sequences.html#creek.scrap.sequences.Seq">Seq (class in creek.scrap.sequences)</a>
+</li>
       <li><a href="module_docs/creek/labeling.html#creek.labeling.SetLabeledElement">SetLabeledElement (class in creek.labeling)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.simple_interval_relationship">simple_interval_relationship() (in module creek.infinite_sequence)</a>
 </li>
+      <li><a href="module_docs/creek/slabs.html#creek.slabs.SlabsIter">SlabsIter (class in creek.slabs)</a>
+</li>
       <li><a href="module_docs/creek/multi_streams.html#creek.multi_streams.staticmethods">staticmethods() (in module creek.multi_streams)</a>
+</li>
+      <li><a href="module_docs/creek/tools.html#creek.tools.Segmenter.stats_buffer_callback">stats_buffer_callback() (creek.tools.Segmenter method)</a>
 </li>
   </ul></td>
 </tr></table>
