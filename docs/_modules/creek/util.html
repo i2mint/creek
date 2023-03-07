@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.util &mdash; creek 0.1.29 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>creek.util &mdash; creek 0.1.30 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -28,11 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> creek
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            creek
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -68,7 +72,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
       <li class="breadcrumb-item active">creek.util</li>
       <li class="wy-breadcrumbs-aside">
@@ -87,13 +91,58 @@
     <span class="n">partial</span><span class="p">,</span>
     <span class="n">update_wrapper</span> <span class="k">as</span> <span class="n">_update_wrapper</span><span class="p">,</span>
     <span class="n">wraps</span> <span class="k">as</span> <span class="n">_wraps</span><span class="p">,</span>
+    <span class="n">singledispatch</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">islice</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">NewType</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">runtime_checkable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Protocol</span><span class="p">,</span>
+    <span class="n">runtime_checkable</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
+    <span class="n">Callable</span><span class="p">,</span>
+    <span class="n">Optional</span><span class="p">,</span>
+    <span class="n">Generator</span><span class="p">,</span>
+    <span class="n">Iterable</span><span class="p">,</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">Union</span><span class="p">,</span>
+    <span class="n">NewType</span><span class="p">,</span>
+    <span class="n">Iterator</span><span class="p">,</span>
+<span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">singledispatch</span><span class="p">,</span> <span class="n">partial</span>
+
+<div class="viewcode-block" id="iterate_skipping_errors"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.iterate_skipping_errors">[docs]</a><span class="k">def</span> <span class="nf">iterate_skipping_errors</span><span class="p">(</span>
+    <span class="n">g</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span>
+    <span class="n">error_callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="ne">BaseException</span><span class="p">],</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">caught_exceptions</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="ne">Exception</span><span class="p">,),</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Iterate over a generator, skipping errors and calling an error callback if provided.</span>
+
+<span class="sd">    :param g: The generator to iterate over</span>
+<span class="sd">    :param error_callback: A callback to call when an error is encountered.</span>
+<span class="sd">    :param caught_exceptions: The exceptions to catch and skip.</span>
+<span class="sd">    :return: A generator that yields the values of the original generator,</span>
+<span class="sd">    skipping errors.</span>
+
+<span class="sd">    &gt;&gt;&gt; list(iterate_skipping_errors(map(lambda x: 1 / x, [1, 0, 2])))</span>
+<span class="sd">    [1.0, 0.5]</span>
+<span class="sd">    &gt;&gt;&gt; list(iterate_skipping_errors(map(lambda x: 1 / x, [1, 0, 2]), print))</span>
+<span class="sd">    division by zero</span>
+<span class="sd">    [1.0, 0.5]</span>
+
+<span class="sd">    See https://github.com/i2mint/creek/issues/6 for more info.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">iterator</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="nb">next</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="k">except</span> <span class="n">caught_exceptions</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">error_callback</span><span class="p">:</span>
+                <span class="n">error_callback</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="iterize"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.iterize">[docs]</a><span class="k">def</span> <span class="nf">iterize</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -282,8 +331,7 @@
 
 
 <div class="viewcode-block" id="iterable_to_cursor"><a class="viewcode-back" href="../../module_docs/creek/util.html#creek.util.iterable_to_cursor">[docs]</a><span class="k">def</span> <span class="nf">iterable_to_cursor</span><span class="p">(</span><span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CursorFunc</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a cursor function from an iterable.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a cursor function from an iterable.&quot;&quot;&quot;</span>
     <span class="n">iterator</span> <span class="o">=</span> <span class="n">iterable_to_iterator</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">iterator_to_cursor</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span></div>
 
