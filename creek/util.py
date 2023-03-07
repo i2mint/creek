@@ -5,13 +5,58 @@ from functools import (
     partial,
     update_wrapper as _update_wrapper,
     wraps as _wraps,
+    singledispatch
 )
 from itertools import islice
 
-from typing import Any, Iterable, Iterator, Union, NewType
-from typing import Protocol, runtime_checkable
+from typing import (
+    Protocol,
+    runtime_checkable,
+    Tuple,
+    Callable,
+    Optional,
+    Generator,
+    Iterable,
+    Any,
+    Union,
+    NewType,
+    Iterator
+)
 
-from functools import singledispatch, partial
+
+def iterate_skipping_errors(
+    g: Iterable,
+    error_callback: Optional[Callable[[BaseException], Any]] = None,
+    caught_exceptions: Tuple[BaseException] = (Exception,),
+) -> Generator:
+    """
+    Iterate over a generator, skipping errors and calling an error callback if provided.
+
+    :param g: The generator to iterate over
+    :param error_callback: A callback to call when an error is encountered.
+    :param caught_exceptions: The exceptions to catch and skip.
+    :return: A generator that yields the values of the original generator,
+    skipping errors.
+
+    >>> list(iterate_skipping_errors(map(lambda x: 1 / x, [1, 0, 2])))
+    [1.0, 0.5]
+    >>> list(iterate_skipping_errors(map(lambda x: 1 / x, [1, 0, 2]), print))
+    division by zero
+    [1.0, 0.5]
+
+    See https://github.com/i2mint/creek/issues/6 for more info.
+
+    """
+    iterator = iter(g)
+
+    while True:
+        try:
+            yield next(iterator)
+        except StopIteration:
+            break
+        except caught_exceptions as e:
+            if error_callback:
+                error_callback(e)
 
 
 def iterize(func, name=None):
@@ -66,10 +111,10 @@ class CursorFunc(Protocol):
         """Get the next iterator's item and increment the cursor"""
 
 
-IterType = NewType('IterType', Union[IteratorType, IterableType, CursorFunc])
-IterType.__doc__ = 'A type that can be made into an iterator'
+IterType = NewType("IterType", Union[IteratorType, IterableType, CursorFunc])
+IterType.__doc__ = "A type that can be made into an iterator"
 
-wrapper_assignments = (*WRAPPER_ASSIGNMENTS, '__defaults__', '__kwdefaults__')
+wrapper_assignments = (*WRAPPER_ASSIGNMENTS, "__defaults__", "__kwdefaults__")
 update_wrapper = partial(_update_wrapper, assigned=wrapper_assignments)
 wraps = partial(_wraps, assigned=wrapper_assignments)
 
@@ -77,8 +122,8 @@ wraps = partial(_wraps, assigned=wrapper_assignments)
 # ---------------------------------------------------------------------------------------
 # iteratable, iterator, cursors
 # TODO: If bring i2 as dependency, use mk_sentinel here
-no_sentinel = type('no_sentinel', (), {})()
-no_default = type('no_default', (), {})()
+no_sentinel = type("no_sentinel", (), {})()
+no_default = type("no_default", (), {})()
 
 
 class IteratorExit(BaseException):
@@ -100,7 +145,7 @@ def iterate_until_exception(iterator, interrupt_exceptions=DFLT_INTERRUPT_EXCEPT
         try:
             next(iterator)
         except interrupt_exceptions:
-            print('ending')
+            print("ending")
             break
 
 
@@ -200,8 +245,7 @@ def cursor_to_iterator(cursor: CursorFunc, sentinel=no_sentinel) -> Iterator:
 
 
 def iterable_to_cursor(iterable: Iterable) -> CursorFunc:
-    """Get a cursor function from an iterable.
-    """
+    """Get a cursor function from an iterable."""
     iterator = iterable_to_iterator(iterable)
     return iterator_to_cursor(iterator)
 
@@ -256,7 +300,7 @@ def _(x: CursorFunc, sentinel=no_sentinel):
 
 # ---------------------------------------------------------------------------------------
 
-no_such_item = type('NoSuchItem', (), {})()
+no_such_item = type("NoSuchItem", (), {})()
 
 
 class stream_util:
@@ -375,7 +419,7 @@ class Pipe:
         self.funcs = funcs
         n_funcs = len(funcs)
         if n_funcs == 0:
-            raise ValueError('You need to specify at least one function!')
+            raise ValueError("You need to specify at least one function!")
 
         elif n_funcs == 1:
             other_funcs = ()
@@ -389,7 +433,7 @@ class Pipe:
         )
         self.first_func, self.other_funcs = first_func, other_funcs
 
-    _reserved_names = ('__name__', '__doc__')
+    _reserved_names = ("__name__", "__doc__")
 
     def _process_reserved_names(self, named_funcs):
         for name in self._reserved_names:

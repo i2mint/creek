@@ -3,8 +3,6 @@
 import time
 from collections import deque
 from typing import (
-    Any,
-    Callable,
     Tuple,
     TypeVar,
     Callable,
@@ -21,12 +19,11 @@ from functools import partial
 from creek.util import Pipe
 
 Index = Any
-DataItem = TypeVar('DataItem')
+DataItem = TypeVar("DataItem")
 # TODO: Could have more args. How to specify this in typing?
 IndexUpdater = Callable[[Index, DataItem], Index]
 Indexer = Callable[[DataItem], Tuple[Index, DataItem]]
-
-from itertools import chain
+T = TypeVar("T")
 
 
 # TODO: Possible performance enhancement by using class with precompiled slices
@@ -435,9 +432,9 @@ class BufferStats(deque):
             has a valid (self, new_val) signature.
         """
         if maxlen is _no_value_specified_sentinel:
-            raise TypeError('You are required to specify maxlen')
+            raise TypeError("You are required to specify maxlen")
         if not isinstance(maxlen, int):
-            raise TypeError(f'maxlen must be an integer, was: {maxlen}')
+            raise TypeError(f"maxlen must be an integer, was: {maxlen}")
 
         super().__init__(values, maxlen=maxlen)
         self.func = func
@@ -445,7 +442,7 @@ class BufferStats(deque):
             # assume add_new_val is a method of deque:
             add_new_val = getattr(self, add_new_val)
         self.add_new_val = add_new_val
-        self.__name__ = 'BufferStats'
+        self.__name__ = "BufferStats"
 
     def __call__(self, new_val) -> Stats:
         self.add_new_val(self, new_val)  # add the new value
@@ -510,7 +507,7 @@ class Segmenter:
     stats_buffer_callback: Callable[
         [Stats, Iterable], Any
     ] = return_buffer_on_stats_condition
-    __name__ = 'Segmenter'
+    __name__ = "Segmenter"
 
     def __call__(self, new_val):
         stats = self.buffer(new_val)
