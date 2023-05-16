@@ -355,6 +355,10 @@ Stats = Any
 _no_value_specified_sentinel = cast(int, object())
 
 
+def always_true(x):
+    return True
+
+
 class BufferStats(deque):
     """A callable (fifo) buffer. Calls add input to it, but also returns some results
     computed from it's contents.
@@ -418,6 +422,8 @@ class BufferStats(deque):
         maxlen: int = _no_value_specified_sentinel,
         func: Callable = sum,
         add_new_val: Callable = deque.append,
+        *,
+        func_cond=always_true,
     ):
         """
 
@@ -443,10 +449,12 @@ class BufferStats(deque):
             add_new_val = getattr(self, add_new_val)
         self.add_new_val = add_new_val
         self.__name__ = "BufferStats"
+        self.func_cond = func_cond
 
     def __call__(self, new_val) -> Stats:
         self.add_new_val(self, new_val)  # add the new value
-        return self.func(self)
+        if self.func_cond(self):
+            return self.func(self)
 
 
 def is_not_none(x):
