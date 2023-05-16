@@ -448,7 +448,7 @@ class BufferStats(deque):
             # assume add_new_val is a method of deque:
             add_new_val = getattr(self, add_new_val)
         self.add_new_val = add_new_val
-        self.__name__ = "BufferStats"
+        self.__name__ = 'BufferStats'
         self.func_cond = func_cond
 
     def __call__(self, new_val) -> Stats:
