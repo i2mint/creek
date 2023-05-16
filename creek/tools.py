@@ -19,11 +19,11 @@ from functools import partial
 from creek.util import Pipe
 
 Index = Any
-DataItem = TypeVar('DataItem')
+DataItem = TypeVar("DataItem")
 # TODO: Could have more args. How to specify this in typing?
 IndexUpdater = Callable[[Index, DataItem], Index]
 Indexer = Callable[[DataItem], Tuple[Index, DataItem]]
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 # TODO: Possible performance enhancement by using class with precompiled slices
@@ -422,8 +422,8 @@ class BufferStats(deque):
         maxlen: int = _no_value_specified_sentinel,
         func: Callable = sum,
         add_new_val: Callable = deque.append,
-        *,
-        func_cond=always_true,
+        # *,
+        # func_cond=always_true,
     ):
         """
 
@@ -438,9 +438,9 @@ class BufferStats(deque):
             has a valid (self, new_val) signature.
         """
         if maxlen is _no_value_specified_sentinel:
-            raise TypeError('You are required to specify maxlen')
+            raise TypeError("You are required to specify maxlen")
         if not isinstance(maxlen, int):
-            raise TypeError(f'maxlen must be an integer, was: {maxlen}')
+            raise TypeError(f"maxlen must be an integer, was: {maxlen}")
 
         super().__init__(values, maxlen=maxlen)
         self.func = func
@@ -449,12 +449,13 @@ class BufferStats(deque):
             add_new_val = getattr(self, add_new_val)
         self.add_new_val = add_new_val
         self.__name__ = "BufferStats"
-        self.func_cond = func_cond
+        # self.func_cond = func_cond
 
     def __call__(self, new_val) -> Stats:
         self.add_new_val(self, new_val)  # add the new value
-        if self.func_cond(self):
-            return self.func(self)
+        return self.func(self)
+        # if self.func_cond(self):
+        #     return self.func(self)
 
 
 def is_not_none(x):
@@ -515,7 +516,7 @@ class Segmenter:
     stats_buffer_callback: Callable[
         [Stats, Iterable], Any
     ] = return_buffer_on_stats_condition
-    __name__ = 'Segmenter'
+    __name__ = "Segmenter"
 
     def __call__(self, new_val):
         stats = self.buffer(new_val)
