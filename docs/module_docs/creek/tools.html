@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.tools &mdash; creek 0.1.30 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>creek.tools &mdash; creek 0.1.31 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -91,7 +91,7 @@
 <p>Tools to work with creek objects</p>
 <dl class="py class">
 <dt id="creek.tools.BufferStats">
-<em class="property">class </em><code class="sig-prename descclassname">creek.tools.</code><code class="sig-name descname">BufferStats</code><span class="sig-paren">(</span><em class="sig-param">values=()</em>, <em class="sig-param">maxlen: int = &lt;object object&gt;</em>, <em class="sig-param">func: Callable = &lt;built-in function sum&gt;</em>, <em class="sig-param">add_new_val: Callable = &lt;method 'append' of 'collections.deque' objects&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/tools.html#BufferStats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.tools.BufferStats" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">creek.tools.</code><code class="sig-name descname">BufferStats</code><span class="sig-paren">(</span><em class="sig-param">values=()</em>, <em class="sig-param">maxlen: int = &lt;object object&gt;</em>, <em class="sig-param">func: Callable = &lt;built-in function sum&gt;</em>, <em class="sig-param">add_new_val: Callable = &lt;method 'append' of 'collections.deque' objects&gt;</em>, <em class="sig-param">*</em>, <em class="sig-param">func_cond=&lt;function always_true&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/creek/tools.html#BufferStats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#creek.tools.BufferStats" title="Permalink to this definition">¶</a></dt>
 <dd><p>A callable (fifo) buffer. Calls add input to it, but also returns some results
 computed from it’s contents.</p>
 <p>What “add” means is configurable (through <code class="docutils literal notranslate"><span class="pre">add_new_val</span></code> arg). Default
@@ -426,7 +426,7 @@ more elements (the actual segment data).</p>
 <p>This function is made to be curried, as shown in the following example:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">overlapping_segments_filt</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">segment_overlaps</span><span class="p">,</span> <span class="n">query_bt</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">query_tt</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">overlapping_segments_filt</span><span class="p">,</span> <span class="p">[</span>
 <span class="gp">... </span>    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;completely before&#39;</span><span class="p">),</span>
 <span class="gp">... </span>    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;still completely before (upper bounds are strict)&#39;</span><span class="p">),</span>
