@@ -61,13 +61,13 @@ def mk_interval_extractor(
     >>> list(extract_intervals(iterable))
     [((0, 2), 'a'), ((1, 3), 'b'), ((4, 5), 'c'), ((6, 7), 'd')]
     >>> extract_intervals_without_tags = mk_interval_extractor(include_tag=False)
-    >>> assert list(extract_intervals_without_tags(iterable))
+    >>> list(extract_intervals_without_tags(iterable))
     [(0, 2), (1, 3), (4, 5), (6, 7)]
 
-    See: 
+    See:
 
     """
-    interval_extractor = Pipe(KvExtractor, track_intervals)
+    interval_extractor = Pipe(kv_extractor, track_intervals)
     if not include_tag:
         interval_extractor = Pipe(interval_extractor, only_interval)
     return interval_extractor
