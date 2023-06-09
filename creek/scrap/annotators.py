@@ -25,9 +25,17 @@ IntervalAnnot.__doc__ = """An annotation whose key is an interval."""
 KvExtractor = Callable[[Iterable], Iterable[IndexAnnot]]
 IntervalAnnot.__doc__ = """A function that extracts annotations from an iterable."""
 
+FilterFunc = Callable[..., bool]
+
+
+def always_true(x):
+    return True
+
 
 # ------------------- Annotators -------------------
-def track_intervals(indexed_tags: Iterable[IndexAnnot]) -> Iterable[IntervalAnnot]:
+def track_intervals(
+    indexed_tags: Iterable[IndexAnnot], track_tag: FilterFunc = always_true
+) -> Iterable[IntervalAnnot]:
     """Track intervals of tags in an iterable of indexed tags.
 
     Example usage:
@@ -35,22 +43,25 @@ def track_intervals(indexed_tags: Iterable[IndexAnnot]) -> Iterable[IntervalAnno
     >>> iterable = ['a', 'b', 'a', 'b', 'c', 'c', 'd', 'd']
     >>> list(track_intervals(enumerate(iterable)))
     [((0, 2), 'a'), ((1, 3), 'b'), ((4, 5), 'c'), ((6, 7), 'd')]
+    >>> list(track_intervals(enumerate(iterable), track_tag=lambda x: x in {'a', 'd'}))
+    [((0, 2), 'a'), ((6, 7), 'd')]
 
     """
     open_tags = {}
     for index, tag in indexed_tags:
-        if tag not in open_tags:
-            open_tags[tag] = index
-        else:
-            yield ((open_tags[tag], index), tag)
-            del open_tags[tag]
-
-
-only_interval = partial(map, itemgetter(0))
+        if track_tag(tag):
+            if tag not in open_tags:
+                open_tags[tag] = index
+            else:
+                yield ((open_tags[tag], index), tag)
+                del open_tags[tag]
 
 
 def mk_interval_extractor(
-    *, kv_extractor: KvExtractor = enumerate, include_tag: bool = True
+    *,
+    kv_extractor: KvExtractor = enumerate,
+    include_tag: bool = True,
+    track_tag: FilterFunc = always_true
 ) -> Callable[[Iterable], Iterable[Union[Interval, IntervalAnnot]]]:
     """Make an interval extractor from a key-value extractor.
 
@@ -67,7 +78,10 @@ def mk_interval_extractor(
     See:
 
     """
-    interval_extractor = Pipe(kv_extractor, track_intervals)
+    interval_extractor = Pipe(
+        kv_extractor, partial(track_intervals, track_tag=track_tag)
+    )
     if not include_tag:
+        only_interval = partial(map, itemgetter(0))
         interval_extractor = Pipe(interval_extractor, only_interval)
     return interval_extractor
