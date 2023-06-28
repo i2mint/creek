@@ -14,10 +14,13 @@ StreamsMap = Mapping[Any, Iterable]  # a map of {name: stream} pairs
 
 @dataclass
 class MergedStreams:
-    """Creates an iterable of (stream_id, stream_item) pairs from a stream Mapping,
-    that is, {stream_id: stream, ...}.
+    """Creates an iterable of ``(stream_id, stream_item)`` pairs from a stream Mapping,
+    that is, ``{stream_id: stream, ...}``: A sort of "flattening" of the Mapping.
 
-    The stream_item will be yield in sorted order.
+    This can be useful, for instance, if you want to make "slabs" of data, gathering 
+    together all the data for a given time period, from multiple streams.
+
+    The ``stream_item`` will be yield in sorted order.
     Sort behavior can be modified by the ``sort_key`` argument which behaves like ``key``
     arguments of built-in like ``sorted``, ``heapq.merge``, ``itertools.groupby``, etc.
 
