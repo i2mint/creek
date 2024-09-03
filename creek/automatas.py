@@ -4,8 +4,8 @@ from typing import Union, TypeVar, Mapping, Iterable, Callable, Tuple
 from functools import partial
 from dataclasses import dataclass
 
-State = TypeVar("State")
-Symbol = TypeVar("Symbol")
+State = TypeVar('State')
+Symbol = TypeVar('Symbol')
 Automata = Callable[[State, Iterable[Symbol]], Iterable[State]]
 
 TransitionFunc = Callable[[State, Symbol], State]
@@ -45,7 +45,7 @@ class MappingTransitionFunc:
         else:
             return self.mapping.get((state, symbol), state)
 
-    def map_states(self, state_mapper: StateMapper) -> "MappingTransitionFunc":
+    def map_states(self, state_mapper: StateMapper) -> 'MappingTransitionFunc':
         """Return a new MappingTransitionFunc with the same mapping but with
         state_mapper applied to the states."""
         if isinstance(state_mapper, Mapping):
