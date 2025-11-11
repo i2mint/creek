@@ -5,16 +5,15 @@ To install:	```pip install creek```
 
 [Documentation here](https://i2mint.github.io/creek/)
 
-The ``Creek`` base class offsers a layer-able wrap of the stream interface.
+The ``Creek`` base class offers a layer-able wrap of the stream interface.
 
-There are three layering methods -- pre_iter, data_to_obj, and post_filt
+There are three layering methods -- pre_iter, data_to_obj, and post_iter
 -- whose use is demonstrated in the iteration code below:
 
 ```
 for line in self.pre_iter(self.stream):  # pre_iter: prepare and/or filter the stream
     obj = self.data_to_obj(line)  # data_to_obj: Transforms the data that stream yields
-    if self.post_filt(obj):  # post_filt: Filters the stream further (but based on object now)
-        yield obj
+    yield from self.post_iter([obj])  # post_iter: Further process or filter the objects
 ```
 
 Examples:
@@ -66,8 +65,8 @@ and the other that is applied after (to the obj).
 ... 4, 5,6
 ... ''')
 >>> class MyFilteredCreek(MyCreek):
-...     def post_filt(self, obj):
-...         return str.isnumeric(obj[0])
+...     def post_iter(self, objs):
+...         yield from filter(lambda obj: str.isnumeric(obj[0]), objs)
 >>>
 >>> s = MyFilteredCreek(src)
 >>>
