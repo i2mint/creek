@@ -115,7 +115,7 @@ def test_indexed_buffer_extreme_cases():
 
 def test_source(capsys):
     from creek.infinite_sequence import InfiniteSeq
-    from collections import Mapping
+    from collections.abc import Mapping
 
     def assert_prints(print_str):
         out, err = capsys.readouterr()

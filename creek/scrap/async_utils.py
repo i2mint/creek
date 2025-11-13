@@ -74,15 +74,11 @@ Trying to make async iterators/iterables/cursor_funcs utils
 
 from functools import partial
 from typing import (
-    Callable,
     Any,
     NewType,
-    Iterable,
-    AsyncIterable,
-    Iterator,
-    AsyncIterator,
     Union,
 )
+from collections.abc import Callable, Iterable, AsyncIterable, Iterator, AsyncIterator
 
 IterableType = Union[Iterable, AsyncIterable]
 IteratorType = Union[Iterator, AsyncIterator]

@@ -41,7 +41,8 @@ and a container of labels ``x.labels`` (list, set or dict).
 
 """
 
-from typing import NewType, Iterable, Callable, Any, TypeVar, Union
+from typing import NewType, Any, TypeVar, Union
+from collections.abc import Iterable, Callable
 from abc import ABC, abstractmethod
 
 KT = TypeVar('KT')  # Key type.
@@ -163,7 +164,7 @@ class ListLabeledElement(LabeledElement):
 
 
 def label_element(
-    elem: Union[Element, LabeledElement],
+    elem: Element | LabeledElement,
     label: Label,
     labeled_element_cls,  # TODO: LabeledElement annotation makes linter complain!?
 ) -> LabeledElement:

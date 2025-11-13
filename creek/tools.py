@@ -5,12 +5,10 @@ from collections import deque
 from typing import (
     Tuple,
     TypeVar,
-    Callable,
     Any,
-    Iterable,
-    Sequence,
     cast,
 )
+from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
 from itertools import chain
 from operator import itemgetter
@@ -22,7 +20,7 @@ Index = Any
 DataItem = TypeVar('DataItem')
 # TODO: Could have more args. How to specify this in typing?
 IndexUpdater = Callable[[Index, DataItem], Index]
-Indexer = Callable[[DataItem], Tuple[Index, DataItem]]
+Indexer = Callable[[DataItem], tuple[Index, DataItem]]
 T = TypeVar('T')
 
 

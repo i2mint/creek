@@ -1,7 +1,8 @@
 """Tools for multi-streams"""
 
 from itertools import product
-from typing import Mapping, Iterable, Any, Optional, Callable
+from typing import Any, Optional
+from collections.abc import Mapping, Iterable, Callable
 import heapq
 from dataclasses import dataclass
 from functools import partial
@@ -56,7 +57,7 @@ class MergedStreams:
     """
 
     streams_map: StreamsMap
-    sort_key: Optional[Callable] = None
+    sort_key: Callable | None = None
 
     def __post_init__(self):
         if self.sort_key is None:
@@ -65,10 +66,9 @@ class MergedStreams:
             self.effective_sort_key = Pipe(itemgetter(1), self.sort_key)
 
     def __iter__(self):
-        for item in heapq.merge(
+        yield from heapq.merge(
             *multi_stream_items(self.streams_map), key=self.effective_sort_key
-        ):
-            yield item
+        )
 
 
 def multi_stream_items(streams_map: StreamsMap):

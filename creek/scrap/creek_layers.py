@@ -61,7 +61,7 @@ Compile the layers to increase resource use.
 Uncompile to increase debugibility.
 """
 
-from typing import Iterable, Callable
+from collections.abc import Iterable, Callable
 from dataclasses import dataclass
 from inspect import Signature, signature
 

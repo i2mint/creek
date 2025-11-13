@@ -8,7 +8,8 @@ with some (parametrizable) limitations.
 #  Consider simplifying.
 
 from collections import deque
-from typing import Iterable, Tuple, Union, Callable, Any, NewType
+from typing import Tuple, Union, Any, NewType
+from collections.abc import Iterable, Callable
 from functools import wraps, partial, partialmethod
 from enum import Enum
 from operator import le, lt, ge, gt, itemgetter
@@ -60,8 +61,8 @@ def validate_interval(interval):
 
 # TODO: Validate intervals (assert x[0] <= x[1] and )?
 def simple_interval_relationship(
-    x: Tuple[Number, Number],
-    y: Tuple[Number, Number],
+    x: tuple[Number, Number],
+    y: tuple[Number, Number],
     above_bt: Callable = ge,
     below_tt: Callable = lt,
 ):
@@ -461,7 +462,7 @@ def consume(gen, n):
 
 
 from dataclasses import dataclass
-from typing import Iterator
+from collections.abc import Iterator
 
 
 # TODO: Add some mechanism to deal with ITERABLE instead of just iterator. As it is we have some unwanted behavior with

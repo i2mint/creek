@@ -1,6 +1,7 @@
 """Automatas (finite state machines etc.)"""
 
-from typing import Union, TypeVar, Mapping, Iterable, Callable, Tuple
+from typing import Union, TypeVar, Tuple
+from collections.abc import Mapping, Iterable, Callable
 from functools import partial
 from dataclasses import dataclass
 
@@ -13,7 +14,7 @@ AutomataFactory = Callable[[TransitionFunc], Automata]
 
 
 def mapping_to_transition_func(
-    mapping: Mapping[Tuple[State, Symbol], State], strict: bool = True
+    mapping: Mapping[tuple[State, Symbol], State], strict: bool = True
 ) -> TransitionFunc:
     """
     Helper to make a transition function from a mapping of (state, symbol)->state.
@@ -36,7 +37,7 @@ StateMapper = Union[Callable[[State], State], Mapping[State, State]]
 
 @dataclass
 class MappingTransitionFunc:
-    mapping: Mapping[Tuple[State, Symbol], State]
+    mapping: Mapping[tuple[State, Symbol], State]
     strict: bool = True
 
     def __call__(self, state: State, symbol: Symbol) -> State:

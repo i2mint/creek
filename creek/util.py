@@ -13,21 +13,18 @@ from typing import (
     Protocol,
     runtime_checkable,
     Tuple,
-    Callable,
     Optional,
-    Generator,
-    Iterable,
     Any,
     Union,
     NewType,
-    Iterator,
 )
+from collections.abc import Callable, Generator, Iterable, Iterator
 
 
 def iterate_skipping_errors(
     g: Iterable,
-    error_callback: Optional[Callable[[BaseException], Any]] = None,
-    caught_exceptions: Tuple[BaseException] = (Exception,),
+    error_callback: Callable[[BaseException], Any] | None = None,
+    caught_exceptions: tuple[BaseException] = (Exception,),
 ) -> Generator:
     """
     Iterate over a generator, skipping errors and calling an error callback if provided.

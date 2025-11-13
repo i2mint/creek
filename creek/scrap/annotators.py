@@ -2,7 +2,8 @@
 
 """
 
-from typing import Union, Iterable, Tuple, Callable, KT, VT
+from typing import Union, Tuple, KT, VT
+from collections.abc import Iterable, Callable
 from operator import itemgetter
 from functools import partial
 from i2 import Pipe
@@ -10,16 +11,16 @@ from i2 import Pipe
 # ------------------- Types -------------------
 # TODO: Should we use the term KV (key-value-pair) instead of annotation?
 # TODO: Should we use some Time (numerical) type instead of KT here?
-IndexAnnot = Tuple[KT, VT]
+IndexAnnot = tuple[KT, VT]
 IndexAnnot.__doc__ = '''An annotation whose key is an (time) index. 
 KT is usually numerical and represents time. 
 VT holds the value (info) of the annotation.
 '''
 
-Interval = Tuple[KT, KT]  # note this it's two KTs here, usually numerical.
+Interval = tuple[KT, KT]  # note this it's two KTs here, usually numerical.
 Interval.__doc__ = '''An interval; i.e. a pair of indices'''
 
-IntervalAnnot = Tuple[Interval, VT]
+IntervalAnnot = tuple[Interval, VT]
 IntervalAnnot.__doc__ = '''An annotation whose key is an interval.'''
 
 KvExtractor = Callable[[Iterable], Iterable[IndexAnnot]]
@@ -62,7 +63,7 @@ def mk_interval_extractor(
     kv_extractor: KvExtractor = enumerate,
     include_tag: bool = True,
     track_tag: FilterFunc = always_true
-) -> Callable[[Iterable], Iterable[Union[Interval, IntervalAnnot]]]:
+) -> Callable[[Iterable], Iterable[Interval | IntervalAnnot]]:
     """Make an interval extractor from a key-value extractor.
 
     Example usage:

@@ -6,7 +6,8 @@ warn(f'Moved to creek.multi_streams')
 
 from dataclasses import dataclass
 
-from typing import Any, NewType, Callable, Iterable, Union, Tuple
+from typing import Any, NewType, Union, Tuple
+from collections.abc import Callable, Iterable
 from numbers import Number
 
 
@@ -14,7 +15,7 @@ def MyType(
     name: str,
     tp: type = Any,
     doc: Optional[str] = None,
-    aka: Optional[Union[str, Iterable[str]]] = None,
+    aka: Optional[str | Iterable[str]] = None,
 ):
     """Like `typing.NewType` with some extras (`__doc__` and `_aka` attributes, etc.)
     """
@@ -47,7 +48,7 @@ TT = MyType(
 )
 IntervalTuple = MyType(
     'IntervalTuple',
-    Tuple[BT, TT],
+    tuple[BT, TT],
     doc='Denotes an interval of time by specifying the (BT, TT) pair',
 )
 IntervalSlice = MyType(
