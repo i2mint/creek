@@ -444,7 +444,7 @@ class BufferStats(deque):
         self.func = func
         if isinstance(add_new_val, str):
             # assume add_new_val is a method of deque:
-            add_new_val = getattr(self, add_new_val)
+            add_new_val = getattr(deque, add_new_val)
         self.add_new_val = add_new_val
         self.__name__ = 'BufferStats'
         # self.func_cond = func_cond
