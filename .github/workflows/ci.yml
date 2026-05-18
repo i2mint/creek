@@ -1,6 +1,5 @@
 name: Continuous Integration (uv)
 # MIGRATION NOTE: Old CI uses pylint - new CI uses ruff for linting
-# MIGRATION NOTE: PyPI auth changed: set secrets.PYPI_PASSWORD to a PyPI API token (uv publish uses UV_PUBLISH_TOKEN, mapped from PYPI_PASSWORD)
 # MIGRATION NOTE: Old CI references setup.cfg - ensure project is migrated to pyproject.toml first (use: wads-migrate setup-to-pyproject)
 on: [push, pull_request]
 

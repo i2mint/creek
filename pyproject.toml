@@ -127,6 +127,7 @@ exclude_paths = [
     "examples",
     "scrap",
     "docsrc",
+    "creek/scrap",
 ]
 test_on_windows = true
 
