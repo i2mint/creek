@@ -45,10 +45,10 @@ from typing import NewType, Any, TypeVar, Union
 from collections.abc import Iterable, Callable
 from abc import ABC, abstractmethod
 
-KT = TypeVar('KT')  # Key type.
-VT = TypeVar('VT')  # Value type.
-Element = NewType('Element', Any)
-Label = NewType('Label', Any)
+KT = TypeVar("KT")  # Key type.
+VT = TypeVar("VT")  # Value type.
+Element = NewType("Element", Any)
+Label = NewType("Label", Any)
 Labels = Iterable[Label]
 LabelFactory = Callable[[], Label]
 AddLabel = Callable[[Labels, Label], Any]
@@ -73,17 +73,17 @@ class LabeledElement(ABC):
     @staticmethod
     @abstractmethod
     def mk_new_labels_container(self) -> Labels:
-        raise NotImplemented('Need to implement mk_new_labels_container')
+        raise NotImplemented("Need to implement mk_new_labels_container")
 
     add_new_label: AddLabel
 
     @staticmethod
     @abstractmethod
     def add_new_label(labels: Labels, label: Label):
-        raise NotImplemented('Need to implement add_new_label')
+        raise NotImplemented("Need to implement add_new_label")
 
     def __repr__(self):
-        return f'{type(self).__name__}({self.element})'
+        return f"{type(self).__name__}({self.element})"
 
     def add_label(self, label):
         self.add_new_label(self.labels, label)

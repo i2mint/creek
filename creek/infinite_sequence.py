@@ -36,17 +36,17 @@ class Relations(Enum):
 
     # simple relations, that can be used between
     # (X: point, Y: interval) or (X: interval, Y: interval) pairs
-    BEFORE = 'Some of X happens BEFORE Y'
-    DURING = 'All of X happens within Y'
-    AFTER = 'Some of X happens AFTER Y'
+    BEFORE = "Some of X happens BEFORE Y"
+    DURING = "All of X happens within Y"
+    AFTER = "Some of X happens AFTER Y"
 
     # Extras (Allen's)
-    PRECEDES = 'X precedes Y: All of X happens before Y'
-    MEETS = 'X meets Y: When X ends, Y starts'
-    OVERLAPS = 'X overlaps Y: Point is AFTER interval'
-    STARTS = 'X starts at the same time as Y (and finishes no later)'
-    FINISHES = 'X finishes Y: Point is AFTER interval'
-    EQUAL = 'X is equal to Y'
+    PRECEDES = "X precedes Y: All of X happens before Y"
+    MEETS = "X meets Y: When X ends, Y starts"
+    OVERLAPS = "X overlaps Y: Point is AFTER interval"
+    STARTS = "X starts at the same time as Y (and finishes no later)"
+    FINISHES = "X finishes Y: Point is AFTER interval"
+    EQUAL = "X is equal to Y"
 
 
 def validate_interval(interval):
@@ -56,7 +56,7 @@ def validate_interval(interval):
         assert bt <= tt
         return bt, tt
     except Exception as e:
-        raise ValueError(f'Not a valid interval: {interval}')
+        raise ValueError(f"Not a valid interval: {interval}")
 
 
 # TODO: Validate intervals (assert x[0] <= x[1] and )?
@@ -175,21 +175,21 @@ class NotDuringError(ExceptionRaiserCallbackMixin, IndexError):
     """IndexError that indicates that there was an attempt to index some data that is not contained in the buffer
     (i.e. is that a part of the request is NO LONGER, or NOT YET covered by the buffer)"""
 
-    dflt_args = 'Some of the data requested was in the past or in the future'
+    dflt_args = "Some of the data requested was in the past or in the future"
 
 
 class OverlapsPastError(NotDuringError):
     """IndexError that indicates that there was an attempt to index some data that is in the PAST
     (i.e. is NO LONGER completely covered by the buffer)"""
 
-    dlft_args = 'Some of the data requested is in the past'
+    dlft_args = "Some of the data requested is in the past"
 
 
 class OverlapsFutureError(NotDuringError):
     """IndexError that indicates that there was an attempt to index some data that is in the FUTURE
     (i.e. is NOT YET completely covered by the buffer)"""
 
-    dlft_args = 'Some of the data requested is in the future'
+    dlft_args = "Some of the data requested is in the future"
 
 
 class RelationNotHandledError(TypeError):
@@ -205,7 +205,7 @@ overlaps_future_error = OverlapsFutureError()
 
 
 def _not_implemented(self, method_name, *args, **kwargs):
-    raise NotImplementedError('')
+    raise NotImplementedError("")
 
 
 # ram heavier, cpu lighter extend
@@ -366,10 +366,10 @@ class IndexedBuffer:
 
     def __repr__(self):
         return (
-            f'{type(self).__name__}('
-            f'buffer_len={self.buffer_len}, '
-            f'min_idx={self.min_idx}, '
-            f'max_idx={self.max_idx}, ...)'
+            f"{type(self).__name__}("
+            f"buffer_len={self.buffer_len}, "
+            f"min_idx={self.min_idx}, "
+            f"max_idx={self.max_idx}, ...)"
         )
 
     def __iter__(self):
@@ -392,8 +392,8 @@ class IndexedBuffer:
             return tuple(x - self.min_idx for x in idx)
         else:
             raise TypeError(
-                f'{type(idx)} are not handled. '
-                f'You requested the outer_to_buffer_idx of {idx}'
+                f"{type(idx)} are not handled. "
+                f"You requested the outer_to_buffer_idx of {idx}"
             )
 
     def __getitem__(self, item):
@@ -421,17 +421,17 @@ class IndexedBuffer:
             raise self._overlaps_past_error(item)
         else:
             raise RelationNotHandledError(
-                f'The relation {relationship} is not handled.'
+                f"The relation {relationship} is not handled."
             )
 
     def _overlaps_past_error(self, item):
         return OverlapsPastError(
-            f'You asked for {item}, but the buffer only contains the index range: {self.min_idx}:{self.max_idx}'
+            f"You asked for {item}, but the buffer only contains the index range: {self.min_idx}:{self.max_idx}"
         )
 
     def _overlaps_future_error(self, item):
         return OverlapsFutureError(
-            f'You asked for {item}, but the buffer only contains the index range: {self.min_idx}:{self.max_idx}'
+            f"You asked for {item}, but the buffer only contains the index range: {self.min_idx}:{self.max_idx}"
         )
 
     def append(self, x) -> None:
@@ -628,23 +628,23 @@ def new_type(name, typ, doc=None):
 
 
 BufferInput = new_type(
-    'BufferInput', Any, 'input_of/what_we_insert_in a buffer (before transformation)'
+    "BufferInput", Any, "input_of/what_we_insert_in a buffer (before transformation)"
 )
 
 BufferItem = new_type(
-    'BufferItem', Any, 'An item of a buffer (after input is transformed)'
+    "BufferItem", Any, "An item of a buffer (after input is transformed)"
 )
 
 InputDataTrans = new_type(
-    'InputDataTrans',
+    "InputDataTrans",
     Callable[[BufferInput], BufferItem],
-    'A function that transforms a BufferInput in to a BufferItem',
+    "A function that transforms a BufferInput in to a BufferItem",
 )
-Query = new_type('Query', Any, 'A query (i.e. key, selection specification, etc.)')
+Query = new_type("Query", Any, "A query (i.e. key, selection specification, etc.)")
 QueryTrans = new_type(
-    'QueryTrans',
+    "QueryTrans",
     Callable[[Query], Query],
-    'A function transforming a query into another, ready to be applied form',
+    "A function transforming a query into another, ready to be applied form",
 )
 
 FiltFunc = Callable[[BufferItem], bool]

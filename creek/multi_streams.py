@@ -18,7 +18,7 @@ class MergedStreams:
     """Creates an iterable of ``(stream_id, stream_item)`` pairs from a stream Mapping,
     that is, ``{stream_id: stream, ...}``: A sort of "flattening" of the Mapping.
 
-    This can be useful, for instance, if you want to make "slabs" of data, gathering 
+    This can be useful, for instance, if you want to make "slabs" of data, gathering
     together all the data for a given time period, from multiple streams.
 
     The ``stream_item`` will be yield in sorted order.
@@ -73,7 +73,7 @@ class MergedStreams:
 
 def multi_stream_items(streams_map: StreamsMap):
     """Provides a iterable of (k1, v1_1), (k1, v1_2), ...
-    
+
     >>> streams_map = {'hello': 'abc', 'world': [1, 2]}
     >>> hello_items, world_items = multi_stream_items(streams_map)
     >>> list(hello_items)

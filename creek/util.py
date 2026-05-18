@@ -108,10 +108,10 @@ class CursorFunc(Protocol):
         """Get the next iterator's item and increment the cursor"""
 
 
-IterType = NewType('IterType', Union[IteratorType, IterableType, CursorFunc])
-IterType.__doc__ = 'A type that can be made into an iterator'
+IterType = NewType("IterType", Union[IteratorType, IterableType, CursorFunc])
+IterType.__doc__ = "A type that can be made into an iterator"
 
-wrapper_assignments = (*WRAPPER_ASSIGNMENTS, '__defaults__', '__kwdefaults__')
+wrapper_assignments = (*WRAPPER_ASSIGNMENTS, "__defaults__", "__kwdefaults__")
 update_wrapper = partial(_update_wrapper, assigned=wrapper_assignments)
 wraps = partial(_wraps, assigned=wrapper_assignments)
 
@@ -119,8 +119,8 @@ wraps = partial(_wraps, assigned=wrapper_assignments)
 # ---------------------------------------------------------------------------------------
 # iteratable, iterator, cursors
 # TODO: If bring i2 as dependency, use mk_sentinel here
-no_sentinel = type('no_sentinel', (), {})()
-no_default = type('no_default', (), {})()
+no_sentinel = type("no_sentinel", (), {})()
+no_default = type("no_default", (), {})()
 
 
 class IteratorExit(BaseException):
@@ -142,7 +142,7 @@ def iterate_until_exception(iterator, interrupt_exceptions=DFLT_INTERRUPT_EXCEPT
         try:
             next(iterator)
         except interrupt_exceptions:
-            print('ending')
+            print("ending")
             break
 
 
@@ -297,7 +297,7 @@ def _(x: CursorFunc, sentinel=no_sentinel):
 
 # ---------------------------------------------------------------------------------------
 
-no_such_item = type('NoSuchItem', (), {})()
+no_such_item = type("NoSuchItem", (), {})()
 
 
 class stream_util:
@@ -416,7 +416,7 @@ class Pipe:
         self.funcs = funcs
         n_funcs = len(funcs)
         if n_funcs == 0:
-            raise ValueError('You need to specify at least one function!')
+            raise ValueError("You need to specify at least one function!")
 
         elif n_funcs == 1:
             other_funcs = ()
@@ -430,7 +430,7 @@ class Pipe:
         )
         self.first_func, self.other_funcs = first_func, other_funcs
 
-    _reserved_names = ('__name__', '__doc__')
+    _reserved_names = ("__name__", "__doc__")
 
     def _process_reserved_names(self, named_funcs):
         for name in self._reserved_names:
