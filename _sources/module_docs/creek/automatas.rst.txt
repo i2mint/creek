@@ -1,0 +1,4 @@
+creek.automatas
+===============
+.. automodule:: creek.automatas
+   :members:

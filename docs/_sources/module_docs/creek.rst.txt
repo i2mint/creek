@@ -1,4 +1,0 @@
-creek
-=====
-.. automodule:: creek
-   :members:
