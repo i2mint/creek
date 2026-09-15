@@ -41,7 +41,6 @@ def apply_func_to_index(seq, apply_to_idx, func):
     >>> f = partial(apply_func_to_index, apply_to_idx=0, func=str.upper)
     >>> list(map(f, ['abc', 'defgh']))
     [('A', 'b', 'c'), ('D', 'e', 'f', 'g', 'h')]
-
     """
     apply_to_element, *_ = seq[slice(apply_to_idx, apply_to_idx + 1)]
     return tuple(
@@ -239,7 +238,6 @@ class DynamicIndexer:
     A: Then you would use that function to make the ``(idxof(data_item), data_item)``
     pairs directly. ``DynamicIndexer`` is for the use case where the index of an item
     depends on the (number of, sizes of, etc.) items that came before it.
-
     """
 
     start: Index = 0
@@ -277,7 +275,6 @@ def dynamically_index(iterable: Iterable, start=0, idx_updater=count_increments)
     >>> size_index = DynamicIndexer(idx_updater=DynamicIndexer.size_increments)
     >>> list(map(size_index, stream))
     [(0, 'stream'), (6, 'of'), (8, 'different'), (17, 'sized'), (22, 'chunks')]
-
     """
     dynamic_indexer = DynamicIndexer(start, idx_updater)
     return map(dynamic_indexer, iterable)
@@ -339,7 +336,6 @@ def segment_overlaps(bt_tt_segment, query_bt, query_tt):
     (4, 5, 'totally', 'inside'),
     (5, 8),
     (7, 10, 'partially after, but overlaps top')]
-
     """
     bt, tt, *segment = bt_tt_segment
     return (
@@ -404,12 +400,12 @@ class BufferStats(deque):
     cdef
     efgh
 
-    Note: To those who might think that they can optimize this for special
-    cases: Yes you can.
-    But SHOULD you? Is it worth the increase in complexity and reduction in
-    flexibility?
-    See https://github.com/thorwhalen/umpyre/blob/master/misc/performance_of_rolling_window_stats.md
-
+    Note:
+        To those who might think that they can optimize this for special
+        cases: Yes you can.
+        But SHOULD you? Is it worth the increase in complexity and reduction in
+        flexibility?
+        See https://github.com/thorwhalen/umpyre/blob/master/misc/performance_of_rolling_window_stats.md
     """
 
     # __name__ = 'BufferStats'

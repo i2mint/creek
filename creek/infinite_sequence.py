@@ -2,7 +2,6 @@
 Objects that support some list-like read operations on an unbounded stream.
 Essentially, trying to give you the impression that you have read access to infinite list,
 with some (parametrizable) limitations.
-
 """
 # TODO: Build up extensive relations expression and handling, but InfiniteSeq only uses BEFORE (past).
 #  Consider simplifying.
@@ -134,7 +133,6 @@ def simple_interval_relationship(
     Relations.DURING Relations.AFTER Relations.AFTER
     Relations.DURING Relations.DURING Relations.DURING
     Relations.BEFORE Relations.BEFORE Relations.AFTER
-
     """
     if isinstance(x, slice):
         x_bt, x_tt = validate_interval((x.start or 0, x.stop or 0))
@@ -261,7 +259,6 @@ def absolute_item(item, max_idx):
 
     >>> absolute_item((-7, -2), 10)
     (-7, -2)
-
     """
     if isinstance(item, slice):
         start, stop, step = slice_args(item)
@@ -323,6 +320,7 @@ class IndexedBuffer:
     [2, 4]
 
     You can slice with negatives
+
     >>> s[2:-2]
     [2, 3]
 
@@ -598,7 +596,6 @@ class InfiniteSeq:
     Asking for 3
     Asking for 4
     [40, 41]
-
     """
 
     iterator: Iterator

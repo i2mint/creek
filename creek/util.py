@@ -33,7 +33,7 @@ def iterate_skipping_errors(
     :param error_callback: A callback to call when an error is encountered.
     :param caught_exceptions: The exceptions to catch and skip.
     :return: A generator that yields the values of the original generator,
-    skipping errors.
+        skipping errors.
 
     >>> list(iterate_skipping_errors(map(lambda x: 1 / x, [1, 0, 2])))
     [1.0, 0.5]
@@ -42,7 +42,6 @@ def iterate_skipping_errors(
     [1.0, 0.5]
 
     See https://github.com/i2mint/creek/issues/6 for more info.
-
     """
     iterator = iter(g)
 
@@ -65,7 +64,6 @@ def iterize(func, name=None):
     >>> iterized_f = iterize(f)
     >>> list(iterized_f(iter([1,2,3])))
     [10, 20, 30]
-
     """
     iterized_func = partial(map, func)
     if name is not None:
@@ -200,7 +198,6 @@ def iterator_to_cursor(iterator: Iterator, default=no_default) -> CursorFunc:
     >>> assert cursor() is None
 
     forever.
-
     """
     if default is no_default:
         return partial(next, iterator)
@@ -236,7 +233,6 @@ def cursor_to_iterator(cursor: CursorFunc, sentinel=no_sentinel) -> Iterator:
     >>> iterator = cursor_to_iterator(cursor, sentinel=None)
     >>> list(iterator)
     [1, 2]
-
     """
     return iter(cursor, sentinel)
 
@@ -380,6 +376,7 @@ class Pipe:
     3
 
     Notes:
+
         - Pipe instances don't have a __name__ etc. So some expectations of normal functions are not met.
         - Pipe instance are pickalable (as long as the functions that compose them are)
 
@@ -405,7 +402,6 @@ class Pipe:
     'map_and_sum'
     >>> f.__doc__
     'Apply func and add'
-
     """
 
     funcs = ()

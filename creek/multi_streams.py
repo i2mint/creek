@@ -27,8 +27,9 @@ class MergedStreams:
 
     If given, the `sort_key` function applies to ``stream_item`` (not to ``stream_id``).
 
-    Important: To function as expected, the streams should be already sorted (according
-    to the ``sort_key`` order).
+    Important:
+        To function as expected, the streams should be already sorted (according
+        to the ``sort_key`` order).
 
     The cannonical use case of this function is to "flatten", or "weave together"
     multiple streams of timestamped data. We're given several streams that provide

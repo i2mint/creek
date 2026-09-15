@@ -37,8 +37,6 @@ and a container of labels ``x.labels`` (list, set or dict).
 .. code-block:: python
 
     (group0)->(group0)->(group0, group1)->(group0, group1)-> (group1)->(group1)->...
-
-
 """
 
 from typing import NewType, Any, TypeVar, Union
@@ -180,15 +178,17 @@ def label_element(
 
     You'll probably often want to use `DictLabeledElement`, because, for example:
 
-    ```
-    {'n_channels': 2, 'phase', 2, 'session': 16987485}
-    ```
+    .. code-block:: text
+
+        {'n_channels': 2, 'phase', 2, 'session': 16987485}
+
 
     is a lot easier (and less dangerous) to use then, say:
 
-    ```
-    [2, 2, 16987485]
-    ```
+    .. code-block:: text
+
+        [2, 2, 16987485]
+
 
     But there are cases where, say:
 
