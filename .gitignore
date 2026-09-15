@@ -113,3 +113,6 @@ venv.bak/
 
 # PyCharm
 .idea
+
+# epythet regenerates docsrc/ on every build
+docsrc/
