@@ -29,10 +29,10 @@ implicit convention.
 This is not too much of a problem here, but becomes unwieldy in more complex situations, for example,
 if we want to accommodate for multiple labels.
 
-A ``LabelledElement`` ``x`` has an attribute ``x.element``,
+A ``LabeledElement`` ``x`` has an attribute ``x.element``,
 and a container of labels ``x.labels`` (list, set or dict).
 
-``Multilabels`` can be used to segment streams into overlapping segments.
+Multiple labels can be used to segment streams into overlapping segments.
 
 .. code-block:: python
 
@@ -58,10 +58,10 @@ class LabeledElement(ABC):
 
     To make a concrete LabeledElement, one must subclass LabeledElement and provide
 
-    - a `mk_new_labels_container`, a `LabelFactory`, which is a callable that takes no \
-    input and returns a new empty labels container
-    - a `add_new_label`, an `AddLabel`, a (Labels, Label) callable that adds a single \
-    label to the labels container.
+    - a ``mk_new_labels_container``, a ``LabelFactory``, which is a callable that takes
+      no input and returns a new empty labels container
+    - an ``add_new_label``, an ``AddLabel``, a ``(Labels, Label)`` callable that adds
+      a single label to the labels container.
     """
 
     def __init__(self, element: Element):
@@ -71,6 +71,7 @@ class LabeledElement(ABC):
     @staticmethod
     @abstractmethod
     def mk_new_labels_container(self) -> Labels:
+        """Return a new, empty labels container."""
         raise NotImplemented("Need to implement mk_new_labels_container")
 
     add_new_label: AddLabel
@@ -78,12 +79,14 @@ class LabeledElement(ABC):
     @staticmethod
     @abstractmethod
     def add_new_label(labels: Labels, label: Label):
+        """Add ``label`` to ``labels`` in place."""
         raise NotImplemented("Need to implement add_new_label")
 
     def __repr__(self):
         return f"{type(self).__name__}({self.element})"
 
     def add_label(self, label):
+        """Add ``label`` to this element's labels and return ``self``."""
         self.add_new_label(self.labels, label)
         return self
 
@@ -92,11 +95,11 @@ class LabeledElement(ABC):
 
 
 class DictLabeledElement(LabeledElement):
-    """A LabeledElement that uses a `dict` as the labels container.
+    """A LabeledElement that uses a ``dict`` as the labels container.
     Use this when you need to keep labels classified and have quick access to the
     a specific class of labels.
-    Note that when adding a label, you need to specify it as a `{key: val, ...}`
-    `dict`, the keys being the (hashable) label kinds,
+    Note that when adding a label, you need to specify it as a ``{key: val, ...}``
+    ``dict``, the keys being the (hashable) label kinds,
     and the vals being the values for those kinds.
 
     >>> x = DictLabeledElement(42).add_label({'string': 'forty-two'})
@@ -115,14 +118,15 @@ class DictLabeledElement(LabeledElement):
 
     @staticmethod
     def add_new_label(labels: dict, label: dict):
+        """Merge the ``label`` dict into ``labels``."""
         labels.update(label)
 
 
 class SetLabeledElement(LabeledElement):
-    """A LabeledElement that uses a `set` as the labels container.
-    Use this when you want to get fast `label in labels` check and/or maintain the
+    """A LabeledElement that uses a ``set`` as the labels container.
+    Use this when you want to get fast ``label in labels`` check and/or maintain the
     labels unduplicated.
-    Note that since `set` is the container, the labels will have to be hashable.
+    Note that since ``set`` is the container, the labels will have to be hashable.
 
     >>> x = SetLabeledElement(42).add_label('forty-two')
     >>> x.element
@@ -141,9 +145,9 @@ class SetLabeledElement(LabeledElement):
 
 
 class ListLabeledElement(LabeledElement):
-    """A LabeledElement that uses a `list` as the labels container.
+    """A LabeledElement that uses a ``list`` as the labels container.
     Use this when you need to use unhashable labels, or label insertion order matters,
-    or don't need fast `label in labels` checks or label deduplication.
+    or don't need fast ``label in labels`` checks or label deduplication.
 
     >>> x = ListLabeledElement(42).add_label('forty-two')
     >>> x.element
@@ -166,9 +170,9 @@ def label_element(
     label: Label,
     labeled_element_cls,  # TODO: LabeledElement annotation makes linter complain!?
 ) -> LabeledElement:
-    """Label `element` with `label` (or add this label to the existing labels).
+    """Label ``element`` with ``label`` (or add this label to the existing labels).
 
-    The `labeled_element_cls`, the `LabeledElement` class to use to label the element,
+    The ``labeled_element_cls``, the ``LabeledElement`` class to use to label the element,
     is meant to be "partialized out", like this:
 
     >>> from functools import partial
@@ -176,7 +180,7 @@ def label_element(
     >>> my_label_element = partial(label_element, labeled_element_cls=DictLabeledElement)
     >>> # and then just use my_label_element(elem, label) to label elem
 
-    You'll probably often want to use `DictLabeledElement`, because, for example:
+    You'll probably often want to use ``DictLabeledElement``, because, for example:
 
     .. code-block:: text
 
@@ -205,8 +209,9 @@ def label_element(
 
     :param elem: The element that is being labeled
     :param label: The label to add to the element
-    :param labeled_element_cls: The `LabeledElement` class to use to label the element
-    :return:
+    :param labeled_element_cls: The ``LabeledElement`` class to use to label the element
+    :return: The labeled element: a new ``labeled_element_cls`` wrapping ``elem``, or
+        ``elem`` itself (with the label added) if it already is a ``labeled_element_cls``.
     """
     if not isinstance(elem, labeled_element_cls):
         return labeled_element_cls(elem).add_label(label)

@@ -1,64 +1,77 @@
 # creek
-Simple streams facade.
 
-To install:	```pip install creek```
+A simple facade for streams: wrap an iterable, layer transformations on it, and read unbounded streams as if they were lists.
 
-[Documentation here](https://i2mint.github.io/creek/)
+To install: `pip install creek`
 
-The ``Creek`` base class offers a layer-able wrap of the stream interface.
+The smallest complete example: a `Creek` subclass that parses each line of a file-like stream.
 
-There are three layering methods -- pre_iter, data_to_obj, and post_iter
--- whose use is demonstrated in the iteration code below:
-
-```
-for line in self.pre_iter(self.stream):  # pre_iter: prepare and/or filter the stream
-    obj = self.data_to_obj(line)  # data_to_obj: Transforms the data that stream yields
-    yield from self.post_iter([obj])  # post_iter: Further process or filter the objects
-```
-
-Examples:
-
-
-
-```pydocstring
+```python
 >>> from io import StringIO
+>>> from creek import Creek
+>>> class CsvCreek(Creek):
+...     def data_to_obj(self, line):
+...         return [x.strip() for x in line.strip().split(',')]
+>>> stream = CsvCreek(StringIO('a, b, c\n1,2, 3\n'))
+>>> list(stream)
+[['a', 'b', 'c'], ['1', '2', '3']]
+
+```
+
+<!-- epythet:agentic-readme:start -->
+## For AI agents
+
+`creek` ships tooling for coding agents. If you are one, start here.
+
+**The documentation, machine-readable**: [`llms.txt`](https://i2mint.github.io/creek/llms.txt) indexes every page; [`creek.md`](https://i2mint.github.io/creek/creek.md) is the whole documentation in one file; every page has a `.md` twin; [`objects.inv`](https://i2mint.github.io/creek/objects.inv) maps symbols to URLs.
+
+If you are a control freak, the rest of this README is written for you, starting at [The Creek layers](#the-creek-layers).
+<!-- epythet:agentic-readme:end -->
+
+## The Creek layers
+
+The `Creek` base class offers a layer-able wrap of the stream interface. There are three layering methods, `pre_iter`, `data_to_obj` and `post_iter`, each the identity by default. Iterating over a creek is exactly:
+
+```python
+yield from self.post_iter(map(self.data_to_obj, self.pre_iter(self.stream)))
+```
+
+- `pre_iter(stream)`: prepare and/or filter the raw stream (skip a header, enumerate lines, ...)
+- `data_to_obj(item)`: transform each item the stream yields
+- `post_iter(objs)`: further process or filter the transformed objects
+
+Everything else (`seek`, `close`, the context manager protocol, ...) is delegated to the wrapped stream:
+
+```python
 >>> src = StringIO(
 ... '''a, b, c
 ... 1,2, 3
 ... 4, 5,6
 ... '''
 ... )
->>>
->>> from creek import Creek
->>>
 >>> class MyCreek(Creek):
 ...     def data_to_obj(self, line):
 ...         return [x.strip() for x in line.strip().split(',')]
 ...
 >>> stream = MyCreek(src)
->>>
 >>> list(stream)
 [['a', 'b', 'c'], ['1', '2', '3'], ['4', '5', '6']]
 >>> stream.seek(0)  # oh!... but we consumed the stream already, so let's go back to the beginning
 0
 >>> list(stream)
 [['a', 'b', 'c'], ['1', '2', '3'], ['4', '5', '6']]
->>> stream.seek(0)  # reverse again
+>>> stream.seek(0)  # rewind again
 0
 >>> next(stream)
 ['a', 'b', 'c']
 >>> next(stream)
 ['1', '2', '3']
+
 ```
 
-Let's add a filter! There's two kinds you can use.
-One that is applied to the line before the data is transformed by data_to_obj,
-and the other that is applied after (to the obj).
+Let's add a filter! There are two kinds you can use: one applied to the line before the data is transformed by `data_to_obj` (in `pre_iter`), and one applied after, to the objects (in `post_iter`).
 
-```pydocstring
->>> from creek import Creek
->>> from io import StringIO
->>>
+```python
 >>> src = StringIO(
 ...     '''a, b, c
 ... 1,2, 3
@@ -69,7 +82,6 @@ and the other that is applied after (to the obj).
 ...         yield from filter(lambda obj: str.isnumeric(obj[0]), objs)
 >>>
 >>> s = MyFilteredCreek(src)
->>>
 >>> list(s)
 [['1', '2', '3'], ['4', '5', '6']]
 >>> s.seek(0)
@@ -80,10 +92,25 @@ and the other that is applied after (to the obj).
 0
 >>> next(s)
 ['1', '2', '3']
+
 ```
 
 Recipes:
-- pre_iter: involving itertools.islice to skip header lines
-- pre_iter: involving enumerate to get line indices in stream iterator
-- pre_iter = functools.partial(map, line_pre_proc_func) to preprocess all lines with line_pre_proc_func
-- pre_iter: include filter before obj
+
+- `pre_iter`: `itertools.islice` to skip header lines
+- `pre_iter`: `enumerate` to get line indices in the stream iterator
+- `pre_iter = functools.partial(map, line_pre_proc_func)` to preprocess all lines with `line_pre_proc_func`
+- `pre_iter`: `functools.partial(filter, condition)` to filter before `data_to_obj`
+- `post_iter`: `itertools.chain.from_iterable` to flatten a chunked/segmented stream
+- `post_iter`: `functools.partial(filter, condition)` to filter the yielded objects
+
+## Beyond Creek
+
+- `InfiniteSeq` and `IndexedBuffer` (`creek.infinite_sequence`): list-like `s[i:j]` access to an unbounded stream, through a bounded buffer.
+- `BufferStats` and `Segmenter` (`creek.tools`): rolling-window statistics and segmentation of a stream.
+- `dynamically_index` and `filter_and_index_stream` (`creek.tools`): `enumerate` with a custom index rule, and filtered indexing.
+
+## Documentation
+
+- Rendered docs: https://i2mint.github.io/creek/
+- The whole API in one Markdown file: https://i2mint.github.io/creek/creek.md

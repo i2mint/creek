@@ -1,7 +1,22 @@
-"""
-Objects that support some list-like read operations on an unbounded stream.
-Essentially, trying to give you the impression that you have read access to infinite list,
-with some (parametrizable) limitations.
+"""List-like read access to an unbounded stream, through a bounded buffer.
+
+An ``IndexedBuffer`` keeps the last ``buffer_len`` items of a stream and lets you
+index them with the positions they had in the stream. An ``InfiniteSeq`` pairs such
+a buffer with an iterator, pulling items on demand, so that ``s[i:j]`` behaves as
+if the whole stream were a list, as long as queries move forward and fit in the
+buffer.
+
+Main entry points:
+
+- ``InfiniteSeq``: an iterator plus a buffer, sliced like a list
+- ``IndexedBuffer``: the buffer alone, fed with ``append`` / ``extend``
+- ``BufferedGetter``: a buffer queried with a filter function instead of indices
+
+>>> from itertools import count
+>>> from creek.infinite_sequence import InfiniteSeq
+>>> s = InfiniteSeq(count(), buffer_len=5)
+>>> s[3:6]
+[3, 4, 5]
 """
 # TODO: Build up extensive relations expression and handling, but InfiniteSeq only uses BEFORE (past).
 #  Consider simplifying.
@@ -67,25 +82,28 @@ def simple_interval_relationship(
 ):
     """Get the simple relationship between intervals x and y.
 
-    :param x: An point (a number) or an interval (a 2-tuple of numbers).
+    :param x: A point (a number), an interval (a 2-tuple of numbers), or a slice.
     :param y: An interval; a 2-tuple of numbers.
-    :param above_bt: a above_bt(x_bt, y_bt) boolean function (ge or gt) deciding if x starts after y does.
-    :param below_tt: a below_tt(x_tt, y_tt) boolean function (lt or le) deciding if x ends before y does.
-    :return: One of three relations
-        Relations.BEFORE if some of x is below y,
-        Relations.AFTER if some of x is after y,
-        Relations.DURING if x is entirely with y
+    :param above_bt: ``above_bt(x_bt, y_bt)`` boolean function (``ge`` or ``gt``)
+        deciding if x starts after y does.
+    :param below_tt: ``below_tt(x_tt, y_tt)`` boolean function (``lt`` or ``le``)
+        deciding if x ends before y does.
+    :return: One of three relations:
+        ``Relations.BEFORE`` if some of x is below y,
+        ``Relations.AFTER`` if some of x is after y,
+        ``Relations.DURING`` if x is entirely within y
+    :raises ValueError: If ``y`` (or an interval ``x``) is not a 2-tuple with ``bt <= tt``.
 
-    The target ``y`` interval is expressed only by it's bounds, but we don't know if
-     these are inclusive or not. The ``below_bt`` and ``above_tt`` allow us to express
-     that by expressing how below the lowest (bt) bound and what higher than highest
-     (tt) bound are defined.
+    The target ``y`` interval is expressed only by its bounds, but we don't know if
+    these are inclusive or not. The ``above_bt`` and ``below_tt`` arguments let us
+    express that, by defining what "below the lowest (bt) bound" and "above the
+    highest (tt) bound" mean.
 
     The function is meant to be curried (partial), for example:
 
     >>> from functools import partial
     >>> from operator import le, lt, ge, gt
-    >>> default = simple_interval_relationship  # uses below_bt=ge, above_tt=lt
+    >>> default = simple_interval_relationship  # uses above_bt=ge, below_tt=lt
     >>> including_bounds = partial(simple_interval_relationship, above_bt=ge, below_tt=le)
     >>> excluding_bounds = partial(simple_interval_relationship, above_bt=gt, below_tt=lt)
 
@@ -164,6 +182,7 @@ class ExceptionRaiserCallbackMixin:
         super().__init__(*args, **kwargs)
 
     def __call__(self, *args, **kwargs):
+        """Raise this exception instance."""
         raise self
 
 
@@ -234,10 +253,12 @@ def none_safe_addition(x, y):
 
 
 def slice_args(slice_obj):
+    """Return the ``(start, stop, step)`` of a slice."""
     return slice_obj.start, slice_obj.stop, slice_obj.step
 
 
 def shift_slice(slice_obj, shift: Number):
+    """Return ``slice_obj`` with ``start`` and ``stop`` shifted by ``shift`` (``None`` bounds stay ``None``)."""
     return slice(
         none_safe_addition(slice_obj.start, shift),
         none_safe_addition(slice_obj.stop, shift),
@@ -274,18 +295,35 @@ def absolute_item(item, max_idx):
 
 
 class IndexedBuffer:
-    """A list-like object that gives a limited-past read view of an unbounded stream
+    """A list-like object that gives a limited-past read view of an unbounded stream.
 
     For example, say we had the stream of increasing integers 0, 1, 2, ...
-    that is being fed to indexedBuffer
+    that is being fed to an ``IndexedBuffer``.
 
-    What IndexedBuffer(maxlen=4) offers is access to the buffer's contents,
-    but using the indices that
-    the stream (if it were one big list in memory) would use instead of the buffer's index.
+    What ``IndexedBuffer(buffer_len=4)`` offers is access to the buffer's contents,
+    but using the indices that the stream (if it were one big list in memory) would
+    use, instead of the buffer's own indices::
+
         0 1 2 3 [4 5 6 7] 8 9
 
-    IndexedBuffer uses collections.deque, exposing the append, extend,
-    and clear methods, updating the index reference in a thread-safe manner.
+    ``IndexedBuffer`` uses ``collections.deque``, exposing the ``append``, ``extend``
+    and ``clear`` methods, updating the index reference under a lock.
+
+    Args:
+        buffer_len: How many of the most recent items are kept.
+        prefill: Items the buffer starts with (``max_idx`` still starts at 0).
+        if_overlaps_past: Stored as an attribute; not consulted by item access,
+            which always raises ``OverlapsPastError``.
+        if_overlaps_future: Stored as an attribute; not consulted by item access,
+            which always raises ``OverlapsFutureError``.
+        slice_get_postproc: Applied to the ``islice`` of the buffer that a slice
+            request selects; ``list`` by default.
+
+    Raises:
+        OverlapsPastError: On ``s[item]`` when some of the requested range is no
+            longer in the buffer.
+        OverlapsFutureError: On ``s[item]`` when some of the requested range is not
+            yet in the buffer.
 
     >>> s = IndexedBuffer(buffer_len=4)
     >>> s.extend(range(4))  # adding 4 elements in bulk (filling the buffer completely)
@@ -375,10 +413,12 @@ class IndexedBuffer:
 
     @property
     def min_idx(self):
+        """The stream index of the oldest item still in the buffer."""
         return max(self.max_idx - self.buffer_len, 0)
 
     # TODO: Use singledispathmethod?
     def outer_to_buffer_idx(self, idx):
+        """Translate a stream index (int, slice, or iterable of ints) into the buffer's own index."""
         if isinstance(idx, slice):
             return shift_slice(idx, -self.min_idx)
         elif isinstance(idx, int):
@@ -433,6 +473,7 @@ class IndexedBuffer:
         )
 
     def append(self, x) -> None:
+        """Add one item, advancing ``max_idx`` by 1."""
         with self._lock:
             self._deque.append(x)
             self.max_idx += 1
@@ -440,6 +481,7 @@ class IndexedBuffer:
     extend = _extend_ram_lighter_cpu_heavier
 
     def clear(self):
+        """Empty the buffer and reset ``max_idx`` to 0."""
         with self._lock:
             self._deque.clear()
             self.max_idx = 0
@@ -469,29 +511,38 @@ from collections.abc import Iterator
 class InfiniteSeq:
     """A list-like (read) view of an unbounded sequence/stream.
 
-    It is the combination of `IndexedBuffer` and an iterator that will be used to
+    It is the combination of ``IndexedBuffer`` and an iterator that will be used to
     source the buffer according to the slices that are requested.
 
     If a slice is requested whose data is "in the future", the iterator will be
     consumed until the buffer can satisfy that request.
     If the requested slice has any part of it that is "in the past", that is,
     has already been iterated through and is not in the buffer anymore, a
-    `OverlapsPastError` will be raised.
+    ``OverlapsPastError`` will be raised.
 
-    Therefore, `InfiniteSeq` is meant for ordered slice queries of size no more than
+    Therefore, ``InfiniteSeq`` is meant for ordered slice queries of size no more than
     the buffer size.
-    If these conditions are satisfied, an `InfiniteSeq` will behave (with `i:j`
+    If these conditions are satisfied, an ``InfiniteSeq`` will behave (with ``i:j``
     queries) as if it were one long list in memory.
 
     Can be used with a live stream of data as long as the buffer size is big enough
     to handle the data production and query rates.
+
+    Args:
+        iterator: The source of items; consumed forward only, as far as queries
+            require.
+        buffer_len: How many of the most recent items stay available.
+
+    Raises:
+        OverlapsPastError: On ``s[item]`` if some of the requested range has already
+            left the buffer.
 
     For example, take an iterator that cycles from 0 to 99 forever:
 
     >>> from itertools import cycle
     >>> iterator = cycle(range(100))
 
-    Let's make an `InfiniteSeq` instance for this stream, accomodating for a view of
+    Let's make an ``InfiniteSeq`` instance for this stream, accomodating for a view of
     up to 11 items.
 
     >>> s = InfiniteSeq(iterator, buffer_len=11)
@@ -618,6 +669,7 @@ class InfiniteSeq:
 
 
 def new_type(name, typ, doc=None):
+    """Make a ``typing.NewType`` called ``name`` with ``doc`` as its docstring (``typ`` is currently ignored)."""
     t = NewType(name, type)
     if doc is not None:
         t.__doc__ = doc
@@ -648,20 +700,21 @@ FiltFunc = Callable[[BufferItem], bool]
 
 
 def asis(obj):
+    """Return ``obj`` unchanged (the default transform)."""
     return obj
 
 
 # TODO: Finish up and document
 class BufferedGetter:
     """
-    `BufferedGetter` is intended to be a more general (but not optimized) class that
+    ``BufferedGetter`` is intended to be a more general (but not optimized) class that
     offers a query-interface to a buffer, intended to be used when the buffer is
     being filled by a (possibly live) stream of data items.
 
     By contrast...
-    The `IndexedBuffer` is a particular case where the queries are slices and the index
+    The ``IndexedBuffer`` is a particular case where the queries are slices and the index
     that is sliced on is an enumeration one.
-    The `InfiniteSeq` is a class combining `IndexedBuffer` with a data source it can
+    The ``InfiniteSeq`` is a class combining ``IndexedBuffer`` with a data source it can
     pull data from (according to the demands of the query).
 
     >>> from creek.infinite_sequence import BufferedGetter
@@ -705,18 +758,22 @@ class BufferedGetter:
         self._lock = Lock()
 
     def ingress(self, x: BufferInput) -> BufferItem:
+        """Return ``x`` unchanged."""
         return x
 
     def append(self, x: BufferInput) -> None:
+        """Transform ``x`` with ``input_data_trans`` and add it to the buffer."""
         with self._lock:
             x = self.input_data_trans(x)
             self._deque.append(x)
 
     def extend(self, iterable):
+        """Append each item of ``iterable``."""
         for x in iterable:
             self.append(x)
 
     def clear(self):
+        """Empty the buffer."""
         with self._lock:
             self._deque.clear()
 
@@ -728,6 +785,7 @@ class BufferedGetter:
         return self.slice_get_postproc(self.filter(self.query_trans(q)))
 
     def filter(self, filt: Callable):
+        """Iterate over the buffer items for which ``filt`` is true."""
         # assert callable(filt), f'filt must be callable, was: {filt}'
         return filter(filt, self._deque)
 

@@ -1,13 +1,37 @@
-"""The base objects of creek"""
+"""The ``Creek`` base class: a layer-able wrapper around a stream.
+
+Main entry points:
+
+- ``Creek``: subclass it and override ``pre_iter``, ``data_to_obj`` and/or ``post_iter``
+- ``Creek.wrap``: wrap a stream class (or instance) so that you get creeks out of it
+
+>>> from creek.base import Creek
+>>> class Doubler(Creek):
+...     def data_to_obj(self, x):
+...         return x * 2
+>>> list(Doubler([1, 2, 3]))
+[2, 4, 6]
+"""
 
 from creek.util import cls_wrap, static_identity_method, no_such_item
 
 
 class Creek:
-    """A layer-able version of the stream interface
+    """A layer-able version of the stream interface.
 
-    There are three layering methods -- `pre_iter`, `data_to_obj`, and `post_iter`
-    -- whose use is demonstrated in the iteration code below:
+    A ``Creek`` wraps a stream (any iterable, typically a file-like object) and
+    delegates attribute access to it, so it can be used where the stream was.
+    Iteration goes through three layering methods, each the identity by default:
+
+    - ``pre_iter(stream)``: prepare and/or filter the raw stream
+    - ``data_to_obj(item)``: transform each item the stream yields
+    - ``post_iter(objs)``: further process or filter the transformed objects
+
+    That is, ``iter(creek)`` is ``post_iter(map(data_to_obj, pre_iter(stream)))``.
+
+    Args:
+        stream: The wrapped stream. Attributes not defined on the creek
+            (``seek``, ``close``...) are looked up on it.
 
     >>> from io import StringIO
     >>>
@@ -81,13 +105,13 @@ class Creek:
 
     Recipes:
 
-    - `pre_iter`: involving `itertools.islice` to skip header lines
-    - `pre_iter`: involving enumerate to get line indices in stream iterator
-    - `pre_iter = functools.partial(map, pre_proc_func)` to preprocess all streamitems \
-        with `pre_proc_func`
-    - `pre_iter`: include filter before obj
-    - `post_iter`: `chain.from_iterable` to flatten a chunked/segmented stream
-    - `post_iter`: `functools.partial(filter, condition)` to filter yielded objs
+    - ``pre_iter``: involving ``itertools.islice`` to skip header lines
+    - ``pre_iter``: involving enumerate to get line indices in stream iterator
+    - ``pre_iter = functools.partial(map, pre_proc_func)`` to preprocess all stream
+      items with ``pre_proc_func``
+    - ``pre_iter``: include filter before obj
+    - ``post_iter``: ``chain.from_iterable`` to flatten a chunked/segmented stream
+    - ``post_iter``: ``functools.partial(filter, condition)`` to filter yielded objs
 
     """
 
@@ -131,7 +155,7 @@ class Creek:
     # _wrapped_methods = {'__iter__'}
 
     def __next__(self):  # TODO: Pros and cons of having a __next__?
-        """by default: next(iter(self))"""
+        """By default, ``next(iter(self))``."""
         return next(iter(self))
 
     def __enter__(self):
