@@ -1,4 +1,16 @@
-"""Automatas (finite state machines etc.)"""
+"""Automatas (finite state machines): step a state through a stream of symbols.
+
+Main entry points:
+
+- ``mapping_to_transition_func``: a transition function from a ``{(state, symbol): next_state}`` mapping
+- ``basic_automata``: ``basic_automata(transition_func, state)(symbols)`` yields the state after each symbol
+- ``BasicAutomata``: the same as a stateful, resettable object
+
+>>> from creek.automatas import mapping_to_transition_func, basic_automata
+>>> step = mapping_to_transition_func({('a', 1): 'b', ('b', 1): 'a'})
+>>> list(basic_automata(step, 'a')([1, 1, 1]))
+['b', 'a', 'b']
+"""
 
 from typing import Union, TypeVar, Tuple
 from collections.abc import Mapping, Iterable, Callable
@@ -16,8 +28,13 @@ AutomataFactory = Callable[[TransitionFunc], Automata]
 def mapping_to_transition_func(
     mapping: Mapping[tuple[State, Symbol], State], strict: bool = True
 ) -> TransitionFunc:
-    """
-    Helper to make a transition function from a mapping of (state, symbol)->state.
+    """Make a transition function from a ``{(state, symbol): next_state}`` mapping.
+
+    Args:
+        mapping: The transitions.
+        strict: If true (the default), an unmapped ``(state, symbol)`` pair is a
+            lookup error (``KeyError`` for a ``dict``); if false, the state is left
+            unchanged.
     """
     if strict:
 
@@ -37,10 +54,13 @@ StateMapper = Union[Callable[[State], State], Mapping[State, State]]
 
 @dataclass
 class MappingTransitionFunc:
+    """Class form of ``mapping_to_transition_func``: a callable ``(state, symbol) -> next_state``."""
+
     mapping: Mapping[tuple[State, Symbol], State]
     strict: bool = True
 
     def __call__(self, state: State, symbol: Symbol) -> State:
+        """Return the next state for ``(state, symbol)``."""
         if self.strict:
             return self.mapping[(state, symbol)]
         else:
@@ -76,11 +96,14 @@ BasicAutomata: AutomataFactory
 # # NerdNote: Could do it like this too
 # basic_automata: AutomataFactory = partial(partial, _basic_automata)
 def basic_automata(transition_func: TransitionFunc, state: State) -> Automata:
+    """Make an automata: ``basic_automata(f, state)(symbols)`` yields the state after each symbol."""
     return partial(_basic_automata, transition_func, state)
 
 
 @dataclass
 class BasicAutomata:
+    """Stateful automata: ``automata(state, symbols)`` yields the state after each symbol; ``reset`` restores the initial one."""
+
     transition_func: TransitionFunc
     state: State = None
 
@@ -88,11 +111,13 @@ class BasicAutomata:
         self._initial_state = self.state
 
     def __call__(self, state: State, symbols: Iterable[Symbol]) -> State:
+        """Set the state to ``state``, then yield the state after each of ``symbols``."""
         self.state = state
         for symbol in symbols:
             yield self.transition(symbol)
 
     def transition(self, symbol: Symbol) -> State:
+        """Apply one ``symbol`` to the current state and return the new state."""
         self.state = self.transition_func(self.state, symbol)
         return self.state
 

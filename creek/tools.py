@@ -1,4 +1,19 @@
-"""Tools to work with creek objects"""
+"""Tools to index, window and segment streams.
+
+Everything here is a plain function or a small callable class that you compose
+with ``map``, ``filter`` and ``functools.partial``; nothing depends on ``Creek``.
+
+Main entry points:
+
+- ``filter_and_index_stream``: index a stream (``enumerate`` by default) and filter on the items
+- ``dynamically_index / DynamicIndexer``: ``enumerate`` where you choose how the index advances
+- ``BufferStats``: a fixed-size buffer that returns a statistic of its contents each time it is fed
+- ``Segmenter``: feed a ``BufferStats`` and hand its contents to a callback after each value
+
+>>> from creek.tools import BufferStats
+>>> list(map(BufferStats(maxlen=3, func=sum), range(5)))
+[0, 1, 3, 6, 9]
+"""
 
 import time
 from collections import deque
@@ -30,7 +45,8 @@ T = TypeVar("T")
 # Note: This would have allowed to use partial(apply_func_to_index, func, idx)
 # Note: instead, but NOT partial(apply_func_to_index, func=func, apply_to_idx=idx)!!
 def apply_func_to_index(seq, apply_to_idx, func):
-    """
+    """Apply ``func`` to the element at ``apply_to_idx`` of ``seq``, returning a tuple.
+
     >>> apply_func_to_index([1, 2, 3], 1, lambda x: x * 10)
     (1, 20, 3)
 
@@ -41,7 +57,6 @@ def apply_func_to_index(seq, apply_to_idx, func):
     >>> f = partial(apply_func_to_index, apply_to_idx=0, func=str.upper)
     >>> list(map(f, ['abc', 'defgh']))
     [('A', 'b', 'c'), ('D', 'e', 'f', 'g', 'h')]
-
     """
     apply_to_element, *_ = seq[slice(apply_to_idx, apply_to_idx + 1)]
     return tuple(
@@ -132,6 +147,16 @@ def filter_and_index_stream(
 ):
     """Index a stream and filter it (based only on the data items).
 
+    Args:
+        stream: The items to index and filter.
+        data_item_filt: A predicate on the data item, or a non-callable value:
+            items equal to that value are then dropped.
+        timestamper: Turns the stream into ``(index, item)`` pairs; ``enumerate``
+            by default.
+
+    Returns:
+        An iterator of ``(index, item)`` pairs for the items that pass the filter.
+
     >>> assert (
     ... list(filter_and_index_stream('this  is   a   stream', data_item_filt=' ')) == [
     ... (0, 't'),
@@ -168,6 +193,13 @@ count_increments: IndexUpdater
 
 
 def count_increments(current_idx: Index, obj: DataItem, step=1):
+    """Index updater that ignores ``obj`` and advances the index by ``step``.
+
+    >>> count_increments(10, 'whatever')
+    11
+    >>> count_increments(10, 'whatever', step=5)
+    15
+    """
     return current_idx + step
 
 
@@ -175,6 +207,11 @@ size_increments: IndexUpdater
 
 
 def size_increments(current_idx, obj: DataItem, size_func=len):
+    """Index updater that advances the index by ``size_func(obj)``, ``len`` by default.
+
+    >>> size_increments(10, 'abc')
+    13
+    """
     return current_idx + size_func(obj)
 
 
@@ -188,9 +225,11 @@ def current_time(current_idx, obj):
 
 @dataclass
 class DynamicIndexer:
-    """
+    """Turn data items into ``(index, item)`` pairs, with a pluggable index update rule.
+
     :param start: The index to start at (the first data item will have this index)
-    :param idx_updater: The (Index, DataItem) -> Index
+    :param idx_updater: The ``(current_idx, data_item) -> next_idx`` function
+        computing the index the next data item will get
 
     Let's take a finite stream of finite iterables (strings here):
 
@@ -239,7 +278,6 @@ class DynamicIndexer:
     A: Then you would use that function to make the ``(idxof(data_item), data_item)``
     pairs directly. ``DynamicIndexer`` is for the use case where the index of an item
     depends on the (number of, sizes of, etc.) items that came before it.
-
     """
 
     start: Index = 0
@@ -252,16 +290,30 @@ class DynamicIndexer:
         self.current_idx = self.start
 
     def __call__(self, x):
+        """Return ``(current_idx, x)`` and advance the index with ``idx_updater``."""
         _current_idx = self.current_idx
         self.current_idx = self.idx_updater(_current_idx, x)
         return _current_idx, x
 
 
 def dynamically_index(iterable: Iterable, start=0, idx_updater=count_increments):
-    """Generalization of `enumerate(iterable)` that allows one to specify how the
+    """Generalization of ``enumerate(iterable)`` that allows one to specify how the
     indices should be updated.
 
-    The default is the sae behavior as `enumerate`: Starts with 0 and increments by 1.
+    The default is the same behavior as ``enumerate``: Starts with 0 and increments by 1.
+
+    Args:
+        iterable: The items to index.
+        start: The index of the first item.
+        idx_updater: ``(current_idx, item) -> next_idx``; ``count_increments``
+            (add 1) by default, ``size_increments`` adds ``len(item)``.
+
+    Returns:
+        An iterator of ``(index, item)`` pairs.
+
+    See Also:
+        ``DynamicIndexer``, the callable doing the work, when you want to apply the
+        same indexing rule to several streams or keep the current index around.
 
     >>> stream = ['stream', 'of', 'different', 'sized', 'chunks']
     >>> assert (list(dynamically_index(stream, start=2))
@@ -277,7 +329,6 @@ def dynamically_index(iterable: Iterable, start=0, idx_updater=count_increments)
     >>> size_index = DynamicIndexer(idx_updater=DynamicIndexer.size_increments)
     >>> list(map(size_index, stream))
     [(0, 'stream'), (6, 'of'), (8, 'different'), (17, 'sized'), (22, 'chunks')]
-
     """
     dynamic_indexer = DynamicIndexer(start, idx_updater)
     return map(dynamic_indexer, iterable)
@@ -316,7 +367,7 @@ def alt_dynamically_index(idx_updater: IndexUpdater = count_increments, start=0)
 def segment_overlaps(bt_tt_segment, query_bt, query_tt):
     """Returns True if, and only if, bt_tt_segment overlaps query interval.
 
-    A `bt_tt_segment` will need to be of the ``(bt, tt, *data)`` format.
+    A ``bt_tt_segment`` will need to be of the ``(bt, tt, *data)`` format.
     That is, an iterable of at least two elements (the ``bt`` and ``tt``) followed with
     more elements (the actual segment data).
 
@@ -339,7 +390,6 @@ def segment_overlaps(bt_tt_segment, query_bt, query_tt):
     (4, 5, 'totally', 'inside'),
     (5, 8),
     (7, 10, 'partially after, but overlaps top')]
-
     """
     bt, tt, *segment = bt_tt_segment
     return (
@@ -354,15 +404,29 @@ _no_value_specified_sentinel = cast(int, object())
 
 
 def always_true(x):
+    """Return ``True``, whatever ``x`` is."""
     return True
 
 
 class BufferStats(deque):
-    """A callable (fifo) buffer. Calls add input to it, but also returns some results
-    computed from it's contents.
+    """A callable, fixed-size (fifo) buffer returning a statistic of its contents on every call.
 
-    What "add" means is configurable (through ``add_new_val`` arg). Default
-    is append, but can be extend etc.
+    Each call adds the input to the buffer (``deque.append`` by default, configurable
+    through ``add_new_val``) and returns ``func`` applied to the buffer's contents.
+    Use it with ``map`` to get rolling-window statistics of a stream.
+
+    Args:
+        values: Initial contents of the buffer.
+        maxlen: Size of the buffer. Required.
+        func: The function computed on the buffer contents and returned on each
+            call; ``sum`` by default.
+        add_new_val: The ``(buffer, new_val)`` function that adds a value to the
+            buffer: a ``deque`` method (``deque.append`` by default, ``deque.extend``,
+            ``deque.appendleft``...), its name as a string, or any function with that
+            signature.
+
+    Raises:
+        TypeError: If ``maxlen`` is not given, or is not an ``int``.
 
     >>> bs = BufferStats(maxlen=4, func=sum)
     >>> list(map(bs, range(7)))
@@ -404,12 +468,12 @@ class BufferStats(deque):
     cdef
     efgh
 
-    Note: To those who might think that they can optimize this for special
-    cases: Yes you can.
-    But SHOULD you? Is it worth the increase in complexity and reduction in
-    flexibility?
-    See https://github.com/thorwhalen/umpyre/blob/master/misc/performance_of_rolling_window_stats.md
-
+    Note:
+        To those who might think that they can optimize this for special
+        cases: Yes you can.
+        But SHOULD you? Is it worth the increase in complexity and reduction in
+        flexibility?
+        See https://github.com/thorwhalen/umpyre/blob/master/misc/performance_of_rolling_window_stats.md
     """
 
     # __name__ = 'BufferStats'
@@ -423,18 +487,6 @@ class BufferStats(deque):
         # *,
         # func_cond=always_true,
     ):
-        """
-
-        :param maxlen: Size of the buffer
-        :param func: The function to be computed (on buffer contents) and
-        returned when buffer is "called"
-        :param add_new_val: The function that adds values on the buffer.
-        Signature must be (self, new_val)
-            Is usually a deque method (``deque.append`` by default, but could
-            be ``deque.extend``, ``deque.appendleft`` etc.).
-            Can also be any other function that
-            has a valid (self, new_val) signature.
-        """
         if maxlen is _no_value_specified_sentinel:
             raise TypeError("You are required to specify maxlen")
         if not isinstance(maxlen, int):
@@ -450,6 +502,7 @@ class BufferStats(deque):
         # self.func_cond = func_cond
 
     def __call__(self, new_val) -> Stats:
+        """Add ``new_val`` to the buffer and return ``func(self)``."""
         self.add_new_val(self, new_val)  # add the new value
         return self.func(self)
         # if self.func_cond(self):
@@ -457,13 +510,17 @@ class BufferStats(deque):
 
 
 def is_not_none(x):
+    """Return ``True`` if ``x`` is not ``None``."""
     return x is not None
 
 
 def return_buffer_on_stats_condition(
     stats: Stats, buffer: Iterable, cond: Callable = is_not_none, else_val=None
 ):
-    """
+    """Return ``buffer`` if ``cond(stats)`` holds, else ``else_val``.
+
+    The default ``stats_buffer_callback`` of ``Segmenter``; partialize ``cond`` and
+    ``else_val`` to make your own.
 
     >>> return_buffer_on_stats_condition(
     ... stats=3, buffer=[1,2,3,4], cond=lambda x: x%2 == 1
@@ -483,7 +540,18 @@ def return_buffer_on_stats_condition(
 
 @dataclass
 class Segmenter:
-    """
+    """Feed values to a ``BufferStats`` and hand its contents to a callback after each one.
+
+    Each call ``seg(new_val)`` adds ``new_val`` to ``buffer`` (which returns its
+    statistic), then returns ``stats_buffer_callback(stats, list(buffer))``.
+    With the default callback that is the buffer contents when the statistic is
+    not ``None``, and ``None`` otherwise.
+
+    Args:
+        buffer: The ``BufferStats`` instance that stores values and computes the
+            statistic.
+        stats_buffer_callback: ``(stats, buffer_contents) -> result``;
+            ``return_buffer_on_stats_condition`` by default.
 
     >>> gen = iter(range(200))
     >>> bs = BufferStats(maxlen=10, func=sum)
@@ -517,5 +585,6 @@ class Segmenter:
     __name__ = "Segmenter"
 
     def __call__(self, new_val):
+        """Feed ``new_val`` to the buffer and return the callback's result."""
         stats = self.buffer(new_val)
         return self.stats_buffer_callback(stats, list(self.buffer))

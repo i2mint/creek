@@ -1,4 +1,16 @@
-"""Utils for creek"""
+"""Iterator, cursor and function-composition utilities used across creek.
+
+Main entry points:
+
+- ``iterize``: turn an ``In -> Out`` function into an ``Iterator[In] -> Iterator[Out]`` one
+- ``Pipe``: compose functions into one callable
+- ``iterate_skipping_errors``: iterate, skipping (and optionally reporting) exceptions
+- ``to_iterator, cursor_to_iterator, iterator_to_cursor``: convert between iterables, iterators and argument-less "cursor" functions
+
+>>> from creek.util import iterize
+>>> list(iterize(str.upper)(['a', 'b']))
+['A', 'B']
+"""
 
 from functools import (
     WRAPPER_ASSIGNMENTS,
@@ -33,7 +45,7 @@ def iterate_skipping_errors(
     :param error_callback: A callback to call when an error is encountered.
     :param caught_exceptions: The exceptions to catch and skip.
     :return: A generator that yields the values of the original generator,
-    skipping errors.
+        skipping errors.
 
     >>> list(iterate_skipping_errors(map(lambda x: 1 / x, [1, 0, 2])))
     [1.0, 0.5]
@@ -42,7 +54,6 @@ def iterate_skipping_errors(
     [1.0, 0.5]
 
     See https://github.com/i2mint/creek/issues/6 for more info.
-
     """
     iterator = iter(g)
 
@@ -65,7 +76,6 @@ def iterize(func, name=None):
     >>> iterized_f = iterize(f)
     >>> list(iterized_f(iter([1,2,3])))
     [10, 20, 30]
-
     """
     iterized_func = partial(map, func)
     if name is not None:
@@ -126,8 +136,8 @@ no_default = type("no_default", (), {})()
 class IteratorExit(BaseException):
     """Raised when an iterator should quit being iterated on, signaling this event
     any process that cares to catch the signal.
-    We chose to inherit directly from `BaseException` instead of `Exception`
-    for the same reason that `GeneratorExit` does: Because it's not technically
+    We chose to inherit directly from ``BaseException`` instead of ``Exception``
+    for the same reason that ``GeneratorExit`` does: Because it's not technically
     an error.
 
     See: https://docs.python.org/3/library/exceptions.html#GeneratorExit
@@ -138,6 +148,7 @@ DFLT_INTERRUPT_EXCEPTIONS = (StopIteration, IteratorExit, KeyboardInterrupt)
 
 
 def iterate_until_exception(iterator, interrupt_exceptions=DFLT_INTERRUPT_EXCEPTIONS):
+    """Call ``next`` on ``iterator`` until one of ``interrupt_exceptions`` is raised, then print ``ending``."""
     while True:
         try:
             next(iterator)
@@ -147,7 +158,7 @@ def iterate_until_exception(iterator, interrupt_exceptions=DFLT_INTERRUPT_EXCEPT
 
 
 def iterable_to_iterator(iterable: Iterable, sentinel=no_sentinel) -> Iterator:
-    """Get an iterator from an iterable
+    """Return ``iter(iterable)``, or, given a sentinel, an iterator stopping just before that value.
 
     >>> iterable = [1, 2, 3]
     >>> iterator = iterable_to_iterator(iterable)
@@ -179,12 +190,12 @@ def iterator_to_cursor(iterator: Iterator, default=no_default) -> CursorFunc:
     >>> assert list(cursor_to_iterator(cursor)) == [2, 3]
 
     Note how we consumed the cursor till the end; by using cursor_to_iterator.
-    Indeed, `list(iter(cursor))` wouldn't have worked since a cursor isn't a iterator,
+    Indeed, ``list(iter(cursor))`` wouldn't have worked since a cursor isn't a iterator,
     but a callable to get the items an the iterator would give you.
 
     You can specify a default. The default has the same role that it has for the
-    `next` function: It makes the cursor function return that default when the iterator
-    has been "consumed" (i.e. would raise a `StopIteration`).
+    ``next`` function: It makes the cursor function return that default when the iterator
+    has been "consumed" (i.e. would raise a ``StopIteration``).
 
     >>> iterator = iter([1, 2])
     >>> cursor = iterator_to_cursor(iterator, None)
@@ -200,7 +211,6 @@ def iterator_to_cursor(iterator: Iterator, default=no_default) -> CursorFunc:
     >>> assert cursor() is None
 
     forever.
-
     """
     if default is no_default:
         return partial(next, iterator)
@@ -222,7 +232,7 @@ def cursor_to_iterator(cursor: CursorFunc, sentinel=no_sentinel) -> Iterator:
     >>> assert not isinstance(cursor, Iterable)
     >>> assert callable(cursor)
 
-    If you want to consume your stream as an iterator instead, use `cursor_to_iterator`.
+    If you want to consume your stream as an iterator instead, use ``cursor_to_iterator``.
 
     >>> iterator = cursor_to_iterator(cursor)
     >>> assert isinstance(iterator, Iterator)
@@ -236,7 +246,6 @@ def cursor_to_iterator(cursor: CursorFunc, sentinel=no_sentinel) -> Iterator:
     >>> iterator = cursor_to_iterator(cursor, sentinel=None)
     >>> list(iterator)
     [1, 2]
-
     """
     return iter(cursor, sentinel)
 
@@ -301,25 +310,35 @@ no_such_item = type("NoSuchItem", (), {})()
 
 
 class stream_util:
+    """A namespace of small stream helpers."""
+
     def always_true(*args, **kwargs):
+        """Return ``True``."""
         return True
 
     def do_nothing(*args, **kwargs):
+        """Return ``None``."""
         pass
 
     def rewind(self, instance):
+        """Seek ``instance`` back to 0."""
         instance.seek(0)
 
     def skip_lines(self, instance, n_lines_to_skip=0):
+        """Seek ``instance`` back to 0 (``n_lines_to_skip`` is currently ignored)."""
         instance.seek(0)
 
 
 class PreIter:
+    """Namespace holding ``skip_items``, a ``pre_iter`` that skips the first ``n`` items."""
+
     def skip_items(self, instance, n):
+        """Skip the first ``n`` items of ``instance``."""
         return islice(instance, n, None)
 
 
 def cls_wrap(cls, obj):
+    """Wrap ``obj`` in ``cls``: a subclass wrapping instances at construction if ``obj`` is a class, else ``cls(obj)``."""
     if isinstance(obj, type):
 
         @wraps(obj, updated=())
@@ -341,6 +360,7 @@ def cls_wrap(cls, obj):
 
 
 def identity_func(x):
+    """Return ``x`` unchanged."""
     return x
 
 
@@ -380,6 +400,7 @@ class Pipe:
     3
 
     Notes:
+
         - Pipe instances don't have a __name__ etc. So some expectations of normal functions are not met.
         - Pipe instance are pickalable (as long as the functions that compose them are)
 
@@ -405,7 +426,6 @@ class Pipe:
     'map_and_sum'
     >>> f.__doc__
     'Apply func and add'
-
     """
 
     funcs = ()
@@ -439,6 +459,7 @@ class Pipe:
         return named_funcs
 
     def __call__(self, *args, **kwargs):
+        """Call the first function with the arguments, then thread its output through the rest."""
         out = self.first_func(*args, **kwargs)
         for func in self.other_funcs:
             out = func(out)

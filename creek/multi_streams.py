@@ -1,4 +1,14 @@
-"""Tools for multi-streams"""
+"""Merge several sorted streams into one stream of ``(stream_id, item)`` pairs.
+
+Main entry points:
+
+- ``MergedStreams``: the merge, driven by ``heapq.merge`` on a sort key of the items
+- ``multi_stream_items``: tag each stream's items with its id, one iterable per stream
+
+>>> from creek.multi_streams import MergedStreams
+>>> list(MergedStreams({'a': [1, 3], 'b': [2]}))
+[('a', 1), ('b', 2), ('a', 3)]
+"""
 
 from itertools import product
 from typing import Any, Optional
@@ -21,20 +31,21 @@ class MergedStreams:
     This can be useful, for instance, if you want to make "slabs" of data, gathering
     together all the data for a given time period, from multiple streams.
 
-    The ``stream_item`` will be yield in sorted order.
+    The ``stream_item`` will be yielded in sorted order.
     Sort behavior can be modified by the ``sort_key`` argument which behaves like ``key``
     arguments of built-in like ``sorted``, ``heapq.merge``, ``itertools.groupby``, etc.
 
-    If given, the `sort_key` function applies to ``stream_item`` (not to ``stream_id``).
+    If given, the ``sort_key`` function applies to ``stream_item`` (not to ``stream_id``).
 
-    Important: To function as expected, the streams should be already sorted (according
-    to the ``sort_key`` order).
+    Important:
+        To function as expected, the streams should be already sorted (according
+        to the ``sort_key`` order).
 
     The cannonical use case of this function is to "flatten", or "weave together"
     multiple streams of timestamped data. We're given several streams that provide
     ``(timestamp, data)`` items (where timestamps arrive in order within each stream)
     and we get a single stream of ``(stream_id, (timestamp, data))`` items where
-    the ``timestamp``s are yield in sorted order.
+    the ``timestamp`` values are yielded in sorted order.
 
     The following example uses a dict pointing to a fixed-size list as the ``stream_map``
     but in general the ``stream_map`` will be a ``Mapping`` (not necessarily a dict)
@@ -86,7 +97,7 @@ def multi_stream_items(streams_map: StreamsMap):
 
 
 def transform_methods(cls, method_trans=staticmethod):
-    """Applies method_trans to all the methods of `cls`
+    """Applies method_trans to all the methods of ``cls``
 
     >>> from functools import partial
     >>> staticmethods = partial(transform_methods, method_trans=staticmethod)
@@ -117,5 +128,7 @@ staticmethods = partial(transform_methods, method_trans=staticmethod)
 
 @staticmethods
 class SortKeys:
+    """A few ``itemgetter`` sort keys, exposed as staticmethods."""
+
     all_but_last = itemgetter(-1)
     second_item = itemgetter(1)
