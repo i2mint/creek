@@ -1,0 +1,39 @@
+creek.util
+==========
+
+.. automodule:: creek.util
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      cls_wrap
+      cursor_to_iterator
+      identity_func
+      iterable_to_cursor
+      iterable_to_iterator
+      iterate_skipping_errors
+      iterate_until_exception
+      iterator_to_cursor
+      iterize
+      static_identity_method
+      to_iterator
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CursorFunc
+      IterableType
+      IteratorType
+      Pipe
+      PreIter
+      stream_util
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      IteratorExit
+   

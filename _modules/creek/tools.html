@@ -1,683 +1,1153 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../../">
+<html lang="en" data-accent-color="jade" data-content_root="../../">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>creek.tools &mdash; creek 0.1.34 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
-
-  
-      <script src="../../_static/jquery.js?v=5d32c60e"></script>
-      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8f14641f"></script>
-      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
-      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-      <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
-      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../_static/copybutton.js?v=f281be69"></script>
-    <script src="../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
-</head>
-
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="../../index.html" class="icon icon-home">
-            creek
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>creek.tools - creek</title><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d88b86f9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="creek.tools"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../index.html">
+      
+      
+      <strong>creek</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/i2mint/creek" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek.html">creek</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/automatas.html">creek.automatas</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/base.html">creek.base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/infinite_sequence.html">creek.infinite_sequence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/labeling.html">creek.labeling</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/multi_streams.html">creek.multi_streams</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/annotators.html">creek.scrap.annotators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/async_utils.html">creek.scrap.async_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/scrap/sequences.html">creek.scrap.sequences</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/automatas.html">creek.tests.automatas</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/labeling.html">creek.tests.labeling</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/test_base.html">creek.tests.test_base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tests/test_tools.html">creek.tests.test_tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/tools.html">creek.tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../module_docs/creek/util.html">creek.util</a></li>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/creek.html">creek</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/creek.automatas.html">creek.automatas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/creek.base.html">creek.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/creek.infinite_sequence.html">creek.infinite_sequence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/creek.labeling.html">creek.labeling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/creek.multi_streams.html">creek.multi_streams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/creek.tools.html">creek.tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/creek.util.html">creek.util</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
         </div>
       </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">creek</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">creek.tools</li>
-      <li class="wy-breadcrumbs-aside">
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <h1>Source code for creek.tools</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Tools to work with creek objects&quot;&quot;&quot;</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Tuple</span><span class="p">,</span>
-    <span class="n">TypeVar</span><span class="p">,</span>
-    <span class="n">Any</span><span class="p">,</span>
-    <span class="n">cast</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">chain</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">itemgetter</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">creek.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipe</span>
-
-<span class="n">Index</span> <span class="o">=</span> <span class="n">Any</span>
-<span class="n">DataItem</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;DataItem&quot;</span><span class="p">)</span>
-<span class="c1"># TODO: Could have more args. How to specify this in typing?</span>
-<span class="n">IndexUpdater</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Index</span><span class="p">,</span> <span class="n">DataItem</span><span class="p">],</span> <span class="n">Index</span><span class="p">]</span>
-<span class="n">Indexer</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">DataItem</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Index</span><span class="p">,</span> <span class="n">DataItem</span><span class="p">]]</span>
-<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
-
-
-<span class="c1"># TODO: Possible performance enhancement by using class with precompiled slices</span>
-<span class="c1"># TODO: Compare with apply_and_fanout (no cast here, and slice instead of :)</span>
-<span class="c1"># Note: I hesitated to make the signature (func, apply_to_idx, seq) instead</span>
-<span class="c1"># Note: This would have allowed to use partial(apply_func_to_index, func, idx)</span>
-<span class="c1"># Note: instead, but NOT partial(apply_func_to_index, func=func, apply_to_idx=idx)!!</span>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">creek</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">creek.tools</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue dark-code" role="main">
+          <h1>Source code for creek.tools</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="sd">"""Tools to index, window and segment streams.</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="sd">Everything here is a plain function or a small callable class that you compose</span>
+</span><span data-line="4"><span class="sd">with ``map``, ``filter`` and ``functools.partial``; nothing depends on ``Creek``.</span>
+</span><span data-line="5">
+</span><span data-line="6"><span class="sd">Main entry points:</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="sd">- ``filter_and_index_stream``: index a stream (``enumerate`` by default) and filter on the items</span>
+</span><span data-line="9"><span class="sd">- ``dynamically_index / DynamicIndexer``: ``enumerate`` where you choose how the index advances</span>
+</span><span data-line="10"><span class="sd">- ``BufferStats``: a fixed-size buffer that returns a statistic of its contents each time it is fed</span>
+</span><span data-line="11"><span class="sd">- ``Segmenter``: feed a ``BufferStats`` and hand its contents to a callback after each value</span>
+</span><span data-line="12">
+</span><span data-line="13"><span class="sd">&gt;&gt;&gt; from creek.tools import BufferStats</span>
+</span><span data-line="14"><span class="sd">&gt;&gt;&gt; list(map(BufferStats(maxlen=3, func=sum), range(5)))</span>
+</span><span data-line="15"><span class="sd">[0, 1, 3, 6, 9]</span>
+</span><span data-line="16"><span class="sd">"""</span>
+</span><span data-line="17">
+</span><span data-line="18"><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+</span><span data-line="19"><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
+</span><span data-line="20"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span data-line="21">    <span class="n">Tuple</span><span class="p">,</span>
+</span><span data-line="22">    <span class="n">TypeVar</span><span class="p">,</span>
+</span><span data-line="23">    <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="24">    <span class="n">cast</span><span class="p">,</span>
+</span><span data-line="25"><span class="p">)</span>
+</span><span data-line="26"><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span>
+</span><span data-line="27"><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+</span><span data-line="28"><span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">chain</span>
+</span><span data-line="29"><span class="kn">from</span><span class="w"> </span><span class="nn">operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">itemgetter</span>
+</span><span data-line="30"><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+</span><span data-line="31">
+</span><span data-line="32"><span class="kn">from</span><span class="w"> </span><span class="nn">creek.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipe</span>
+</span><span data-line="33">
+</span><span data-line="34"><span class="n">Index</span> <span class="o">=</span> <span class="n">Any</span>
+</span><span data-line="35"><span class="n">DataItem</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">"DataItem"</span><span class="p">)</span>
+</span><span data-line="36"><span class="c1"># TODO: Could have more args. How to specify this in typing?</span>
+</span><span data-line="37"><span class="n">IndexUpdater</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Index</span><span class="p">,</span> <span class="n">DataItem</span><span class="p">],</span> <span class="n">Index</span><span class="p">]</span>
+</span><span data-line="38"><span class="n">Indexer</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">DataItem</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Index</span><span class="p">,</span> <span class="n">DataItem</span><span class="p">]]</span>
+</span><span data-line="39"><span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">"T"</span><span class="p">)</span>
+</span><span data-line="40">
+</span><span data-line="41">
+</span><span data-line="42"><span class="c1"># TODO: Possible performance enhancement by using class with precompiled slices</span>
+</span><span data-line="43"><span class="c1"># TODO: Compare with apply_and_fanout (no cast here, and slice instead of :)</span>
+</span><span data-line="44"><span class="c1"># Note: I hesitated to make the signature (func, apply_to_idx, seq) instead</span>
+</span><span data-line="45"><span class="c1"># Note: This would have allowed to use partial(apply_func_to_index, func, idx)</span>
+</span><span data-line="46"><span class="c1"># Note: instead, but NOT partial(apply_func_to_index, func=func, apply_to_idx=idx)!!</span>
 <div class="viewcode-block" id="apply_func_to_index">
-<a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.apply_func_to_index">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">apply_func_to_index</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">apply_to_idx</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    &gt;&gt;&gt; apply_func_to_index([1, 2, 3], 1, lambda x: x * 10)</span>
-<span class="sd">    (1, 20, 3)</span>
+<a class="viewcode-back" href="../../_autosummary/creek.tools.html#creek.tools.apply_func_to_index">[docs]</a>
+</span><span data-line="47"><span class="k">def</span><span class="w"> </span><span class="nf">apply_func_to_index</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">apply_to_idx</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+</span><span data-line="48"><span class="w">    </span><span class="sd">"""Apply ``func`` to the element at ``apply_to_idx`` of ``seq``, returning a tuple.</span>
+</span><span data-line="49">
+</span><span data-line="50"><span class="sd">    &gt;&gt;&gt; apply_func_to_index([1, 2, 3], 1, lambda x: x * 10)</span>
+</span><span data-line="51"><span class="sd">    (1, 20, 3)</span>
+</span><span data-line="52">
+</span><span data-line="53"><span class="sd">    If you're going to apply the same function to the same index, you might</span>
+</span><span data-line="54"><span class="sd">    want to partialize ``apply_func_to_index`` to be able to reuse it simply:</span>
+</span><span data-line="55">
+</span><span data-line="56"><span class="sd">    &gt;&gt;&gt; from functools import partial</span>
+</span><span data-line="57"><span class="sd">    &gt;&gt;&gt; f = partial(apply_func_to_index, apply_to_idx=0, func=str.upper)</span>
+</span><span data-line="58"><span class="sd">    &gt;&gt;&gt; list(map(f, ['abc', 'defgh']))</span>
+</span><span data-line="59"><span class="sd">    [('A', 'b', 'c'), ('D', 'e', 'f', 'g', 'h')]</span>
+</span><span data-line="60"><span class="sd">    """</span>
+</span><span data-line="61">    <span class="n">apply_to_element</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="n">apply_to_idx</span><span class="p">,</span> <span class="n">apply_to_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+</span><span data-line="62">    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span data-line="63">        <span class="n">chain</span><span class="p">(</span>
+</span><span data-line="64">            <span class="n">seq</span><span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">apply_to_idx</span><span class="p">)],</span>
+</span><span data-line="65">            <span class="p">[</span><span class="n">func</span><span class="p">(</span><span class="n">apply_to_element</span><span class="p">)],</span>
+</span><span data-line="66">            <span class="n">seq</span><span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="n">apply_to_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">)],</span>
+</span><span data-line="67">        <span class="p">)</span>
+</span><span data-line="68">    <span class="p">)</span></div>
 
-<span class="sd">    If you&#39;re going to apply the same function to the same index, you might</span>
-<span class="sd">    want to partialize ``apply_func_to_index`` to be able to reuse it simply:</span>
-
-<span class="sd">    &gt;&gt;&gt; from functools import partial</span>
-<span class="sd">    &gt;&gt;&gt; f = partial(apply_func_to_index, apply_to_idx=0, func=str.upper)</span>
-<span class="sd">    &gt;&gt;&gt; list(map(f, [&#39;abc&#39;, &#39;defgh&#39;]))</span>
-<span class="sd">    [(&#39;A&#39;, &#39;b&#39;, &#39;c&#39;), (&#39;D&#39;, &#39;e&#39;, &#39;f&#39;, &#39;g&#39;, &#39;h&#39;)]</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">apply_to_element</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="n">apply_to_idx</span><span class="p">,</span> <span class="n">apply_to_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
-    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
-        <span class="n">chain</span><span class="p">(</span>
-            <span class="n">seq</span><span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">apply_to_idx</span><span class="p">)],</span>
-            <span class="p">[</span><span class="n">func</span><span class="p">(</span><span class="n">apply_to_element</span><span class="p">)],</span>
-            <span class="n">seq</span><span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="n">apply_to_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">)],</span>
-        <span class="p">)</span>
-    <span class="p">)</span></div>
-
-
-
+</span><span data-line="69">
+</span><span data-line="70">
 <div class="viewcode-block" id="apply_and_fanout">
-<a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.apply_and_fanout">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">apply_and_fanout</span><span class="p">(</span>
-    <span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">],</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply function (that returns an Iterable) to an element of a sequence</span>
-<span class="sd">    and fanout (broadcast) the resulting items, to produce an iterable of tuples each</span>
-<span class="sd">    containing</span>
-<span class="sd">    one of these items along with &#39;a copy&#39; of the other tuple elements</span>
+<a class="viewcode-back" href="../../_autosummary/creek.tools.html#creek.tools.apply_and_fanout">[docs]</a>
+</span><span data-line="71"><span class="k">def</span><span class="w"> </span><span class="nf">apply_and_fanout</span><span class="p">(</span>
+</span><span data-line="72">    <span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">],</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span>
+</span><span data-line="73"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]:</span>
+</span><span data-line="74"><span class="w">    </span><span class="sd">"""Apply function (that returns an Iterable) to an element of a sequence</span>
+</span><span data-line="75"><span class="sd">    and fanout (broadcast) the resulting items, to produce an iterable of tuples each</span>
+</span><span data-line="76"><span class="sd">    containing</span>
+</span><span data-line="77"><span class="sd">    one of these items along with 'a copy' of the other tuple elements</span>
+</span><span data-line="78">
+</span><span data-line="79"><span class="sd">    &gt;&gt;&gt; list(apply_and_fanout([1, 'abc', 3], iter, 1))</span>
+</span><span data-line="80"><span class="sd">    [(1, 'a', 3), (1, 'b', 3), (1, 'c', 3)]</span>
+</span><span data-line="81"><span class="sd">    &gt;&gt;&gt; list(apply_and_fanout(['bob', 'alice', 2], lambda x: x * ['hi'], 2))</span>
+</span><span data-line="82"><span class="sd">    [('bob', 'alice', 'hi'), ('bob', 'alice', 'hi')]</span>
+</span><span data-line="83"><span class="sd">    &gt;&gt;&gt; list(apply_and_fanout(["bob", "alice", 2], lambda x: x.upper(), 1))</span>
+</span><span data-line="84"><span class="sd">    [('bob', 'A', 2), ('bob', 'L', 2), ('bob', 'I', 2), ('bob', 'C', 2), ('bob', 'E', 2)]</span>
+</span><span data-line="85">
+</span><span data-line="86"><span class="sd">    See Also:</span>
+</span><span data-line="87"><span class="sd">        ``fanout_and_flatten`` and ``fanout_and_flatten_dicts``</span>
+</span><span data-line="88"><span class="sd">    """</span>
+</span><span data-line="89">    <span class="n">seq</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>  <span class="c1"># TODO: Overhead: Should we impose seq to be tuple?</span>
+</span><span data-line="90">    <span class="c1"># TODO: See how apply_func_to_index takes care of this problem with chain</span>
+</span><span data-line="91">    <span class="n">left_seq</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[</span><span class="mi">0</span> <span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>  <span class="c1"># TODO: Use seq[None:idx] instead?</span>
+</span><span data-line="92">    <span class="n">right_seq</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[(</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">:]</span>
+</span><span data-line="93">    <span class="k">return</span> <span class="p">(</span><span class="n">left_seq</span> <span class="o">+</span> <span class="p">(</span><span class="n">item</span><span class="p">,)</span> <span class="o">+</span> <span class="n">right_seq</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">func</span><span class="p">(</span><span class="n">seq</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span></div>
 
-<span class="sd">    &gt;&gt;&gt; list(apply_and_fanout([1, &#39;abc&#39;, 3], iter, 1))</span>
-<span class="sd">    [(1, &#39;a&#39;, 3), (1, &#39;b&#39;, 3), (1, &#39;c&#39;, 3)]</span>
-<span class="sd">    &gt;&gt;&gt; list(apply_and_fanout([&#39;bob&#39;, &#39;alice&#39;, 2], lambda x: x * [&#39;hi&#39;], 2))</span>
-<span class="sd">    [(&#39;bob&#39;, &#39;alice&#39;, &#39;hi&#39;), (&#39;bob&#39;, &#39;alice&#39;, &#39;hi&#39;)]</span>
-<span class="sd">    &gt;&gt;&gt; list(apply_and_fanout([&quot;bob&quot;, &quot;alice&quot;, 2], lambda x: x.upper(), 1))</span>
-<span class="sd">    [(&#39;bob&#39;, &#39;A&#39;, 2), (&#39;bob&#39;, &#39;L&#39;, 2), (&#39;bob&#39;, &#39;I&#39;, 2), (&#39;bob&#39;, &#39;C&#39;, 2), (&#39;bob&#39;, &#39;E&#39;, 2)]</span>
-
-<span class="sd">    See Also:</span>
-<span class="sd">        ``fanout_and_flatten`` and ``fanout_and_flatten_dicts``</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">seq</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>  <span class="c1"># TODO: Overhead: Should we impose seq to be tuple?</span>
-    <span class="c1"># TODO: See how apply_func_to_index takes care of this problem with chain</span>
-    <span class="n">left_seq</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[</span><span class="mi">0</span> <span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>  <span class="c1"># TODO: Use seq[None:idx] instead?</span>
-    <span class="n">right_seq</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[(</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">:]</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">left_seq</span> <span class="o">+</span> <span class="p">(</span><span class="n">item</span><span class="p">,)</span> <span class="o">+</span> <span class="n">right_seq</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">func</span><span class="p">(</span><span class="n">seq</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span></div>
-
-
-
+</span><span data-line="94">
+</span><span data-line="95">
 <div class="viewcode-block" id="fanout_and_flatten">
-<a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.fanout_and_flatten">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">fanout_and_flatten</span><span class="p">(</span><span class="n">iterable_of_seqs</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">aggregator</span><span class="o">=</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply apply_and_fanout to an iterable of sequences.</span>
+<a class="viewcode-back" href="../../_autosummary/creek.tools.html#creek.tools.fanout_and_flatten">[docs]</a>
+</span><span data-line="96"><span class="k">def</span><span class="w"> </span><span class="nf">fanout_and_flatten</span><span class="p">(</span><span class="n">iterable_of_seqs</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">aggregator</span><span class="o">=</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">):</span>
+</span><span data-line="97"><span class="w">    </span><span class="sd">"""Apply apply_and_fanout to an iterable of sequences.</span>
+</span><span data-line="98">
+</span><span data-line="99"><span class="sd">    &gt;&gt;&gt; seq_iterable = [('abcdef', 'first'), ('ghij', 'second')]</span>
+</span><span data-line="100"><span class="sd">    &gt;&gt;&gt; func = lambda a: zip(*([iter(a)] * 2))  # func is a chunker</span>
+</span><span data-line="101"><span class="sd">    &gt;&gt;&gt; assert list(fanout_and_flatten(seq_iterable, func, 0)) == [</span>
+</span><span data-line="102"><span class="sd">    ...     (('a', 'b'), 'first'),</span>
+</span><span data-line="103"><span class="sd">    ...     (('c', 'd'), 'first'),</span>
+</span><span data-line="104"><span class="sd">    ...     (('e', 'f'), 'first'),</span>
+</span><span data-line="105"><span class="sd">    ...     (('g', 'h'), 'second'),</span>
+</span><span data-line="106"><span class="sd">    ...     (('i', 'j'), 'second')</span>
+</span><span data-line="107"><span class="sd">    ... ]</span>
+</span><span data-line="108"><span class="sd">    """</span>
+</span><span data-line="109">    <span class="n">apply</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">apply_and_fanout</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="n">idx</span><span class="p">)</span>
+</span><span data-line="110">    <span class="k">return</span> <span class="n">aggregator</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">apply</span><span class="p">,</span> <span class="n">iterable_of_seqs</span><span class="p">))</span></div>
 
-<span class="sd">    &gt;&gt;&gt; seq_iterable = [(&#39;abcdef&#39;, &#39;first&#39;), (&#39;ghij&#39;, &#39;second&#39;)]</span>
-<span class="sd">    &gt;&gt;&gt; func = lambda a: zip(*([iter(a)] * 2))  # func is a chunker</span>
-<span class="sd">    &gt;&gt;&gt; assert list(fanout_and_flatten(seq_iterable, func, 0)) == [</span>
-<span class="sd">    ...     ((&#39;a&#39;, &#39;b&#39;), &#39;first&#39;),</span>
-<span class="sd">    ...     ((&#39;c&#39;, &#39;d&#39;), &#39;first&#39;),</span>
-<span class="sd">    ...     ((&#39;e&#39;, &#39;f&#39;), &#39;first&#39;),</span>
-<span class="sd">    ...     ((&#39;g&#39;, &#39;h&#39;), &#39;second&#39;),</span>
-<span class="sd">    ...     ((&#39;i&#39;, &#39;j&#39;), &#39;second&#39;)</span>
-<span class="sd">    ... ]</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">apply</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">apply_and_fanout</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="n">idx</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">aggregator</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">apply</span><span class="p">,</span> <span class="n">iterable_of_seqs</span><span class="p">))</span></div>
-
-
-
+</span><span data-line="111">
+</span><span data-line="112">
 <div class="viewcode-block" id="fanout_and_flatten_dicts">
-<a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.fanout_and_flatten_dicts">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">fanout_and_flatten_dicts</span><span class="p">(</span>
-    <span class="n">iterable_of_dicts</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">idx_field</span><span class="p">,</span> <span class="n">aggregator</span><span class="o">=</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply apply_and_fanout to an iterable of dicts.</span>
+<a class="viewcode-back" href="../../_autosummary/creek.tools.html#creek.tools.fanout_and_flatten_dicts">[docs]</a>
+</span><span data-line="113"><span class="k">def</span><span class="w"> </span><span class="nf">fanout_and_flatten_dicts</span><span class="p">(</span>
+</span><span data-line="114">    <span class="n">iterable_of_dicts</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">idx_field</span><span class="p">,</span> <span class="n">aggregator</span><span class="o">=</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span>
+</span><span data-line="115"><span class="p">):</span>
+</span><span data-line="116"><span class="w">    </span><span class="sd">"""Apply apply_and_fanout to an iterable of dicts.</span>
+</span><span data-line="117">
+</span><span data-line="118"><span class="sd">    &gt;&gt;&gt; iterable_of_dicts = [</span>
+</span><span data-line="119"><span class="sd">    ...     {'wf': 'abcdef', 'tag': 'first'}, {'wf': 'ghij', 'tag': 'second'}</span>
+</span><span data-line="120"><span class="sd">    ... ]</span>
+</span><span data-line="121"><span class="sd">    &gt;&gt;&gt; func = lambda a: zip(*([iter(a)] * 2))  # func is a chunker</span>
+</span><span data-line="122"><span class="sd">    &gt;&gt;&gt; fields = ['wf', 'tag']</span>
+</span><span data-line="123"><span class="sd">    &gt;&gt;&gt; idx_field = 'wf'</span>
+</span><span data-line="124"><span class="sd">    &gt;&gt;&gt; assert list(</span>
+</span><span data-line="125"><span class="sd">    ...     fanout_and_flatten_dicts(iterable_of_dicts, func, fields, idx_field)) == [</span>
+</span><span data-line="126"><span class="sd">    ...         {'wf': ('a', 'b'), 'tag': 'first'},</span>
+</span><span data-line="127"><span class="sd">    ...         {'wf': ('c', 'd'), 'tag': 'first'},</span>
+</span><span data-line="128"><span class="sd">    ...         {'wf': ('e', 'f'), 'tag': 'first'},</span>
+</span><span data-line="129"><span class="sd">    ...         {'wf': ('g', 'h'), 'tag': 'second'},</span>
+</span><span data-line="130"><span class="sd">    ...         {'wf': ('i', 'j'), 'tag': 'second'}</span>
+</span><span data-line="131"><span class="sd">    ... ]</span>
+</span><span data-line="132"><span class="sd">    """</span>
+</span><span data-line="133">    <span class="n">egress</span> <span class="o">=</span> <span class="n">Pipe</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="nb">zip</span><span class="p">,</span> <span class="n">fields</span><span class="p">),</span> <span class="nb">dict</span><span class="p">)</span>
+</span><span data-line="134">    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span>
+</span><span data-line="135">        <span class="n">egress</span><span class="p">,</span>
+</span><span data-line="136">        <span class="n">fanout_and_flatten</span><span class="p">(</span>
+</span><span data-line="137">            <span class="nb">map</span><span class="p">(</span><span class="n">itemgetter</span><span class="p">(</span><span class="o">*</span><span class="n">fields</span><span class="p">),</span> <span class="n">iterable_of_dicts</span><span class="p">),</span>
+</span><span data-line="138">            <span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">,</span>
+</span><span data-line="139">            <span class="n">idx</span><span class="o">=</span><span class="n">fields</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">idx_field</span><span class="p">),</span>
+</span><span data-line="140">            <span class="n">aggregator</span><span class="o">=</span><span class="n">aggregator</span><span class="p">,</span>
+</span><span data-line="141">        <span class="p">),</span>
+</span><span data-line="142">    <span class="p">)</span></div>
 
-<span class="sd">    &gt;&gt;&gt; iterable_of_dicts = [</span>
-<span class="sd">    ...     {&#39;wf&#39;: &#39;abcdef&#39;, &#39;tag&#39;: &#39;first&#39;}, {&#39;wf&#39;: &#39;ghij&#39;, &#39;tag&#39;: &#39;second&#39;}</span>
-<span class="sd">    ... ]</span>
-<span class="sd">    &gt;&gt;&gt; func = lambda a: zip(*([iter(a)] * 2))  # func is a chunker</span>
-<span class="sd">    &gt;&gt;&gt; fields = [&#39;wf&#39;, &#39;tag&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; idx_field = &#39;wf&#39;</span>
-<span class="sd">    &gt;&gt;&gt; assert list(</span>
-<span class="sd">    ...     fanout_and_flatten_dicts(iterable_of_dicts, func, fields, idx_field)) == [</span>
-<span class="sd">    ...         {&#39;wf&#39;: (&#39;a&#39;, &#39;b&#39;), &#39;tag&#39;: &#39;first&#39;},</span>
-<span class="sd">    ...         {&#39;wf&#39;: (&#39;c&#39;, &#39;d&#39;), &#39;tag&#39;: &#39;first&#39;},</span>
-<span class="sd">    ...         {&#39;wf&#39;: (&#39;e&#39;, &#39;f&#39;), &#39;tag&#39;: &#39;first&#39;},</span>
-<span class="sd">    ...         {&#39;wf&#39;: (&#39;g&#39;, &#39;h&#39;), &#39;tag&#39;: &#39;second&#39;},</span>
-<span class="sd">    ...         {&#39;wf&#39;: (&#39;i&#39;, &#39;j&#39;), &#39;tag&#39;: &#39;second&#39;}</span>
-<span class="sd">    ... ]</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">egress</span> <span class="o">=</span> <span class="n">Pipe</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="nb">zip</span><span class="p">,</span> <span class="n">fields</span><span class="p">),</span> <span class="nb">dict</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span>
-        <span class="n">egress</span><span class="p">,</span>
-        <span class="n">fanout_and_flatten</span><span class="p">(</span>
-            <span class="nb">map</span><span class="p">(</span><span class="n">itemgetter</span><span class="p">(</span><span class="o">*</span><span class="n">fields</span><span class="p">),</span> <span class="n">iterable_of_dicts</span><span class="p">),</span>
-            <span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">,</span>
-            <span class="n">idx</span><span class="o">=</span><span class="n">fields</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">idx_field</span><span class="p">),</span>
-            <span class="n">aggregator</span><span class="o">=</span><span class="n">aggregator</span><span class="p">,</span>
-        <span class="p">),</span>
-    <span class="p">)</span></div>
-
-
-
+</span><span data-line="143">
+</span><span data-line="144">
 <div class="viewcode-block" id="filter_and_index_stream">
-<a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.filter_and_index_stream">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">filter_and_index_stream</span><span class="p">(</span>
-    <span class="n">stream</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">data_item_filt</span><span class="p">,</span> <span class="n">timestamper</span><span class="p">:</span> <span class="n">Indexer</span> <span class="o">=</span> <span class="nb">enumerate</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Index a stream and filter it (based only on the data items).</span>
+<a class="viewcode-back" href="../../_autosummary/creek.tools.html#creek.tools.filter_and_index_stream">[docs]</a>
+</span><span data-line="145"><span class="k">def</span><span class="w"> </span><span class="nf">filter_and_index_stream</span><span class="p">(</span>
+</span><span data-line="146">    <span class="n">stream</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">data_item_filt</span><span class="p">,</span> <span class="n">timestamper</span><span class="p">:</span> <span class="n">Indexer</span> <span class="o">=</span> <span class="nb">enumerate</span>
+</span><span data-line="147"><span class="p">):</span>
+</span><span data-line="148"><span class="w">    </span><span class="sd">"""Index a stream and filter it (based only on the data items).</span>
+</span><span data-line="149">
+</span><span data-line="150"><span class="sd">    Args:</span>
+</span><span data-line="151"><span class="sd">        stream: The items to index and filter.</span>
+</span><span data-line="152"><span class="sd">        data_item_filt: A predicate on the data item, or a non-callable value:</span>
+</span><span data-line="153"><span class="sd">            items equal to that value are then dropped.</span>
+</span><span data-line="154"><span class="sd">        timestamper: Turns the stream into ``(index, item)`` pairs; ``enumerate``</span>
+</span><span data-line="155"><span class="sd">            by default.</span>
+</span><span data-line="156">
+</span><span data-line="157"><span class="sd">    Returns:</span>
+</span><span data-line="158"><span class="sd">        An iterator of ``(index, item)`` pairs for the items that pass the filter.</span>
+</span><span data-line="159">
+</span><span data-line="160"><span class="sd">    &gt;&gt;&gt; assert (</span>
+</span><span data-line="161"><span class="sd">    ... list(filter_and_index_stream('this  is   a   stream', data_item_filt=' ')) == [</span>
+</span><span data-line="162"><span class="sd">    ... (0, 't'),</span>
+</span><span data-line="163"><span class="sd">    ... (1, 'h'),</span>
+</span><span data-line="164"><span class="sd">    ... (2, 'i'),</span>
+</span><span data-line="165"><span class="sd">    ... (3, 's'),</span>
+</span><span data-line="166"><span class="sd">    ... (6, 'i'),</span>
+</span><span data-line="167"><span class="sd">    ... (7, 's'),</span>
+</span><span data-line="168"><span class="sd">    ... (11, 'a'),</span>
+</span><span data-line="169"><span class="sd">    ... (15, 's'),</span>
+</span><span data-line="170"><span class="sd">    ... (16, 't'),</span>
+</span><span data-line="171"><span class="sd">    ... (17, 'r'),</span>
+</span><span data-line="172"><span class="sd">    ... (18, 'e'),</span>
+</span><span data-line="173"><span class="sd">    ... (19, 'a'),</span>
+</span><span data-line="174"><span class="sd">    ... (20, 'm')</span>
+</span><span data-line="175"><span class="sd">    ... ])</span>
+</span><span data-line="176">
+</span><span data-line="177"><span class="sd">    &gt;&gt;&gt; list(filter_and_index_stream(</span>
+</span><span data-line="178"><span class="sd">    ...     [1, 2, 3, 4, 5, 6, 7, 8],</span>
+</span><span data-line="179"><span class="sd">    ...     data_item_filt=lambda x: x % 2))</span>
+</span><span data-line="180"><span class="sd">    [(0, 1), (2, 3), (4, 5), (6, 7)]</span>
+</span><span data-line="181"><span class="sd">    """</span>
+</span><span data-line="182">    <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">data_item_filt</span><span class="p">):</span>
+</span><span data-line="183">        <span class="nb">sentinel</span> <span class="o">=</span> <span class="n">data_item_filt</span>
+</span><span data-line="184">        <span class="n">data_item_filt</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">!=</span> <span class="nb">sentinel</span>
+</span><span data-line="185">    <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">data_item_filt</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">timestamper</span><span class="p">(</span><span class="n">stream</span><span class="p">))</span></div>
 
-<span class="sd">    &gt;&gt;&gt; assert (</span>
-<span class="sd">    ... list(filter_and_index_stream(&#39;this  is   a   stream&#39;, data_item_filt=&#39; &#39;)) == [</span>
-<span class="sd">    ... (0, &#39;t&#39;),</span>
-<span class="sd">    ... (1, &#39;h&#39;),</span>
-<span class="sd">    ... (2, &#39;i&#39;),</span>
-<span class="sd">    ... (3, &#39;s&#39;),</span>
-<span class="sd">    ... (6, &#39;i&#39;),</span>
-<span class="sd">    ... (7, &#39;s&#39;),</span>
-<span class="sd">    ... (11, &#39;a&#39;),</span>
-<span class="sd">    ... (15, &#39;s&#39;),</span>
-<span class="sd">    ... (16, &#39;t&#39;),</span>
-<span class="sd">    ... (17, &#39;r&#39;),</span>
-<span class="sd">    ... (18, &#39;e&#39;),</span>
-<span class="sd">    ... (19, &#39;a&#39;),</span>
-<span class="sd">    ... (20, &#39;m&#39;)</span>
-<span class="sd">    ... ])</span>
+</span><span data-line="186">
+</span><span data-line="187">
+</span><span data-line="188"><span class="c1"># TODO: Refactor dynamic indexing set up so that</span>
+</span><span data-line="189"><span class="c1">#  IndexUpdater = Callable[[DataItem, Index, ...], Index] (data and index inversed)</span>
+</span><span data-line="190"><span class="c1">#  Rationale: One can (and usually would want to) have a default current_idx, which</span>
+</span><span data-line="191"><span class="c1">#  can be used as the start index too.</span>
+</span><span data-line="192"><span class="n">count_increments</span><span class="p">:</span> <span class="n">IndexUpdater</span>
+</span><span data-line="193">
+</span><span data-line="194">
+<div class="viewcode-block" id="count_increments">
+<a class="viewcode-back" href="../../_autosummary/creek.tools.html#creek.tools.count_increments">[docs]</a>
+</span><span data-line="195"><span class="k">def</span><span class="w"> </span><span class="nf">count_increments</span><span class="p">(</span><span class="n">current_idx</span><span class="p">:</span> <span class="n">Index</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">DataItem</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+</span><span data-line="196"><span class="w">    </span><span class="sd">"""Index updater that ignores ``obj`` and advances the index by ``step``.</span>
+</span><span data-line="197">
+</span><span data-line="198"><span class="sd">    &gt;&gt;&gt; count_increments(10, 'whatever')</span>
+</span><span data-line="199"><span class="sd">    11</span>
+</span><span data-line="200"><span class="sd">    &gt;&gt;&gt; count_increments(10, 'whatever', step=5)</span>
+</span><span data-line="201"><span class="sd">    15</span>
+</span><span data-line="202"><span class="sd">    """</span>
+</span><span data-line="203">    <span class="k">return</span> <span class="n">current_idx</span> <span class="o">+</span> <span class="n">step</span></div>
 
-<span class="sd">    &gt;&gt;&gt; list(filter_and_index_stream(</span>
-<span class="sd">    ...     [1, 2, 3, 4, 5, 6, 7, 8],</span>
-<span class="sd">    ...     data_item_filt=lambda x: x % 2))</span>
-<span class="sd">    [(0, 1), (2, 3), (4, 5), (6, 7)]</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">data_item_filt</span><span class="p">):</span>
-        <span class="n">sentinel</span> <span class="o">=</span> <span class="n">data_item_filt</span>
-        <span class="n">data_item_filt</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">sentinel</span>
-    <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">data_item_filt</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">timestamper</span><span class="p">(</span><span class="n">stream</span><span class="p">))</span></div>
+</span><span data-line="204">
+</span><span data-line="205">
+</span><span data-line="206"><span class="n">size_increments</span><span class="p">:</span> <span class="n">IndexUpdater</span>
+</span><span data-line="207">
+</span><span data-line="208">
+<div class="viewcode-block" id="size_increments">
+<a class="viewcode-back" href="../../_autosummary/creek.tools.html#creek.tools.size_increments">[docs]</a>
+</span><span data-line="209"><span class="k">def</span><span class="w"> </span><span class="nf">size_increments</span><span class="p">(</span><span class="n">current_idx</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">DataItem</span><span class="p">,</span> <span class="n">size_func</span><span class="o">=</span><span class="nb">len</span><span class="p">):</span>
+</span><span data-line="210"><span class="w">    </span><span class="sd">"""Index updater that advances the index by ``size_func(obj)``, ``len`` by default.</span>
+</span><span data-line="211">
+</span><span data-line="212"><span class="sd">    &gt;&gt;&gt; size_increments(10, 'abc')</span>
+</span><span data-line="213"><span class="sd">    13</span>
+</span><span data-line="214"><span class="sd">    """</span>
+</span><span data-line="215">    <span class="k">return</span> <span class="n">current_idx</span> <span class="o">+</span> <span class="n">size_func</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
 
-
-
-<span class="c1"># TODO: Refactor dynamic indexing set up so that</span>
-<span class="c1">#  IndexUpdater = Callable[[DataItem, Index, ...], Index] (data and index inversed)</span>
-<span class="c1">#  Rationale: One can (and usually would want to) have a default current_idx, which</span>
-<span class="c1">#  can be used as the start index too.</span>
-<span class="n">count_increments</span><span class="p">:</span> <span class="n">IndexUpdater</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">count_increments</span><span class="p">(</span><span class="n">current_idx</span><span class="p">:</span> <span class="n">Index</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">DataItem</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">current_idx</span> <span class="o">+</span> <span class="n">step</span>
-
-
-<span class="n">size_increments</span><span class="p">:</span> <span class="n">IndexUpdater</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">size_increments</span><span class="p">(</span><span class="n">current_idx</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">DataItem</span><span class="p">,</span> <span class="n">size_func</span><span class="o">=</span><span class="nb">len</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">current_idx</span> <span class="o">+</span> <span class="n">size_func</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-
-
-<span class="n">current_time</span><span class="p">:</span> <span class="n">IndexUpdater</span>
-
-
+</span><span data-line="216">
+</span><span data-line="217">
+</span><span data-line="218"><span class="n">current_time</span><span class="p">:</span> <span class="n">IndexUpdater</span>
+</span><span data-line="219">
+</span><span data-line="220">
 <div class="viewcode-block" id="current_time">
-<a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.current_time">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">current_time</span><span class="p">(</span><span class="n">current_idx</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Doesn&#39;t even look at current_idx or obj. Just gives the current time&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span></div>
+<a class="viewcode-back" href="../../_autosummary/creek.tools.html#creek.tools.current_time">[docs]</a>
+</span><span data-line="221"><span class="k">def</span><span class="w"> </span><span class="nf">current_time</span><span class="p">(</span><span class="n">current_idx</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+</span><span data-line="222"><span class="w">    </span><span class="sd">"""Doesn't even look at current_idx or obj. Just gives the current time"""</span>
+</span><span data-line="223">    <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span></div>
 
-
-
+</span><span data-line="224">
+</span><span data-line="225">
 <div class="viewcode-block" id="DynamicIndexer">
-<a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.DynamicIndexer">[docs]</a>
-<span class="nd">@dataclass</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">DynamicIndexer</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    :param start: The index to start at (the first data item will have this index)</span>
-<span class="sd">    :param idx_updater: The (Index, DataItem) -&gt; Index</span>
+<a class="viewcode-back" href="../../_autosummary/creek.tools.html#creek.tools.DynamicIndexer">[docs]</a>
+</span><span data-line="226"><span class="nd">@dataclass</span>
+</span><span data-line="227"><span class="k">class</span><span class="w"> </span><span class="nc">DynamicIndexer</span><span class="p">:</span>
+</span><span data-line="228"><span class="w">    </span><span class="sd">"""Turn data items into ``(index, item)`` pairs, with a pluggable index update rule.</span>
+</span><span data-line="229">
+</span><span data-line="230"><span class="sd">    :param start: The index to start at (the first data item will have this index)</span>
+</span><span data-line="231"><span class="sd">    :param idx_updater: The ``(current_idx, data_item) -&gt; next_idx`` function</span>
+</span><span data-line="232"><span class="sd">        computing the index the next data item will get</span>
+</span><span data-line="233">
+</span><span data-line="234"><span class="sd">    Let's take a finite stream of finite iterables (strings here):</span>
+</span><span data-line="235">
+</span><span data-line="236"><span class="sd">    &gt;&gt;&gt; stream = ['stream', 'of', 'different', 'sized', 'chunks']</span>
+</span><span data-line="237">
+</span><span data-line="238"><span class="sd">    The default ``DynamicIndexer`` just does what ``enumerate`` does:</span>
+</span><span data-line="239">
+</span><span data-line="240"><span class="sd">    &gt;&gt;&gt; counter_index = DynamicIndexer()</span>
+</span><span data-line="241"><span class="sd">    &gt;&gt;&gt; list(map(counter_index, stream))</span>
+</span><span data-line="242"><span class="sd">    [(0, 'stream'), (1, 'of'), (2, 'different'), (3, 'sized'), (4, 'chunks')]</span>
+</span><span data-line="243">
+</span><span data-line="244"><span class="sd">    That's because it uses the default ``idx_updater`` function just increments by one.</span>
+</span><span data-line="245"><span class="sd">    This function, DynamicIndexer.count_increments, is shown below</span>
+</span><span data-line="246">
+</span><span data-line="247"><span class="sd">    &gt;&gt;&gt; def count_increments(current_idx, data_item, step=1):</span>
+</span><span data-line="248"><span class="sd">    ...     return current_idx + step</span>
+</span><span data-line="249">
+</span><span data-line="250"><span class="sd">    To get the index starting at 10, we can specify ``start=10``, and to step the</span>
+</span><span data-line="251"><span class="sd">    index by 3 we can partialize ``count_increments``:</span>
+</span><span data-line="252">
+</span><span data-line="253"><span class="sd">    &gt;&gt;&gt; from functools import partial</span>
+</span><span data-line="254"><span class="sd">    &gt;&gt;&gt; step3 = partial(count_increments, step=3)</span>
+</span><span data-line="255"><span class="sd">    &gt;&gt;&gt; list(map(DynamicIndexer(start=10, idx_updater=step3), stream))</span>
+</span><span data-line="256"><span class="sd">    [(10, 'stream'), (13, 'of'), (16, 'different'), (19, 'sized'), (22, 'chunks')]</span>
+</span><span data-line="257">
+</span><span data-line="258"><span class="sd">    You can specify any custom ``idx_updater`` you want: The requirements being that</span>
+</span><span data-line="259"><span class="sd">    this function should take ``(current_idx, data_item)`` as the input, and</span>
+</span><span data-line="260"><span class="sd">    return the next "current index", that is, what the index of the next data item will</span>
+</span><span data-line="261"><span class="sd">    be.</span>
+</span><span data-line="262"><span class="sd">    Note that ``count_increments`` ignored the ``data_item`` completely, but sometimes</span>
+</span><span data-line="263"><span class="sd">    you want to take the data item into account.</span>
+</span><span data-line="264"><span class="sd">    For example, your data item may contain several elements, and you want your</span>
+</span><span data-line="265"><span class="sd">    index to index these elements, therefore you should update your index by</span>
+</span><span data-line="266"><span class="sd">    incrementing it with the number of elements.</span>
+</span><span data-line="267">
+</span><span data-line="268"><span class="sd">    We have ``DynamicIndexer.size_increments`` for that, the code is shown below:</span>
+</span><span data-line="269">
+</span><span data-line="270"><span class="sd">    &gt;&gt;&gt; def size_increments(current_idx, data_item, size_func=len):</span>
+</span><span data-line="271"><span class="sd">    ...     return current_idx + size_func(data_item)</span>
+</span><span data-line="272"><span class="sd">    &gt;&gt;&gt; size_index = DynamicIndexer(idx_updater=DynamicIndexer.size_increments)</span>
+</span><span data-line="273"><span class="sd">    &gt;&gt;&gt; list(map(size_index, stream))</span>
+</span><span data-line="274"><span class="sd">    [(0, 'stream'), (6, 'of'), (8, 'different'), (17, 'sized'), (22, 'chunks')]</span>
+</span><span data-line="275">
+</span><span data-line="276"><span class="sd">    Q: What if I want the index of a data item to be a function of the data item itself?</span>
+</span><span data-line="277">
+</span><span data-line="278"><span class="sd">    A: Then you would use that function to make the ``(idxof(data_item), data_item)``</span>
+</span><span data-line="279"><span class="sd">    pairs directly. ``DynamicIndexer`` is for the use case where the index of an item</span>
+</span><span data-line="280"><span class="sd">    depends on the (number of, sizes of, etc.) items that came before it.</span>
+</span><span data-line="281"><span class="sd">    """</span>
+</span><span data-line="282">
+</span><span data-line="283">    <span class="n">start</span><span class="p">:</span> <span class="n">Index</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="284">    <span class="n">idx_updater</span><span class="p">:</span> <span class="n">IndexUpdater</span> <span class="o">=</span> <span class="n">count_increments</span>
+</span><span data-line="285">
+</span><span data-line="286">    <span class="n">count_increments</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">count_increments</span><span class="p">)</span>
+</span><span data-line="287">    <span class="n">size_increments</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">size_increments</span><span class="p">)</span>
+</span><span data-line="288">
+</span><span data-line="289">    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span data-line="290">        <span class="bp">self</span><span class="o">.</span><span class="n">current_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span>
+</span><span data-line="291">
+</span><span data-line="292">    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+</span><span data-line="293"><span class="w">        </span><span class="sd">"""Return ``(current_idx, x)`` and advance the index with ``idx_updater``."""</span>
+</span><span data-line="294">        <span class="n">_current_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_idx</span>
+</span><span data-line="295">        <span class="bp">self</span><span class="o">.</span><span class="n">current_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx_updater</span><span class="p">(</span><span class="n">_current_idx</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</span><span data-line="296">        <span class="k">return</span> <span class="n">_current_idx</span><span class="p">,</span> <span class="n">x</span></div>
 
-<span class="sd">    Let&#39;s take a finite stream of finite iterables (strings here):</span>
-
-<span class="sd">    &gt;&gt;&gt; stream = [&#39;stream&#39;, &#39;of&#39;, &#39;different&#39;, &#39;sized&#39;, &#39;chunks&#39;]</span>
-
-<span class="sd">    The default ``DynamicIndexer`` just does what ``enumerate`` does:</span>
-
-<span class="sd">    &gt;&gt;&gt; counter_index = DynamicIndexer()</span>
-<span class="sd">    &gt;&gt;&gt; list(map(counter_index, stream))</span>
-<span class="sd">    [(0, &#39;stream&#39;), (1, &#39;of&#39;), (2, &#39;different&#39;), (3, &#39;sized&#39;), (4, &#39;chunks&#39;)]</span>
-
-<span class="sd">    That&#39;s because it uses the default ``idx_updater`` function just increments by one.</span>
-<span class="sd">    This function, DynamicIndexer.count_increments, is shown below</span>
-
-<span class="sd">    &gt;&gt;&gt; def count_increments(current_idx, data_item, step=1):</span>
-<span class="sd">    ...     return current_idx + step</span>
-
-<span class="sd">    To get the index starting at 10, we can specify ``start=10``, and to step the</span>
-<span class="sd">    index by 3 we can partialize ``count_increments``:</span>
-
-<span class="sd">    &gt;&gt;&gt; from functools import partial</span>
-<span class="sd">    &gt;&gt;&gt; step3 = partial(count_increments, step=3)</span>
-<span class="sd">    &gt;&gt;&gt; list(map(DynamicIndexer(start=10, idx_updater=step3), stream))</span>
-<span class="sd">    [(10, &#39;stream&#39;), (13, &#39;of&#39;), (16, &#39;different&#39;), (19, &#39;sized&#39;), (22, &#39;chunks&#39;)]</span>
-
-<span class="sd">    You can specify any custom ``idx_updater`` you want: The requirements being that</span>
-<span class="sd">    this function should take ``(current_idx, data_item)`` as the input, and</span>
-<span class="sd">    return the next &quot;current index&quot;, that is, what the index of the next data item will</span>
-<span class="sd">    be.</span>
-<span class="sd">    Note that ``count_increments`` ignored the ``data_item`` completely, but sometimes</span>
-<span class="sd">    you want to take the data item into account.</span>
-<span class="sd">    For example, your data item may contain several elements, and you want your</span>
-<span class="sd">    index to index these elements, therefore you should update your index by</span>
-<span class="sd">    incrementing it with the number of elements.</span>
-
-<span class="sd">    We have ``DynamicIndexer.size_increments`` for that, the code is shown below:</span>
-
-<span class="sd">    &gt;&gt;&gt; def size_increments(current_idx, data_item, size_func=len):</span>
-<span class="sd">    ...     return current_idx + size_func(data_item)</span>
-<span class="sd">    &gt;&gt;&gt; size_index = DynamicIndexer(idx_updater=DynamicIndexer.size_increments)</span>
-<span class="sd">    &gt;&gt;&gt; list(map(size_index, stream))</span>
-<span class="sd">    [(0, &#39;stream&#39;), (6, &#39;of&#39;), (8, &#39;different&#39;), (17, &#39;sized&#39;), (22, &#39;chunks&#39;)]</span>
-
-<span class="sd">    Q: What if I want the index of a data item to be a function of the data item itself?</span>
-
-<span class="sd">    A: Then you would use that function to make the ``(idxof(data_item), data_item)``</span>
-<span class="sd">    pairs directly. ``DynamicIndexer`` is for the use case where the index of an item</span>
-<span class="sd">    depends on the (number of, sizes of, etc.) items that came before it.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">start</span><span class="p">:</span> <span class="n">Index</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">idx_updater</span><span class="p">:</span> <span class="n">IndexUpdater</span> <span class="o">=</span> <span class="n">count_increments</span>
-
-    <span class="n">count_increments</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">count_increments</span><span class="p">)</span>
-    <span class="n">size_increments</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">size_increments</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">current_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="n">_current_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_idx</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">current_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx_updater</span><span class="p">(</span><span class="n">_current_idx</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">_current_idx</span><span class="p">,</span> <span class="n">x</span></div>
-
-
-
+</span><span data-line="297">
+</span><span data-line="298">
 <div class="viewcode-block" id="dynamically_index">
-<a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.dynamically_index">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">dynamically_index</span><span class="p">(</span><span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">idx_updater</span><span class="o">=</span><span class="n">count_increments</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generalization of `enumerate(iterable)` that allows one to specify how the</span>
-<span class="sd">    indices should be updated.</span>
+<a class="viewcode-back" href="../../_autosummary/creek.tools.html#creek.tools.dynamically_index">[docs]</a>
+</span><span data-line="299"><span class="k">def</span><span class="w"> </span><span class="nf">dynamically_index</span><span class="p">(</span><span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">idx_updater</span><span class="o">=</span><span class="n">count_increments</span><span class="p">):</span>
+</span><span data-line="300"><span class="w">    </span><span class="sd">"""Generalization of ``enumerate(iterable)`` that allows one to specify how the</span>
+</span><span data-line="301"><span class="sd">    indices should be updated.</span>
+</span><span data-line="302">
+</span><span data-line="303"><span class="sd">    The default is the same behavior as ``enumerate``: Starts with 0 and increments by 1.</span>
+</span><span data-line="304">
+</span><span data-line="305"><span class="sd">    Args:</span>
+</span><span data-line="306"><span class="sd">        iterable: The items to index.</span>
+</span><span data-line="307"><span class="sd">        start: The index of the first item.</span>
+</span><span data-line="308"><span class="sd">        idx_updater: ``(current_idx, item) -&gt; next_idx``; ``count_increments``</span>
+</span><span data-line="309"><span class="sd">            (add 1) by default, ``size_increments`` adds ``len(item)``.</span>
+</span><span data-line="310">
+</span><span data-line="311"><span class="sd">    Returns:</span>
+</span><span data-line="312"><span class="sd">        An iterator of ``(index, item)`` pairs.</span>
+</span><span data-line="313">
+</span><span data-line="314"><span class="sd">    See Also:</span>
+</span><span data-line="315"><span class="sd">        ``DynamicIndexer``, the callable doing the work, when you want to apply the</span>
+</span><span data-line="316"><span class="sd">        same indexing rule to several streams or keep the current index around.</span>
+</span><span data-line="317">
+</span><span data-line="318"><span class="sd">    &gt;&gt;&gt; stream = ['stream', 'of', 'different', 'sized', 'chunks']</span>
+</span><span data-line="319"><span class="sd">    &gt;&gt;&gt; assert (list(dynamically_index(stream, start=2))</span>
+</span><span data-line="320"><span class="sd">    ...     == list(enumerate(stream, start=2))</span>
+</span><span data-line="321"><span class="sd">    ...     == [(2, 'stream'), (3, 'of'), (4, 'different'), (5, 'sized'), (6, 'chunks')]</span>
+</span><span data-line="322"><span class="sd">    ... )</span>
+</span><span data-line="323">
+</span><span data-line="324"><span class="sd">    Say we wanted to increment the indices according to the size of the last item</span>
+</span><span data-line="325"><span class="sd">    instead of just incrementing by 1 at every iteration tick...</span>
+</span><span data-line="326">
+</span><span data-line="327"><span class="sd">    &gt;&gt;&gt; def size_increments(current_idx, data_item, size_func=len):</span>
+</span><span data-line="328"><span class="sd">    ...     return current_idx + size_func(data_item)</span>
+</span><span data-line="329"><span class="sd">    &gt;&gt;&gt; size_index = DynamicIndexer(idx_updater=DynamicIndexer.size_increments)</span>
+</span><span data-line="330"><span class="sd">    &gt;&gt;&gt; list(map(size_index, stream))</span>
+</span><span data-line="331"><span class="sd">    [(0, 'stream'), (6, 'of'), (8, 'different'), (17, 'sized'), (22, 'chunks')]</span>
+</span><span data-line="332"><span class="sd">    """</span>
+</span><span data-line="333">    <span class="n">dynamic_indexer</span> <span class="o">=</span> <span class="n">DynamicIndexer</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">idx_updater</span><span class="p">)</span>
+</span><span data-line="334">    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="n">dynamic_indexer</span><span class="p">,</span> <span class="n">iterable</span><span class="p">)</span></div>
 
-<span class="sd">    The default is the sae behavior as `enumerate`: Starts with 0 and increments by 1.</span>
-
-<span class="sd">    &gt;&gt;&gt; stream = [&#39;stream&#39;, &#39;of&#39;, &#39;different&#39;, &#39;sized&#39;, &#39;chunks&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; assert (list(dynamically_index(stream, start=2))</span>
-<span class="sd">    ...     == list(enumerate(stream, start=2))</span>
-<span class="sd">    ...     == [(2, &#39;stream&#39;), (3, &#39;of&#39;), (4, &#39;different&#39;), (5, &#39;sized&#39;), (6, &#39;chunks&#39;)]</span>
-<span class="sd">    ... )</span>
-
-<span class="sd">    Say we wanted to increment the indices according to the size of the last item</span>
-<span class="sd">    instead of just incrementing by 1 at every iteration tick...</span>
-
-<span class="sd">    &gt;&gt;&gt; def size_increments(current_idx, data_item, size_func=len):</span>
-<span class="sd">    ...     return current_idx + size_func(data_item)</span>
-<span class="sd">    &gt;&gt;&gt; size_index = DynamicIndexer(idx_updater=DynamicIndexer.size_increments)</span>
-<span class="sd">    &gt;&gt;&gt; list(map(size_index, stream))</span>
-<span class="sd">    [(0, &#39;stream&#39;), (6, &#39;of&#39;), (8, &#39;different&#39;), (17, &#39;sized&#39;), (22, &#39;chunks&#39;)]</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">dynamic_indexer</span> <span class="o">=</span> <span class="n">DynamicIndexer</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">idx_updater</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="n">dynamic_indexer</span><span class="p">,</span> <span class="n">iterable</span><span class="p">)</span></div>
-
-
-
-<span class="c1"># Alternative to the above implementation:</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">accumulate</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_dynamic_indexer</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">idx_updater</span><span class="p">:</span> <span class="n">IndexUpdater</span> <span class="o">=</span> <span class="n">count_increments</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="n">index_func</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">accumulate</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">idx_updater</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="n">start</span><span class="p">)</span>
-    <span class="n">obj</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">index_func</span><span class="p">(</span><span class="n">stream</span><span class="p">),</span> <span class="n">stream</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">obj</span>
-
-
+</span><span data-line="335">
+</span><span data-line="336">
+</span><span data-line="337"><span class="c1"># Alternative to the above implementation:</span>
+</span><span data-line="338">
+</span><span data-line="339"><span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">accumulate</span>
+</span><span data-line="340">
+</span><span data-line="341">
+</span><span data-line="342"><span class="k">def</span><span class="w"> </span><span class="nf">_dynamic_indexer</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">idx_updater</span><span class="p">:</span> <span class="n">IndexUpdater</span> <span class="o">=</span> <span class="n">count_increments</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+</span><span data-line="343">    <span class="n">index_func</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">accumulate</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">idx_updater</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="n">start</span><span class="p">)</span>
+</span><span data-line="344">    <span class="n">obj</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">index_func</span><span class="p">(</span><span class="n">stream</span><span class="p">),</span> <span class="n">stream</span><span class="p">)</span>
+</span><span data-line="345">    <span class="k">return</span> <span class="n">obj</span>
+</span><span data-line="346">
+</span><span data-line="347">
 <div class="viewcode-block" id="alt_dynamically_index">
-<a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.alt_dynamically_index">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">alt_dynamically_index</span><span class="p">(</span><span class="n">idx_updater</span><span class="p">:</span> <span class="n">IndexUpdater</span> <span class="o">=</span> <span class="n">count_increments</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Alternative to dynamically_index using itertools and partial</span>
+<a class="viewcode-back" href="../../_autosummary/creek.tools.html#creek.tools.alt_dynamically_index">[docs]</a>
+</span><span data-line="348"><span class="k">def</span><span class="w"> </span><span class="nf">alt_dynamically_index</span><span class="p">(</span><span class="n">idx_updater</span><span class="p">:</span> <span class="n">IndexUpdater</span> <span class="o">=</span> <span class="n">count_increments</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+</span><span data-line="349"><span class="w">    </span><span class="sd">"""Alternative to dynamically_index using itertools and partial</span>
+</span><span data-line="350">
+</span><span data-line="351"><span class="sd">    &gt;&gt;&gt; def size_increments(current_idx, data_item, size_func=len):</span>
+</span><span data-line="352"><span class="sd">    ...     return current_idx + size_func(data_item)</span>
+</span><span data-line="353"><span class="sd">    ...</span>
+</span><span data-line="354"><span class="sd">    &gt;&gt;&gt; stream = ['stream', 'of', 'different', 'sized', 'chunks']</span>
+</span><span data-line="355"><span class="sd">    &gt;&gt;&gt; indexer = alt_dynamically_index(size_increments)</span>
+</span><span data-line="356"><span class="sd">    &gt;&gt;&gt; t = list(indexer(stream))</span>
+</span><span data-line="357"><span class="sd">    &gt;&gt;&gt; assert t == [(0, 'stream'), (6, 'of'), (8, 'different'), (17, 'sized'),</span>
+</span><span data-line="358"><span class="sd">    ...              (22, 'chunks')]</span>
+</span><span data-line="359"><span class="sd">    """</span>
+</span><span data-line="360">    <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">_dynamic_indexer</span><span class="p">,</span> <span class="n">idx_updater</span><span class="o">=</span><span class="n">idx_updater</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">)</span></div>
 
-<span class="sd">    &gt;&gt;&gt; def size_increments(current_idx, data_item, size_func=len):</span>
-<span class="sd">    ...     return current_idx + size_func(data_item)</span>
-<span class="sd">    ...</span>
-<span class="sd">    &gt;&gt;&gt; stream = [&#39;stream&#39;, &#39;of&#39;, &#39;different&#39;, &#39;sized&#39;, &#39;chunks&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; indexer = alt_dynamically_index(size_increments)</span>
-<span class="sd">    &gt;&gt;&gt; t = list(indexer(stream))</span>
-<span class="sd">    &gt;&gt;&gt; assert t == [(0, &#39;stream&#39;), (6, &#39;of&#39;), (8, &#39;different&#39;), (17, &#39;sized&#39;),</span>
-<span class="sd">    ...              (22, &#39;chunks&#39;)]</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">_dynamic_indexer</span><span class="p">,</span> <span class="n">idx_updater</span><span class="o">=</span><span class="n">idx_updater</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">)</span></div>
-
-
-
-<span class="c1"># ---------------------------------------------------------------------------------------</span>
-<span class="c1"># Slicing index segment streams</span>
-
-
+</span><span data-line="361">
+</span><span data-line="362">
+</span><span data-line="363"><span class="c1"># ---------------------------------------------------------------------------------------</span>
+</span><span data-line="364"><span class="c1"># Slicing index segment streams</span>
+</span><span data-line="365">
+</span><span data-line="366">
 <div class="viewcode-block" id="segment_overlaps">
-<a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.segment_overlaps">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">segment_overlaps</span><span class="p">(</span><span class="n">bt_tt_segment</span><span class="p">,</span> <span class="n">query_bt</span><span class="p">,</span> <span class="n">query_tt</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns True if, and only if, bt_tt_segment overlaps query interval.</span>
+<a class="viewcode-back" href="../../_autosummary/creek.tools.html#creek.tools.segment_overlaps">[docs]</a>
+</span><span data-line="367"><span class="k">def</span><span class="w"> </span><span class="nf">segment_overlaps</span><span class="p">(</span><span class="n">bt_tt_segment</span><span class="p">,</span> <span class="n">query_bt</span><span class="p">,</span> <span class="n">query_tt</span><span class="p">):</span>
+</span><span data-line="368"><span class="w">    </span><span class="sd">"""Returns True if, and only if, bt_tt_segment overlaps query interval.</span>
+</span><span data-line="369">
+</span><span data-line="370"><span class="sd">    A ``bt_tt_segment`` will need to be of the ``(bt, tt, *data)`` format.</span>
+</span><span data-line="371"><span class="sd">    That is, an iterable of at least two elements (the ``bt`` and ``tt``) followed with</span>
+</span><span data-line="372"><span class="sd">    more elements (the actual segment data).</span>
+</span><span data-line="373">
+</span><span data-line="374"><span class="sd">    This function is made to be curried, as shown in the following example:</span>
+</span><span data-line="375">
+</span><span data-line="376"><span class="sd">    &gt;&gt;&gt; from functools import partial</span>
+</span><span data-line="377"><span class="sd">    &gt;&gt;&gt; overlapping_segments_filt = partial(segment_overlaps, query_bt=4, query_tt=8)</span>
+</span><span data-line="378"><span class="sd">    &gt;&gt;&gt;</span>
+</span><span data-line="379"><span class="sd">    &gt;&gt;&gt; list(filter(overlapping_segments_filt, [</span>
+</span><span data-line="380"><span class="sd">    ...     (1, 3, 'completely before'),</span>
+</span><span data-line="381"><span class="sd">    ...     (2, 4, 'still completely before (upper bounds are strict)'),</span>
+</span><span data-line="382"><span class="sd">    ...     (3, 6, 'partially before, but overlaps bottom'),</span>
+</span><span data-line="383"><span class="sd">    ...     (4, 5, 'totally', 'inside'),  # &lt;- note this tuple has 4 elements</span>
+</span><span data-line="384"><span class="sd">    ...     (5, 8),  # &lt;- note this tuple has only the minimum (2) elements,</span>
+</span><span data-line="385"><span class="sd">    ...     (7, 10, 'partially after, but overlaps top'),</span>
+</span><span data-line="386"><span class="sd">    ...     (8, 11, 'completely after (strict upper bound)'),</span>
+</span><span data-line="387"><span class="sd">    ...     (100, 101, 'completely after (obviously)')</span>
+</span><span data-line="388"><span class="sd">    ... ]))  # doctest: +NORMALIZE_WHITESPACE</span>
+</span><span data-line="389"><span class="sd">    [(3, 6, 'partially before, but overlaps bottom'),</span>
+</span><span data-line="390"><span class="sd">    (4, 5, 'totally', 'inside'),</span>
+</span><span data-line="391"><span class="sd">    (5, 8),</span>
+</span><span data-line="392"><span class="sd">    (7, 10, 'partially after, but overlaps top')]</span>
+</span><span data-line="393"><span class="sd">    """</span>
+</span><span data-line="394">    <span class="n">bt</span><span class="p">,</span> <span class="n">tt</span><span class="p">,</span> <span class="o">*</span><span class="n">segment</span> <span class="o">=</span> <span class="n">bt_tt_segment</span>
+</span><span data-line="395">    <span class="k">return</span> <span class="p">(</span>
+</span><span data-line="396">        <span class="n">query_bt</span> <span class="o">&lt;</span> <span class="n">tt</span> <span class="o">&lt;=</span> <span class="n">query_tt</span>  <span class="c1"># the top part of segment intersects</span>
+</span><span data-line="397">        <span class="ow">or</span> <span class="n">query_bt</span> <span class="o">&lt;=</span> <span class="n">bt</span> <span class="o">&lt;</span> <span class="n">query_tt</span>  <span class="c1"># the bottom part of the segment intersects</span>
+</span><span data-line="398">        <span class="c1"># If it's both, the interval is entirely inside the query</span>
+</span><span data-line="399">    <span class="p">)</span></div>
 
-<span class="sd">    A `bt_tt_segment` will need to be of the ``(bt, tt, *data)`` format.</span>
-<span class="sd">    That is, an iterable of at least two elements (the ``bt`` and ``tt``) followed with</span>
-<span class="sd">    more elements (the actual segment data).</span>
+</span><span data-line="400">
+</span><span data-line="401">
+</span><span data-line="402"><span class="n">Stats</span> <span class="o">=</span> <span class="n">Any</span>
+</span><span data-line="403"><span class="n">_no_value_specified_sentinel</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">object</span><span class="p">())</span>
+</span><span data-line="404">
+</span><span data-line="405">
+<div class="viewcode-block" id="always_true">
+<a class="viewcode-back" href="../../_autosummary/creek.tools.html#creek.tools.always_true">[docs]</a>
+</span><span data-line="406"><span class="k">def</span><span class="w"> </span><span class="nf">always_true</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span><span data-line="407"><span class="w">    </span><span class="sd">"""Return ``True``, whatever ``x`` is."""</span>
+</span><span data-line="408">    <span class="k">return</span> <span class="kc">True</span></div>
 
-<span class="sd">    This function is made to be curried, as shown in the following example:</span>
-
-<span class="sd">    &gt;&gt;&gt; from functools import partial</span>
-<span class="sd">    &gt;&gt;&gt; overlapping_segments_filt = partial(segment_overlaps, query_bt=4, query_tt=8)</span>
-<span class="sd">    &gt;&gt;&gt;</span>
-<span class="sd">    &gt;&gt;&gt; list(filter(overlapping_segments_filt, [</span>
-<span class="sd">    ...     (1, 3, &#39;completely before&#39;),</span>
-<span class="sd">    ...     (2, 4, &#39;still completely before (upper bounds are strict)&#39;),</span>
-<span class="sd">    ...     (3, 6, &#39;partially before, but overlaps bottom&#39;),</span>
-<span class="sd">    ...     (4, 5, &#39;totally&#39;, &#39;inside&#39;),  # &lt;- note this tuple has 4 elements</span>
-<span class="sd">    ...     (5, 8),  # &lt;- note this tuple has only the minimum (2) elements,</span>
-<span class="sd">    ...     (7, 10, &#39;partially after, but overlaps top&#39;),</span>
-<span class="sd">    ...     (8, 11, &#39;completely after (strict upper bound)&#39;),</span>
-<span class="sd">    ...     (100, 101, &#39;completely after (obviously)&#39;)</span>
-<span class="sd">    ... ]))  # doctest: +NORMALIZE_WHITESPACE</span>
-<span class="sd">    [(3, 6, &#39;partially before, but overlaps bottom&#39;),</span>
-<span class="sd">    (4, 5, &#39;totally&#39;, &#39;inside&#39;),</span>
-<span class="sd">    (5, 8),</span>
-<span class="sd">    (7, 10, &#39;partially after, but overlaps top&#39;)]</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">bt</span><span class="p">,</span> <span class="n">tt</span><span class="p">,</span> <span class="o">*</span><span class="n">segment</span> <span class="o">=</span> <span class="n">bt_tt_segment</span>
-    <span class="k">return</span> <span class="p">(</span>
-        <span class="n">query_bt</span> <span class="o">&lt;</span> <span class="n">tt</span> <span class="o">&lt;=</span> <span class="n">query_tt</span>  <span class="c1"># the top part of segment intersects</span>
-        <span class="ow">or</span> <span class="n">query_bt</span> <span class="o">&lt;=</span> <span class="n">bt</span> <span class="o">&lt;</span> <span class="n">query_tt</span>  <span class="c1"># the bottom part of the segment intersects</span>
-        <span class="c1"># If it&#39;s both, the interval is entirely inside the query</span>
-    <span class="p">)</span></div>
-
-
-
-<span class="n">Stats</span> <span class="o">=</span> <span class="n">Any</span>
-<span class="n">_no_value_specified_sentinel</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">object</span><span class="p">())</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">always_true</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="k">return</span> <span class="kc">True</span>
-
-
+</span><span data-line="409">
+</span><span data-line="410">
 <div class="viewcode-block" id="BufferStats">
-<a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.BufferStats">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">BufferStats</span><span class="p">(</span><span class="n">deque</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A callable (fifo) buffer. Calls add input to it, but also returns some results</span>
-<span class="sd">    computed from it&#39;s contents.</span>
+<a class="viewcode-back" href="../../_autosummary/creek.tools.html#creek.tools.BufferStats">[docs]</a>
+</span><span data-line="411"><span class="k">class</span><span class="w"> </span><span class="nc">BufferStats</span><span class="p">(</span><span class="n">deque</span><span class="p">):</span>
+</span><span data-line="412"><span class="w">    </span><span class="sd">"""A callable, fixed-size (fifo) buffer returning a statistic of its contents on every call.</span>
+</span><span data-line="413">
+</span><span data-line="414"><span class="sd">    Each call adds the input to the buffer (``deque.append`` by default, configurable</span>
+</span><span data-line="415"><span class="sd">    through ``add_new_val``) and returns ``func`` applied to the buffer's contents.</span>
+</span><span data-line="416"><span class="sd">    Use it with ``map`` to get rolling-window statistics of a stream.</span>
+</span><span data-line="417">
+</span><span data-line="418"><span class="sd">    Args:</span>
+</span><span data-line="419"><span class="sd">        values: Initial contents of the buffer.</span>
+</span><span data-line="420"><span class="sd">        maxlen: Size of the buffer. Required.</span>
+</span><span data-line="421"><span class="sd">        func: The function computed on the buffer contents and returned on each</span>
+</span><span data-line="422"><span class="sd">            call; ``sum`` by default.</span>
+</span><span data-line="423"><span class="sd">        add_new_val: The ``(buffer, new_val)`` function that adds a value to the</span>
+</span><span data-line="424"><span class="sd">            buffer: a ``deque`` method (``deque.append`` by default, ``deque.extend``,</span>
+</span><span data-line="425"><span class="sd">            ``deque.appendleft``...), its name as a string, or any function with that</span>
+</span><span data-line="426"><span class="sd">            signature.</span>
+</span><span data-line="427">
+</span><span data-line="428"><span class="sd">    Raises:</span>
+</span><span data-line="429"><span class="sd">        TypeError: If ``maxlen`` is not given, or is not an ``int``.</span>
+</span><span data-line="430">
+</span><span data-line="431"><span class="sd">    &gt;&gt;&gt; bs = BufferStats(maxlen=4, func=sum)</span>
+</span><span data-line="432"><span class="sd">    &gt;&gt;&gt; list(map(bs, range(7)))</span>
+</span><span data-line="433"><span class="sd">    [0, 1, 3, 6, 10, 14, 18]</span>
+</span><span data-line="434">
+</span><span data-line="435"><span class="sd">    See what happens when you feed the same sequence again:</span>
+</span><span data-line="436">
+</span><span data-line="437"><span class="sd">    &gt;&gt;&gt; list(map(bs, range(7)))</span>
+</span><span data-line="438"><span class="sd">    [15, 12, 9, 6, 10, 14, 18]</span>
+</span><span data-line="439">
+</span><span data-line="440"><span class="sd">    More examples:</span>
+</span><span data-line="441">
+</span><span data-line="442"><span class="sd">    &gt;&gt;&gt; list(map(BufferStats(maxlen=4, func=''.join), 'abcdefgh'))</span>
+</span><span data-line="443"><span class="sd">    ['a', 'ab', 'abc', 'abcd', 'bcde', 'cdef', 'defg', 'efgh']</span>
+</span><span data-line="444">
+</span><span data-line="445"><span class="sd">    &gt;&gt;&gt; from math import prod</span>
+</span><span data-line="446"><span class="sd">    &gt;&gt;&gt; list(map(BufferStats(maxlen=4, func=prod), range(7)))</span>
+</span><span data-line="447"><span class="sd">    [0, 0, 0, 0, 24, 120, 360]</span>
+</span><span data-line="448">
+</span><span data-line="449"><span class="sd">    With a different ``add_new_val`` choice.</span>
+</span><span data-line="450">
+</span><span data-line="451"><span class="sd">    &gt;&gt;&gt; bs = BufferStats(maxlen=4, func=''.join, add_new_val=deque.appendleft)</span>
+</span><span data-line="452"><span class="sd">    &gt;&gt;&gt; list(map(bs, 'abcdefgh'))</span>
+</span><span data-line="453"><span class="sd">    ['a', 'ba', 'cba', 'dcba', 'edcb', 'fedc', 'gfed', 'hgfe']</span>
+</span><span data-line="454">
+</span><span data-line="455"><span class="sd">    With ``add_new_val=deque.extend``, data can be fed in chunks.</span>
+</span><span data-line="456"><span class="sd">    In the following, also see how we use iterize to get a function that</span>
+</span><span data-line="457"><span class="sd">    takes an iterator and returns an iterator</span>
+</span><span data-line="458">
+</span><span data-line="459"><span class="sd">    &gt;&gt;&gt; from creek.util import iterize</span>
+</span><span data-line="460"><span class="sd">    &gt;&gt;&gt; window_stats = iterize(BufferStats(</span>
+</span><span data-line="461"><span class="sd">    ...     maxlen=4, func=''.join, add_new_val=deque.extend)</span>
+</span><span data-line="462"><span class="sd">    ... )</span>
+</span><span data-line="463"><span class="sd">    &gt;&gt;&gt; chks = ['a', 'bc', 'def', 'gh']</span>
+</span><span data-line="464"><span class="sd">    &gt;&gt;&gt; for x in window_stats(chks):</span>
+</span><span data-line="465"><span class="sd">    ...     print(x)</span>
+</span><span data-line="466"><span class="sd">    a</span>
+</span><span data-line="467"><span class="sd">    abc</span>
+</span><span data-line="468"><span class="sd">    cdef</span>
+</span><span data-line="469"><span class="sd">    efgh</span>
+</span><span data-line="470">
+</span><span data-line="471"><span class="sd">    Note:</span>
+</span><span data-line="472"><span class="sd">        To those who might think that they can optimize this for special</span>
+</span><span data-line="473"><span class="sd">        cases: Yes you can.</span>
+</span><span data-line="474"><span class="sd">        But SHOULD you? Is it worth the increase in complexity and reduction in</span>
+</span><span data-line="475"><span class="sd">        flexibility?</span>
+</span><span data-line="476"><span class="sd">        See https://github.com/thorwhalen/umpyre/blob/master/misc/performance_of_rolling_window_stats.md</span>
+</span><span data-line="477"><span class="sd">    """</span>
+</span><span data-line="478">
+</span><span data-line="479">    <span class="c1"># __name__ = 'BufferStats'</span>
+</span><span data-line="480">
+</span><span data-line="481">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="482">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="483">        <span class="n">values</span><span class="o">=</span><span class="p">(),</span>
+</span><span data-line="484">        <span class="n">maxlen</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">_no_value_specified_sentinel</span><span class="p">,</span>
+</span><span data-line="485">        <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">,</span>
+</span><span data-line="486">        <span class="n">add_new_val</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">deque</span><span class="o">.</span><span class="n">append</span><span class="p">,</span>
+</span><span data-line="487">        <span class="c1"># *,</span>
+</span><span data-line="488">        <span class="c1"># func_cond=always_true,</span>
+</span><span data-line="489">    <span class="p">):</span>
+</span><span data-line="490">        <span class="k">if</span> <span class="n">maxlen</span> <span class="ow">is</span> <span class="n">_no_value_specified_sentinel</span><span class="p">:</span>
+</span><span data-line="491">            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"You are required to specify maxlen"</span><span class="p">)</span>
+</span><span data-line="492">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">maxlen</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+</span><span data-line="493">            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"maxlen must be an integer, was: </span><span class="si">{</span><span class="n">maxlen</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span data-line="494">
+</span><span data-line="495">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">maxlen</span><span class="o">=</span><span class="n">maxlen</span><span class="p">)</span>
+</span><span data-line="496">        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
+</span><span data-line="497">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">add_new_val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+</span><span data-line="498">            <span class="c1"># assume add_new_val is a method of deque:</span>
+</span><span data-line="499">            <span class="n">add_new_val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">deque</span><span class="p">,</span> <span class="n">add_new_val</span><span class="p">)</span>
+</span><span data-line="500">        <span class="bp">self</span><span class="o">.</span><span class="n">add_new_val</span> <span class="o">=</span> <span class="n">add_new_val</span>
+</span><span data-line="501">        <span class="bp">self</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s2">"BufferStats"</span>
+</span><span data-line="502">        <span class="c1"># self.func_cond = func_cond</span>
+</span><span data-line="503">
+</span><span data-line="504">    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_val</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Stats</span><span class="p">:</span>
+</span><span data-line="505"><span class="w">        </span><span class="sd">"""Add ``new_val`` to the buffer and return ``func(self)``."""</span>
+</span><span data-line="506">        <span class="bp">self</span><span class="o">.</span><span class="n">add_new_val</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_val</span><span class="p">)</span>  <span class="c1"># add the new value</span>
+</span><span data-line="507">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
-<span class="sd">    What &quot;add&quot; means is configurable (through ``add_new_val`` arg). Default</span>
-<span class="sd">    is append, but can be extend etc.</span>
+</span><span data-line="508">        <span class="c1"># if self.func_cond(self):</span>
+</span><span data-line="509">        <span class="c1">#     return self.func(self)</span>
+</span><span data-line="510">
+</span><span data-line="511">
+<div class="viewcode-block" id="is_not_none">
+<a class="viewcode-back" href="../../_autosummary/creek.tools.html#creek.tools.is_not_none">[docs]</a>
+</span><span data-line="512"><span class="k">def</span><span class="w"> </span><span class="nf">is_not_none</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span><span data-line="513"><span class="w">    </span><span class="sd">"""Return ``True`` if ``x`` is not ``None``."""</span>
+</span><span data-line="514">    <span class="k">return</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
-<span class="sd">    &gt;&gt;&gt; bs = BufferStats(maxlen=4, func=sum)</span>
-<span class="sd">    &gt;&gt;&gt; list(map(bs, range(7)))</span>
-<span class="sd">    [0, 1, 3, 6, 10, 14, 18]</span>
-
-<span class="sd">    See what happens when you feed the same sequence again:</span>
-
-<span class="sd">    &gt;&gt;&gt; list(map(bs, range(7)))</span>
-<span class="sd">    [15, 12, 9, 6, 10, 14, 18]</span>
-
-<span class="sd">    More examples:</span>
-
-<span class="sd">    &gt;&gt;&gt; list(map(BufferStats(maxlen=4, func=&#39;&#39;.join), &#39;abcdefgh&#39;))</span>
-<span class="sd">    [&#39;a&#39;, &#39;ab&#39;, &#39;abc&#39;, &#39;abcd&#39;, &#39;bcde&#39;, &#39;cdef&#39;, &#39;defg&#39;, &#39;efgh&#39;]</span>
-
-<span class="sd">    &gt;&gt;&gt; from math import prod</span>
-<span class="sd">    &gt;&gt;&gt; list(map(BufferStats(maxlen=4, func=prod), range(7)))</span>
-<span class="sd">    [0, 0, 0, 0, 24, 120, 360]</span>
-
-<span class="sd">    With a different ``add_new_val`` choice.</span>
-
-<span class="sd">    &gt;&gt;&gt; bs = BufferStats(maxlen=4, func=&#39;&#39;.join, add_new_val=deque.appendleft)</span>
-<span class="sd">    &gt;&gt;&gt; list(map(bs, &#39;abcdefgh&#39;))</span>
-<span class="sd">    [&#39;a&#39;, &#39;ba&#39;, &#39;cba&#39;, &#39;dcba&#39;, &#39;edcb&#39;, &#39;fedc&#39;, &#39;gfed&#39;, &#39;hgfe&#39;]</span>
-
-<span class="sd">    With ``add_new_val=deque.extend``, data can be fed in chunks.</span>
-<span class="sd">    In the following, also see how we use iterize to get a function that</span>
-<span class="sd">    takes an iterator and returns an iterator</span>
-
-<span class="sd">    &gt;&gt;&gt; from creek.util import iterize</span>
-<span class="sd">    &gt;&gt;&gt; window_stats = iterize(BufferStats(</span>
-<span class="sd">    ...     maxlen=4, func=&#39;&#39;.join, add_new_val=deque.extend)</span>
-<span class="sd">    ... )</span>
-<span class="sd">    &gt;&gt;&gt; chks = [&#39;a&#39;, &#39;bc&#39;, &#39;def&#39;, &#39;gh&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; for x in window_stats(chks):</span>
-<span class="sd">    ...     print(x)</span>
-<span class="sd">    a</span>
-<span class="sd">    abc</span>
-<span class="sd">    cdef</span>
-<span class="sd">    efgh</span>
-
-<span class="sd">    Note: To those who might think that they can optimize this for special</span>
-<span class="sd">    cases: Yes you can.</span>
-<span class="sd">    But SHOULD you? Is it worth the increase in complexity and reduction in</span>
-<span class="sd">    flexibility?</span>
-<span class="sd">    See https://github.com/thorwhalen/umpyre/blob/master/misc/performance_of_rolling_window_stats.md</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># __name__ = &#39;BufferStats&#39;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">values</span><span class="o">=</span><span class="p">(),</span>
-        <span class="n">maxlen</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">_no_value_specified_sentinel</span><span class="p">,</span>
-        <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">,</span>
-        <span class="n">add_new_val</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">deque</span><span class="o">.</span><span class="n">append</span><span class="p">,</span>
-        <span class="c1"># *,</span>
-        <span class="c1"># func_cond=always_true,</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param maxlen: Size of the buffer</span>
-<span class="sd">        :param func: The function to be computed (on buffer contents) and</span>
-<span class="sd">        returned when buffer is &quot;called&quot;</span>
-<span class="sd">        :param add_new_val: The function that adds values on the buffer.</span>
-<span class="sd">        Signature must be (self, new_val)</span>
-<span class="sd">            Is usually a deque method (``deque.append`` by default, but could</span>
-<span class="sd">            be ``deque.extend``, ``deque.appendleft`` etc.).</span>
-<span class="sd">            Can also be any other function that</span>
-<span class="sd">            has a valid (self, new_val) signature.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">maxlen</span> <span class="ow">is</span> <span class="n">_no_value_specified_sentinel</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;You are required to specify maxlen&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">maxlen</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;maxlen must be an integer, was: </span><span class="si">{</span><span class="n">maxlen</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">maxlen</span><span class="o">=</span><span class="n">maxlen</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">add_new_val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="c1"># assume add_new_val is a method of deque:</span>
-            <span class="n">add_new_val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">deque</span><span class="p">,</span> <span class="n">add_new_val</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_new_val</span> <span class="o">=</span> <span class="n">add_new_val</span>
-        <span class="bp">self</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s2">&quot;BufferStats&quot;</span>
-        <span class="c1"># self.func_cond = func_cond</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_val</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Stats</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_new_val</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_val</span><span class="p">)</span>  <span class="c1"># add the new value</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
-
-        <span class="c1"># if self.func_cond(self):</span>
-        <span class="c1">#     return self.func(self)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">is_not_none</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-
-
+</span><span data-line="515">
+</span><span data-line="516">
 <div class="viewcode-block" id="return_buffer_on_stats_condition">
-<a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.return_buffer_on_stats_condition">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">return_buffer_on_stats_condition</span><span class="p">(</span>
-    <span class="n">stats</span><span class="p">:</span> <span class="n">Stats</span><span class="p">,</span> <span class="n">buffer</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">cond</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">is_not_none</span><span class="p">,</span> <span class="n">else_val</span><span class="o">=</span><span class="kc">None</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a class="viewcode-back" href="../../_autosummary/creek.tools.html#creek.tools.return_buffer_on_stats_condition">[docs]</a>
+</span><span data-line="517"><span class="k">def</span><span class="w"> </span><span class="nf">return_buffer_on_stats_condition</span><span class="p">(</span>
+</span><span data-line="518">    <span class="n">stats</span><span class="p">:</span> <span class="n">Stats</span><span class="p">,</span> <span class="n">buffer</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">cond</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">is_not_none</span><span class="p">,</span> <span class="n">else_val</span><span class="o">=</span><span class="kc">None</span>
+</span><span data-line="519"><span class="p">):</span>
+</span><span data-line="520"><span class="w">    </span><span class="sd">"""Return ``buffer`` if ``cond(stats)`` holds, else ``else_val``.</span>
+</span><span data-line="521">
+</span><span data-line="522"><span class="sd">    The default ``stats_buffer_callback`` of ``Segmenter``; partialize ``cond`` and</span>
+</span><span data-line="523"><span class="sd">    ``else_val`` to make your own.</span>
+</span><span data-line="524">
+</span><span data-line="525"><span class="sd">    &gt;&gt;&gt; return_buffer_on_stats_condition(</span>
+</span><span data-line="526"><span class="sd">    ... stats=3, buffer=[1,2,3,4], cond=lambda x: x%2 == 1</span>
+</span><span data-line="527"><span class="sd">    ... )</span>
+</span><span data-line="528"><span class="sd">    [1, 2, 3, 4]</span>
+</span><span data-line="529"><span class="sd">    &gt;&gt;&gt; return_buffer_on_stats_condition(</span>
+</span><span data-line="530"><span class="sd">    ... stats=3, buffer=[1,2,3,4], cond=lambda x: x%2 == 0, else_val='3 is not even!'</span>
+</span><span data-line="531"><span class="sd">    ... )</span>
+</span><span data-line="532"><span class="sd">    '3 is not even!'</span>
+</span><span data-line="533"><span class="sd">    """</span>
+</span><span data-line="534">
+</span><span data-line="535">    <span class="k">if</span> <span class="n">cond</span><span class="p">(</span><span class="n">stats</span><span class="p">):</span>
+</span><span data-line="536">        <span class="k">return</span> <span class="n">buffer</span>
+</span><span data-line="537">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="538">        <span class="k">return</span> <span class="n">else_val</span></div>
 
-<span class="sd">    &gt;&gt;&gt; return_buffer_on_stats_condition(</span>
-<span class="sd">    ... stats=3, buffer=[1,2,3,4], cond=lambda x: x%2 == 1</span>
-<span class="sd">    ... )</span>
-<span class="sd">    [1, 2, 3, 4]</span>
-<span class="sd">    &gt;&gt;&gt; return_buffer_on_stats_condition(</span>
-<span class="sd">    ... stats=3, buffer=[1,2,3,4], cond=lambda x: x%2 == 0, else_val=&#39;3 is not even!&#39;</span>
-<span class="sd">    ... )</span>
-<span class="sd">    &#39;3 is not even!&#39;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">if</span> <span class="n">cond</span><span class="p">(</span><span class="n">stats</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">buffer</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">else_val</span></div>
-
-
-
+</span><span data-line="539">
+</span><span data-line="540">
 <div class="viewcode-block" id="Segmenter">
-<a class="viewcode-back" href="../../module_docs/creek/tools.html#creek.tools.Segmenter">[docs]</a>
-<span class="nd">@dataclass</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">Segmenter</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a class="viewcode-back" href="../../_autosummary/creek.tools.html#creek.tools.Segmenter">[docs]</a>
+</span><span data-line="541"><span class="nd">@dataclass</span>
+</span><span data-line="542"><span class="k">class</span><span class="w"> </span><span class="nc">Segmenter</span><span class="p">:</span>
+</span><span data-line="543"><span class="w">    </span><span class="sd">"""Feed values to a ``BufferStats`` and hand its contents to a callback after each one.</span>
+</span><span data-line="544">
+</span><span data-line="545"><span class="sd">    Each call ``seg(new_val)`` adds ``new_val`` to ``buffer`` (which returns its</span>
+</span><span data-line="546"><span class="sd">    statistic), then returns ``stats_buffer_callback(stats, list(buffer))``.</span>
+</span><span data-line="547"><span class="sd">    With the default callback that is the buffer contents when the statistic is</span>
+</span><span data-line="548"><span class="sd">    not ``None``, and ``None`` otherwise.</span>
+</span><span data-line="549">
+</span><span data-line="550"><span class="sd">    Args:</span>
+</span><span data-line="551"><span class="sd">        buffer: The ``BufferStats`` instance that stores values and computes the</span>
+</span><span data-line="552"><span class="sd">            statistic.</span>
+</span><span data-line="553"><span class="sd">        stats_buffer_callback: ``(stats, buffer_contents) -&gt; result``;</span>
+</span><span data-line="554"><span class="sd">            ``return_buffer_on_stats_condition`` by default.</span>
+</span><span data-line="555">
+</span><span data-line="556"><span class="sd">    &gt;&gt;&gt; gen = iter(range(200))</span>
+</span><span data-line="557"><span class="sd">    &gt;&gt;&gt; bs = BufferStats(maxlen=10, func=sum)</span>
+</span><span data-line="558"><span class="sd">    &gt;&gt;&gt; return_if_stats_is_odd = partial(</span>
+</span><span data-line="559"><span class="sd">    ...     return_buffer_on_stats_condition,</span>
+</span><span data-line="560"><span class="sd">    ...     cond=lambda x: x%2 == 1, else_val='The sum is not odd!'</span>
+</span><span data-line="561"><span class="sd">    ... )</span>
+</span><span data-line="562"><span class="sd">    &gt;&gt;&gt; seg = Segmenter(buffer=bs, stats_buffer_callback=return_if_stats_is_odd)</span>
+</span><span data-line="563">
+</span><span data-line="564"><span class="sd">    Since the sum of the values in the buffer [1] is odd, the buffer is returned:</span>
+</span><span data-line="565">
+</span><span data-line="566"><span class="sd">    &gt;&gt;&gt; seg(new_val=1)</span>
+</span><span data-line="567"><span class="sd">    [1]</span>
+</span><span data-line="568">
+</span><span data-line="569"><span class="sd">    Adding ``1 + 2`` is still odd so:</span>
+</span><span data-line="570">
+</span><span data-line="571"><span class="sd">    &gt;&gt;&gt; seg(new_val=2)</span>
+</span><span data-line="572"><span class="sd">    [1, 2]</span>
+</span><span data-line="573">
+</span><span data-line="574"><span class="sd">    Now since ``1 + 2 + 5`` is even, the ``else_val`` of ``return_if_stats_is_odd``</span>
+</span><span data-line="575"><span class="sd">    is returned instead</span>
+</span><span data-line="576">
+</span><span data-line="577"><span class="sd">    &gt;&gt;&gt; seg(new_val=5)</span>
+</span><span data-line="578"><span class="sd">    'The sum is not odd!'</span>
+</span><span data-line="579"><span class="sd">    """</span>
+</span><span data-line="580">
+</span><span data-line="581">    <span class="n">buffer</span><span class="p">:</span> <span class="n">BufferStats</span>
+</span><span data-line="582">    <span class="n">stats_buffer_callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Stats</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="583">        <span class="n">return_buffer_on_stats_condition</span>
+</span><span data-line="584">    <span class="p">)</span>
+</span><span data-line="585">    <span class="vm">__name__</span> <span class="o">=</span> <span class="s2">"Segmenter"</span>
+</span><span data-line="586">
+</span><span data-line="587">    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_val</span><span class="p">):</span>
+</span><span data-line="588"><span class="w">        </span><span class="sd">"""Feed ``new_val`` to the buffer and return the callback's result."""</span>
+</span><span data-line="589">        <span class="n">stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="n">new_val</span><span class="p">)</span>
+</span><span data-line="590">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats_buffer_callback</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">))</span></div>
 
-<span class="sd">    &gt;&gt;&gt; gen = iter(range(200))</span>
-<span class="sd">    &gt;&gt;&gt; bs = BufferStats(maxlen=10, func=sum)</span>
-<span class="sd">    &gt;&gt;&gt; return_if_stats_is_odd = partial(</span>
-<span class="sd">    ...     return_buffer_on_stats_condition,</span>
-<span class="sd">    ...     cond=lambda x: x%2 == 1, else_val=&#39;The sum is not odd!&#39;</span>
-<span class="sd">    ... )</span>
-<span class="sd">    &gt;&gt;&gt; seg = Segmenter(buffer=bs, stats_buffer_callback=return_if_stats_is_odd)</span>
-
-<span class="sd">    Since the sum of the values in the buffer [1] is odd, the buffer is returned:</span>
-
-<span class="sd">    &gt;&gt;&gt; seg(new_val=1)</span>
-<span class="sd">    [1]</span>
-
-<span class="sd">    Adding ``1 + 2`` is still odd so:</span>
-
-<span class="sd">    &gt;&gt;&gt; seg(new_val=2)</span>
-<span class="sd">    [1, 2]</span>
-
-<span class="sd">    Now since ``1 + 2 + 5`` is even, the ``else_val`` of ``return_if_stats_is_odd``</span>
-<span class="sd">    is returned instead</span>
-
-<span class="sd">    &gt;&gt;&gt; seg(new_val=5)</span>
-<span class="sd">    &#39;The sum is not odd!&#39;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">buffer</span><span class="p">:</span> <span class="n">BufferStats</span>
-    <span class="n">stats_buffer_callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Stats</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">return_buffer_on_stats_condition</span>
-    <span class="p">)</span>
-    <span class="vm">__name__</span> <span class="o">=</span> <span class="s2">&quot;Segmenter&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_val</span><span class="p">):</span>
-        <span class="n">stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="n">new_val</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats_buffer_callback</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">))</span></div>
-
-</pre></div>
-
-           </div>
-          </div>
-          <footer>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright NO COPYRIGHT.</p>
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright">
+  <p>
+    Made with
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+  <a href="https://github.com/i2mint/creek" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div>
+    </div>
   </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
 </footer>
-        </div>
-      </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+      <script src="../../_static/documentation_options.js?v=2b6ce006"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=fd10adb8"></script>
+      <script src="../../_static/shibuya.js?v=50760d75"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
 
-</body>
+
+
+
+
+const initStyles = () => {
+    const defaultStyle = document.createElement('style');
+    defaultStyle.textContent = "pre.mermaid {\n    /* Same as .mermaid-container > pre */\n    display: block;\n    width: 100%;\n}\n\npre.mermaid > svg {\n    /* Same as .mermaid-container > pre > svg */\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}";
+    document.head.appendChild(defaultStyle);
+
+    const fullscreenStyle = document.createElement('style');
+    fullscreenStyle.textContent = ".mermaid-container {\n    position: relative;\n    display: flex;\n    flex-direction: row;\n    width: 100%;\n}\n\n.mermaid-container > pre {\n    display: block;\n    width: 100%;\n}\n\n.mermaid-container > pre > svg {\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}\n\n.mermaid-fullscreen-btn {\n    position: absolute;\n    width: 28px;\n    height: 28px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.3);\n    border-radius: 4px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    transition: all 0.2s;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);\n    font-size: 14px;\n    line-height: 1;\n    padding: 0;\n    color: #333;\n}\n\n.mermaid-fullscreen-btn:hover {\n    opacity: 100% !important;\n    background: rgba(255, 255, 255, 1);\n    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-btn.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.3);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-btn.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal {\n    display: none;\n    position: fixed !important;\n    top: 0 !important;\n    left: 0 !important;\n    width: 95vw;\n    height: 100vh;\n    background: rgba(255, 255, 255, 0.98);\n    z-index: 9999;\n    padding: 20px;\n    overflow: auto;\n}\n\n.mermaid-fullscreen-modal.dark-theme {\n    background: rgba(0, 0, 0, 0.98);\n}\n\n.mermaid-fullscreen-modal.active {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen {\n    position: relative;\n    width: 95vw;\n    height: 90vh;\n    max-width: 95vw;\n    max-height: 90vh;\n    background: white;\n    border-radius: 8px;\n    padding: 20px;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);\n    overflow: auto;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen.dark-theme {\n    background: #1a1a1a;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);\n}\n\n.mermaid-container-fullscreen pre.mermaid {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen .mermaid svg {\n    height: 100% !important;\n    width: 100% !important;\n    cursor: grab;\n}\n\n.mermaid-fullscreen-close {\n    position: fixed !important;\n    top: 20px !important;\n    right: 20px !important;\n    width: 40px;\n    height: 40px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.2);\n    border-radius: 50%;\n    cursor: pointer;\n    z-index: 10000;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);\n    transition: all 0.2s;\n    font-size: 24px;\n    line-height: 1;\n    color: #333;\n}\n\n.mermaid-fullscreen-close:hover {\n    background: white;\n    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-close.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-close.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal .mermaid-fullscreen-btn {\n    display: none !important;\n}";
+    document.head.appendChild(fullscreenStyle);
+}
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    // We use a set of heuristics:
+    // 1. Check for common dark mode classes or attributes
+    // 2. Check computed background color brightness
+    if (document.documentElement.classList.contains('dark') ||
+        document.documentElement.getAttribute('data-theme') === 'dark' ||
+        document.body.classList.contains('dark') ||
+        document.body.getAttribute('data-theme') === 'dark') {
+        // console.log("Dark theme detected via class/attribute");
+        return true;
+    }
+    if (document.documentElement.classList.contains('light') ||
+        document.documentElement.getAttribute('data-theme') === 'light' ||
+        document.body.classList.contains('light') ||
+        document.body.getAttribute('data-theme') === 'light') {
+        // console.log("Light theme detected via class/attribute");
+        return false;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // console.log("Dark theme detected via prefers-color-scheme");
+        return true;
+    }
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        // console.log("Background color brightness:", brightness);
+        return brightness < 128;
+    }
+    // console.log("No dark or light theme detected, defaulting to light theme");
+    return false;
+};
+
+let darkTheme = isDarkTheme();
+let modal = null;
+let modalContent = null;
+let previousScrollOffset = [window.scrollX, window.scrollY];
+let _lazyObserver = null;
+let _renderQueue = Promise.resolve();
+let closeModal = () => {};
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal?.classList.contains('active')) {
+        closeModal();
+    }
+});
+
+// Apply d3 zoom to each SVG. Idempotent: an SVG already wrapped is skipped,
+// so this is safe to call both for the initial batch and for diagrams that
+// render lazily once they become visible.
+const addZoomToSvgs = (svgs) => {
+    svgs.each(function() {
+        if (this.getAttribute('data-zoom-applied') === 'true') return;
+        var svg = d3.select(this);
+        svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+        var inner = svg.select("g");
+        var zoom = d3.zoom().on("zoom", function(event) {
+            inner.attr("transform", event.transform);
+        });
+        svg.call(zoom);
+        this.setAttribute('data-zoom-applied', 'true');
+    });
+};
+
+const runMermaid = async (rerun) => {
+    console.log("Running mermaid diagrams, rerun =", rerun);
+    // clear all existing mermaid charts
+    let all_mermaids = document.querySelectorAll(".mermaid");
+
+    if (rerun) {
+        // Disconnect any previous lazy rendering observer
+        if (_lazyObserver) {
+            _lazyObserver.disconnect();
+            _lazyObserver = null;
+        }
+
+        all_mermaids.forEach((el) => {
+            el.removeAttribute('data-mermaid-deferred');
+            el.removeAttribute('data-mermaid-render-failed');
+            if(!el.hasAttribute("data-original-code")) {
+                // store original code
+                // console.log(`Storing original code for first run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+            if(el.getAttribute("data-processed") === "true") {
+                // remove and restore original
+                el.removeAttribute("data-processed");
+                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
+                el.innerHTML = el.getAttribute('data-original-code');
+            } else {
+                // store original code
+                // console.log(`Storing original code for re-run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+        });
+
+        // Separate visible and hidden elements. Mermaid's layout engine measures
+        // text dimensions via the DOM, which fails for elements hidden by a parent
+        // (e.g., Reveal.js non-active slides, sphinx-design unopened tabs),
+        // producing broken SVGs. Render visible elements now, defer hidden ones.
+        const visible = [];
+        const hidden = [];
+        all_mermaids.forEach((el) => {
+            // offsetParent is null for display:none ancestors.
+            // getClientRects().length > 0 catches position:fixed elements
+            // (which also have null offsetParent but are still visible).
+            if (el.offsetParent !== null || el.getClientRects().length > 0) {
+                visible.push(el);
+            } else {
+                hidden.push(el);
+                el.setAttribute('data-mermaid-deferred', 'true');
+            }
+        });
+
+        if (visible.length > 0) {
+            try {
+                await mermaid.run({ nodes: visible });
+            } catch (e) {
+                console.error("Mermaid rendering failed:", e);
+            }
+        }
+
+        // Lazily render hidden elements when they become visible.
+        // Uses a promise chain (_renderQueue) to serialize rendering,
+        // since IntersectionObserver may report multiple entries at once
+        // and mermaid.run() is not safe to call concurrently.
+        if (hidden.length > 0) {
+            if (typeof IntersectionObserver === 'undefined') {
+                console.warn("IntersectionObserver not available; hidden mermaid diagrams will not render.");
+            } else {
+                _renderQueue = Promise.resolve();
+                _lazyObserver = new IntersectionObserver((entries) => {
+                    for (const entry of entries) {
+                        if (entry.isIntersecting && entry.target.getAttribute("data-processed") !== "true") {
+                            _lazyObserver.unobserve(entry.target);
+                            const el = entry.target;
+                            _renderQueue = _renderQueue.then(async () => {
+                                try {
+                                    await mermaid.run({ nodes: [el] });
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    // Apply zoom to the now-rendered diagram, matching
+                                    // the decoration visible diagrams receive.
+                                    if (false) {
+                                        addZoomToSvgs(d3.selectAll("").select(function() {
+                                            return this.querySelector("svg");
+                                        }));
+                                    }
+                                } catch (e) {
+                                    console.error("Mermaid deferred rendering failed:", e);
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    el.setAttribute('data-mermaid-render-failed', 'true');
+                                }
+                            });
+                        }
+                    }
+                });
+                hidden.forEach((el) => _lazyObserver.observe(el));
+            }
+        }
+    }
+
+    all_mermaids = document.querySelectorAll(".mermaid");
+    // Exclude deferred (hidden) and render-failed elements from completion checks
+    const mermaids_active = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])");
+    const mermaids_processed = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])[data-processed='true']");
+
+    if (false) {
+        const mermaids_to_add_zoom = 0 === -1 ? mermaids_active.length : 0;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("").select(function() {
+                return this.querySelector("svg");
+            });
+            // Wait until every active (visible) diagram has rendered. Deferred
+            // diagrams are excluded, so a fixed d3_node_count that counts a
+            // hidden diagram no longer loops forever waiting for its SVG.
+            if(mermaids_active.length !== mermaids_processed.length) {
+                setTimeout(() => runMermaid(false), 200);
+                return;
+            }
+            addZoomToSvgs(svgs);
+        }
+    } else if(mermaids_active.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(() => runMermaid(false), 200);
+        return;
+    }
+
+    // Stop here if not adding fullscreen capability
+    if (!true) return;
+
+    if (modal !== null ) {
+        // Destroy existing modal
+        modal.remove();
+        modal = null;
+        modalContent = null;
+    }
+
+    modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            // Already processed, adjust button class if needed
+            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
+            if (existingBtn) {
+                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+            }
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = "\u26f6";
+        fullscreenBtn.style.opacity = "50%";
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scrollX, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.display = 'block';
+
+                if (false) {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        container.appendChild(fullscreenBtn);
+    });
+};
+
+
+
+const load = async () => {
+    initStyles();
+
+
+    await runMermaid(true);
+
+    const reRunIfThemeChanges = async () => {
+        const newDarkTheme = isDarkTheme();
+        if (newDarkTheme !== darkTheme) {
+            darkTheme = newDarkTheme;
+            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
+            await mermaid.initialize(
+                {...{"startOnLoad": false},
+                ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+                }
+            );
+            await runMermaid(true);
+        }
+    };
+
+    // Update theme classes when theme changes
+    const themeObserver = new MutationObserver(reRunIfThemeChanges);
+    themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+};
+
+
+
+
+
+console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
+mermaid.initialize(
+    {...{"startOnLoad": false},
+    ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+    }
+);
+
+window.addEventListener("load", load);
+window.runMermaid = runMermaid;</script></body>
 </html>

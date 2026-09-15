@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "built_at": "2026-09-15T10:07:45Z",
+  "package": {
+    "name": "creek",
+    "version": "0.1.35",
+    "display_name": "creek",
+    "source": "pyproject.toml"
+  },
+  "git": {
+    "available": true,
+    "commit": "7a19d20cee5109a9f298d5ad8ccfba73bc131802",
+    "short_commit": "7a19d20",
+    "branch": "master",
+    "tags": [],
+    "dirty": false,
+    "remote_url": "https://github.com/i2mint/creek",
+    "commit_url": "https://github.com/i2mint/creek/commit/7a19d20cee5109a9f298d5ad8ccfba73bc131802",
+    "error": null
+  },
+  "ci": {
+    "provider": "github",
+    "repository": "i2mint/creek",
+    "sha": "7a19d20cee5109a9f298d5ad8ccfba73bc131802",
+    "sha_in_history": true,
+    "ref": "refs/heads/master",
+    "ref_name": "master",
+    "run_id": "34956128089",
+    "run_url": "https://github.com/i2mint/creek/actions/runs/34956128089",
+    "server_url": "https://github.com"
+  },
+  "tools": {
+    "epythet": "0.2.8",
+    "sphinx": "9.1.0",
+    "docutils": "0.22.4",
+    "python": "3.12.14"
+  },
+  "config": {
+    "theme": "auto",
+    "html_theme": "shibuya",
+    "accent": "#006e57",
+    "mode": "auto",
+    "api_generator": "autosummary",
+    "ignore": [
+      "tests/",
+      "scrap/",
+      "examples/"
+    ],
+    "agent_outputs": true,
+    "aggregates": [
+      "md"
+    ],
+    "ai_artifacts": true,
+    "provenance": true,
+    "docs_dir": "docsrc"
+  },
+  "site": {
+    "modules_documented": 8,
+    "objects_documented": 104
+  },
+  "pypi": {
+    "checked": true,
+    "latest": "0.1.36",
+    "relation": "behind",
+    "error": null
+  },
+  "reproduce": "git clone https://github.com/i2mint/creek && cd creek\ngit checkout 7a19d20cee5109a9f298d5ad8ccfba73bc131802\npip install \"epythet==0.2.8\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "warnings": [],
+  "alignment": {
+    "aligned": false,
+    "notes": [
+      "The documented version (0.1.35) is behind the latest release on PyPI (0.1.36): `pip install creek` gives newer code than these docs describe."
+    ]
+  }
+}

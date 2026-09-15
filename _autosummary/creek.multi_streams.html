@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="jade" data-content_root="../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>creek.multi_streams - creek</title><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="creek.tools" href="creek.tools.html" /><link rel="prev" title="creek.labeling" href="creek.labeling.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d88b86f9" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link media="print" rel="stylesheet" type="text/css" href="../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="creek.multi_streams"/>
+    <meta name="twitter:card" content="summary"/>
+  
+<link rel="alternate" type="text/markdown" href="creek.multi_streams.html.md">
+<link rel="describedby" href="../llms.txt" type="text/markdown">
+</head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../index.html">
+      
+      
+      <strong>creek</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/i2mint/creek" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="creek.html">creek</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="creek.automatas.html">creek.automatas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.base.html">creek.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.infinite_sequence.html">creek.infinite_sequence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.labeling.html">creek.labeling</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">creek.multi_streams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.tools.html">creek.tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.util.html">creek.util</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#creek.multi_streams.MergedStreams"><code class="docutils literal notranslate"><span class="pre">MergedStreams</span></code></a></li>
+<li><a class="reference internal" href="#creek.multi_streams.SortKeys"><code class="docutils literal notranslate"><span class="pre">SortKeys</span></code></a></li>
+<li><a class="reference internal" href="#creek.multi_streams.multi_stream_items"><code class="docutils literal notranslate"><span class="pre">multi_stream_items()</span></code></a></li>
+<li><a class="reference internal" href="#creek.multi_streams.staticmethods"><code class="docutils literal notranslate"><span class="pre">staticmethods()</span></code></a></li>
+<li><a class="reference internal" href="#creek.multi_streams.transform_methods"><code class="docutils literal notranslate"><span class="pre">transform_methods()</span></code></a></li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">creek</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../api.html"><span itemprop="name">API reference</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="creek.html"><span itemprop="name">creek</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="3" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">creek.multi_streams</strong>
+        <meta itemprop="position" content="4" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue dark-code" role="main">
+          <section id="module-creek.multi_streams">
+<span id="creek-multi-streams"></span><h1>creek.multi_streams<a class="headerlink" href="#module-creek.multi_streams" title="Link to this heading">#</a></h1>
+<p>Merge several sorted streams into one stream of <code class="docutils literal notranslate"><span class="pre">(stream_id,</span> <span class="pre">item)</span></code> pairs.</p>
+<p>Main entry points:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">MergedStreams</span></code>: the merge, driven by <code class="docutils literal notranslate"><span class="pre">heapq.merge</span></code> on a sort key of the items</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multi_stream_items</span></code>: tag each stream’s items with its id, one iterable per stream</p></li>
+</ul>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">creek.multi_streams</span><span class="w"> </span><span class="kn">import</span> <span class="n">MergedStreams</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">MergedStreams</span><span class="p">({</span><span class="s1">'a'</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="s1">'b'</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">]}))</span>
+</span><span data-line="3"><span class="go">[('a', 1), ('b', 2), ('a', 3)]</span>
+</span></pre></div>
+</div>
+<p class="rubric">Functions</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.multi_streams.multi_stream_items" title="creek.multi_streams.multi_stream_items"><code class="xref py py-obj docutils literal notranslate"><span class="pre">multi_stream_items</span></code></a>(streams_map)</p></td>
+<td><p>Provides a iterable of (k1, v1_1), (k1, v1_2), ...</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.multi_streams.transform_methods" title="creek.multi_streams.transform_methods"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform_methods</span></code></a>(cls[, method_trans])</p></td>
+<td><p>Applies method_trans to all the methods of <code class="docutils literal notranslate"><span class="pre">cls</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Classes</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.multi_streams.MergedStreams" title="creek.multi_streams.MergedStreams"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MergedStreams</span></code></a>(streams_map[, sort_key])</p></td>
+<td><p>Creates an iterable of <code class="docutils literal notranslate"><span class="pre">(stream_id,</span> <span class="pre">stream_item)</span></code> pairs from a stream Mapping, that is, <code class="docutils literal notranslate"><span class="pre">{stream_id:</span> <span class="pre">stream,</span> <span class="pre">...}</span></code>: A sort of &quot;flattening&quot; of the Mapping.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.multi_streams.SortKeys" title="creek.multi_streams.SortKeys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SortKeys</span></code></a>()</p></td>
+<td><p>A few <code class="docutils literal notranslate"><span class="pre">itemgetter</span></code> sort keys, exposed as staticmethods.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="creek.multi_streams.MergedStreams">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">creek.multi_streams.</span></span><span class="sig-name descname"><span class="pre">MergedStreams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">streams_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/multi_streams.html#MergedStreams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.multi_streams.MergedStreams" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Creates an iterable of <code class="docutils literal notranslate"><span class="pre">(stream_id,</span> <span class="pre">stream_item)</span></code> pairs from a stream Mapping,
+that is, <code class="docutils literal notranslate"><span class="pre">{stream_id:</span> <span class="pre">stream,</span> <span class="pre">...}</span></code>: A sort of “flattening” of the Mapping.</p>
+<p>This can be useful, for instance, if you want to make “slabs” of data, gathering
+together all the data for a given time period, from multiple streams.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">stream_item</span></code> will be yielded in sorted order.
+Sort behavior can be modified by the <code class="docutils literal notranslate"><span class="pre">sort_key</span></code> argument which behaves like <code class="docutils literal notranslate"><span class="pre">key</span></code>
+arguments of built-in like <code class="docutils literal notranslate"><span class="pre">sorted</span></code>, <code class="docutils literal notranslate"><span class="pre">heapq.merge</span></code>, <code class="docutils literal notranslate"><span class="pre">itertools.groupby</span></code>, etc.</p>
+<p>If given, the <code class="docutils literal notranslate"><span class="pre">sort_key</span></code> function applies to <code class="docutils literal notranslate"><span class="pre">stream_item</span></code> (not to <code class="docutils literal notranslate"><span class="pre">stream_id</span></code>).</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>To function as expected, the streams should be already sorted (according
+to the <code class="docutils literal notranslate"><span class="pre">sort_key</span></code> order).</p>
+</div>
+<p>The cannonical use case of this function is to “flatten”, or “weave together”
+multiple streams of timestamped data. We’re given several streams that provide
+<code class="docutils literal notranslate"><span class="pre">(timestamp,</span> <span class="pre">data)</span></code> items (where timestamps arrive in order within each stream)
+and we get a single stream of <code class="docutils literal notranslate"><span class="pre">(stream_id,</span> <span class="pre">(timestamp,</span> <span class="pre">data))</span></code> items where
+the <code class="docutils literal notranslate"><span class="pre">timestamp</span></code> values are yielded in sorted order.</p>
+<p>The following example uses a dict pointing to a fixed-size list as the <code class="docutils literal notranslate"><span class="pre">stream_map</span></code>
+but in general the <code class="docutils literal notranslate"><span class="pre">stream_map</span></code> will be a <code class="docutils literal notranslate"><span class="pre">Mapping</span></code> (not necessarily a dict)
+whose values are potentially bound-less streams.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">streams_map</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="2"><span class="gp">... </span>    <span class="s1">'hello'</span><span class="p">:</span> <span class="p">[(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'two'</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'three'</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s1">'five'</span><span class="p">)],</span>
+</span><span data-line="3"><span class="gp">... </span>    <span class="s1">'world'</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">'zero'</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'one'</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'three'</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s1">'six'</span><span class="p">)]</span>
+</span><span data-line="4"><span class="gp">... </span><span class="p">}</span>
+</span><span data-line="5"><span class="gp">&gt;&gt;&gt; </span><span class="n">streams_items</span> <span class="o">=</span> <span class="n">MergedStreams</span><span class="p">(</span><span class="n">streams_map</span><span class="p">)</span>
+</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">streams_items</span><span class="p">)</span>
+</span><span data-line="7"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+</span><span data-line="8"><span class="go">[('world', (0, 'zero')),</span>
+</span><span data-line="9"><span class="go"> ('world', (1, 'one')),</span>
+</span><span data-line="10"><span class="go"> ('hello', (2, 'two')),</span>
+</span><span data-line="11"><span class="go"> ('hello', (3, 'three')),</span>
+</span><span data-line="12"><span class="go"> ('world', (3, 'three')),</span>
+</span><span data-line="13"><span class="go"> ('hello', (5, 'five')),</span>
+</span><span data-line="14"><span class="go"> ('world', (6, 'six'))]</span>
+</span></pre></div>
+</div>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="creek.multi_streams.SortKeys">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">creek.multi_streams.</span></span><span class="sig-name descname"><span class="pre">SortKeys</span></span><a class="reference internal" href="../_modules/creek/multi_streams.html#SortKeys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.multi_streams.SortKeys" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A few <code class="docutils literal notranslate"><span class="pre">itemgetter</span></code> sort keys, exposed as staticmethods.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.multi_streams.multi_stream_items">
+<span class="sig-prename descclassname"><span class="pre">creek.multi_streams.</span></span><span class="sig-name descname"><span class="pre">multi_stream_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">streams_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/multi_streams.html#multi_stream_items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.multi_streams.multi_stream_items" title="Link to this definition">#</a></dt>
+<dd><p>Provides a iterable of (k1, v1_1), (k1, v1_2), …</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">streams_map</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'hello'</span><span class="p">:</span> <span class="s1">'abc'</span><span class="p">,</span> <span class="s1">'world'</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]}</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">hello_items</span><span class="p">,</span> <span class="n">world_items</span> <span class="o">=</span> <span class="n">multi_stream_items</span><span class="p">(</span><span class="n">streams_map</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">hello_items</span><span class="p">)</span>
+</span><span data-line="4"><span class="go">[('hello', 'a'), ('hello', 'b'), ('hello', 'c')]</span>
+</span><span data-line="5"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">world_items</span><span class="p">)</span>
+</span><span data-line="6"><span class="go">[('world', 1), ('world', 2)]</span>
+</span></pre></div>
+</div>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.multi_streams.staticmethods">
+<span class="sig-prename descclassname"><span class="pre">creek.multi_streams.</span></span><span class="sig-name descname"><span class="pre">staticmethods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_trans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;class</span> <span class="pre">'staticmethod'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#creek.multi_streams.staticmethods" title="Link to this definition">#</a></dt>
+<dd><p>Applies method_trans to all the methods of <code class="docutils literal notranslate"><span class="pre">cls</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">staticmethods</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">transform_methods</span><span class="p">,</span> <span class="n">method_trans</span><span class="o">=</span><span class="nb">staticmethod</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>Now staticmethods is a class decorator that can be used to make all methods
+be defined as staticmethods in bulk</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="nd">@staticmethods</span>
+</span><span data-line="2"><span class="gp">... </span><span class="k">class</span><span class="w"> </span><span class="nc">C</span><span class="p">:</span>
+</span><span data-line="3"><span class="gp">... </span>    <span class="n">foo</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span data-line="4"><span class="gp">... </span>    <span class="n">bar</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span> <span class="o">*</span> <span class="mi">2</span>
+</span><span data-line="5"><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">C</span><span class="p">()</span>
+</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">foo</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+</span><span data-line="7"><span class="go">7</span>
+</span><span data-line="8"><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+</span><span data-line="9"><span class="go">12</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.multi_streams.transform_methods">
+<span class="sig-prename descclassname"><span class="pre">creek.multi_streams.</span></span><span class="sig-name descname"><span class="pre">transform_methods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_trans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;class</span> <span class="pre">'staticmethod'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/multi_streams.html#transform_methods"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.multi_streams.transform_methods" title="Link to this definition">#</a></dt>
+<dd><p>Applies method_trans to all the methods of <code class="docutils literal notranslate"><span class="pre">cls</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">staticmethods</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">transform_methods</span><span class="p">,</span> <span class="n">method_trans</span><span class="o">=</span><span class="nb">staticmethod</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>Now staticmethods is a class decorator that can be used to make all methods
+be defined as staticmethods in bulk</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="nd">@staticmethods</span>
+</span><span data-line="2"><span class="gp">... </span><span class="k">class</span><span class="w"> </span><span class="nc">C</span><span class="p">:</span>
+</span><span data-line="3"><span class="gp">... </span>    <span class="n">foo</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span data-line="4"><span class="gp">... </span>    <span class="n">bar</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span> <span class="o">*</span> <span class="mi">2</span>
+</span><span data-line="5"><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">C</span><span class="p">()</span>
+</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">foo</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+</span><span data-line="7"><span class="go">7</span>
+</span><span data-line="8"><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+</span><span data-line="9"><span class="go">12</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="creek.labeling.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">creek.labeling</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="creek.tools.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">creek.tools</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright">
+  <p>
+    Made with
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+  <a href="https://github.com/i2mint/creek" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../_static/documentation_options.js?v=2b6ce006"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=fd10adb8"></script>
+      <script src="../_static/shibuya.js?v=50760d75"></script></body>
+</html>

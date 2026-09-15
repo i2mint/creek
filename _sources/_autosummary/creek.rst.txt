@@ -1,0 +1,19 @@
+﻿creek
+=====
+
+.. automodule:: creek
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   automatas
+   base
+   infinite_sequence
+   labeling
+   multi_streams
+   tools
+   util

@@ -1,0 +1,12 @@
+creek.base
+==========
+
+.. automodule:: creek.base
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Creek
+   

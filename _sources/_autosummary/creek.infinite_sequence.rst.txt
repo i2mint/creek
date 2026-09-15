@@ -1,0 +1,39 @@
+creek.infinite\_sequence
+========================
+
+.. automodule:: creek.infinite_sequence
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      absolute_item
+      asis
+      consume
+      new_type
+      none_safe_addition
+      shift_slice
+      simple_interval_relationship
+      slice_args
+      validate_interval
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BufferedGetter
+      ExceptionRaiserCallbackMixin
+      IndexedBuffer
+      InfiniteSeq
+      Relations
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      NotDuringError
+      OverlapsFutureError
+      OverlapsPastError
+      RelationNotHandledError
+   

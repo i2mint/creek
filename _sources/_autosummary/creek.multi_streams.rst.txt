@@ -1,0 +1,20 @@
+creek.multi\_streams
+====================
+
+.. automodule:: creek.multi_streams
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      multi_stream_items
+      transform_methods
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MergedStreams
+      SortKeys
+   

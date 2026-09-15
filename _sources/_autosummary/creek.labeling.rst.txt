@@ -1,0 +1,21 @@
+creek.labeling
+==============
+
+.. automodule:: creek.labeling
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      label_element
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DictLabeledElement
+      LabeledElement
+      ListLabeledElement
+      SetLabeledElement
+   

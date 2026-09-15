@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="jade" data-content_root="../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>creek.util - creek</title><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="creek.tools" href="creek.tools.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d88b86f9" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link media="print" rel="stylesheet" type="text/css" href="../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="creek.util"/>
+    <meta name="twitter:card" content="summary"/>
+  
+<link rel="alternate" type="text/markdown" href="creek.util.html.md">
+<link rel="describedby" href="../llms.txt" type="text/markdown">
+</head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../index.html">
+      
+      
+      <strong>creek</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/i2mint/creek" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="creek.html">creek</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="creek.automatas.html">creek.automatas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.base.html">creek.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.infinite_sequence.html">creek.infinite_sequence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.labeling.html">creek.labeling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.multi_streams.html">creek.multi_streams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.tools.html">creek.tools</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">creek.util</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#creek.util.CursorFunc"><code class="docutils literal notranslate"><span class="pre">CursorFunc</span></code></a></li>
+<li><a class="reference internal" href="#creek.util.IterableType"><code class="docutils literal notranslate"><span class="pre">IterableType</span></code></a></li>
+<li><a class="reference internal" href="#creek.util.IteratorExit"><code class="docutils literal notranslate"><span class="pre">IteratorExit</span></code></a></li>
+<li><a class="reference internal" href="#creek.util.IteratorType"><code class="docutils literal notranslate"><span class="pre">IteratorType</span></code></a></li>
+<li><a class="reference internal" href="#creek.util.Pipe"><code class="docutils literal notranslate"><span class="pre">Pipe</span></code></a></li>
+<li><a class="reference internal" href="#creek.util.PreIter"><code class="docutils literal notranslate"><span class="pre">PreIter</span></code></a><ul>
+<li><a class="reference internal" href="#creek.util.PreIter.skip_items"><code class="docutils literal notranslate"><span class="pre">PreIter.skip_items()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#creek.util.cls_wrap"><code class="docutils literal notranslate"><span class="pre">cls_wrap()</span></code></a></li>
+<li><a class="reference internal" href="#creek.util.cursor_to_iterator"><code class="docutils literal notranslate"><span class="pre">cursor_to_iterator()</span></code></a></li>
+<li><a class="reference internal" href="#creek.util.identity_func"><code class="docutils literal notranslate"><span class="pre">identity_func()</span></code></a></li>
+<li><a class="reference internal" href="#creek.util.iterable_to_cursor"><code class="docutils literal notranslate"><span class="pre">iterable_to_cursor()</span></code></a></li>
+<li><a class="reference internal" href="#creek.util.iterable_to_iterator"><code class="docutils literal notranslate"><span class="pre">iterable_to_iterator()</span></code></a></li>
+<li><a class="reference internal" href="#creek.util.iterate_skipping_errors"><code class="docutils literal notranslate"><span class="pre">iterate_skipping_errors()</span></code></a></li>
+<li><a class="reference internal" href="#creek.util.iterate_until_exception"><code class="docutils literal notranslate"><span class="pre">iterate_until_exception()</span></code></a></li>
+<li><a class="reference internal" href="#creek.util.iterator_to_cursor"><code class="docutils literal notranslate"><span class="pre">iterator_to_cursor()</span></code></a></li>
+<li><a class="reference internal" href="#creek.util.iterize"><code class="docutils literal notranslate"><span class="pre">iterize()</span></code></a></li>
+<li><a class="reference internal" href="#creek.util.static_identity_method"><code class="docutils literal notranslate"><span class="pre">static_identity_method()</span></code></a></li>
+<li><a class="reference internal" href="#creek.util.stream_util"><code class="docutils literal notranslate"><span class="pre">stream_util</span></code></a><ul>
+<li><a class="reference internal" href="#creek.util.stream_util.always_true"><code class="docutils literal notranslate"><span class="pre">stream_util.always_true()</span></code></a></li>
+<li><a class="reference internal" href="#creek.util.stream_util.do_nothing"><code class="docutils literal notranslate"><span class="pre">stream_util.do_nothing()</span></code></a></li>
+<li><a class="reference internal" href="#creek.util.stream_util.rewind"><code class="docutils literal notranslate"><span class="pre">stream_util.rewind()</span></code></a></li>
+<li><a class="reference internal" href="#creek.util.stream_util.skip_lines"><code class="docutils literal notranslate"><span class="pre">stream_util.skip_lines()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#creek.util.to_iterator"><code class="docutils literal notranslate"><span class="pre">to_iterator()</span></code></a></li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">creek</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../api.html"><span itemprop="name">API reference</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="creek.html"><span itemprop="name">creek</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="3" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">creek.util</strong>
+        <meta itemprop="position" content="4" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue dark-code" role="main">
+          <section id="module-creek.util">
+<span id="creek-util"></span><h1>creek.util<a class="headerlink" href="#module-creek.util" title="Link to this heading">#</a></h1>
+<p>Iterator, cursor and function-composition utilities used across creek.</p>
+<p>Main entry points:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">iterize</span></code>: turn an <code class="docutils literal notranslate"><span class="pre">In</span> <span class="pre">-&gt;</span> <span class="pre">Out</span></code> function into an <code class="docutils literal notranslate"><span class="pre">Iterator[In]</span> <span class="pre">-&gt;</span> <span class="pre">Iterator[Out]</span></code> one</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Pipe</span></code>: compose functions into one callable</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">iterate_skipping_errors</span></code>: iterate, skipping (and optionally reporting) exceptions</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">to_iterator,</span> <span class="pre">cursor_to_iterator,</span> <span class="pre">iterator_to_cursor</span></code>: convert between iterables, iterators and argument-less “cursor” functions</p></li>
+</ul>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">creek.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">iterize</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">iterize</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">upper</span><span class="p">)([</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">]))</span>
+</span><span data-line="3"><span class="go">['A', 'B']</span>
+</span></pre></div>
+</div>
+<p class="rubric">Functions</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.util.cls_wrap" title="creek.util.cls_wrap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cls_wrap</span></code></a>(cls, obj)</p></td>
+<td><p>Wrap <code class="docutils literal notranslate"><span class="pre">obj</span></code> in <code class="docutils literal notranslate"><span class="pre">cls</span></code>: a subclass wrapping instances at construction if <code class="docutils literal notranslate"><span class="pre">obj</span></code> is a class, else <code class="docutils literal notranslate"><span class="pre">cls(obj)</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.util.cursor_to_iterator" title="creek.util.cursor_to_iterator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cursor_to_iterator</span></code></a>(cursor[, sentinel])</p></td>
+<td><p>Get an iterator from a cursor function.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.util.identity_func" title="creek.util.identity_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">identity_func</span></code></a>(x)</p></td>
+<td><p>Return <code class="docutils literal notranslate"><span class="pre">x</span></code> unchanged.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.util.iterable_to_cursor" title="creek.util.iterable_to_cursor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iterable_to_cursor</span></code></a>(iterable)</p></td>
+<td><p>Get a cursor function from an iterable.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.util.iterable_to_iterator" title="creek.util.iterable_to_iterator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iterable_to_iterator</span></code></a>(iterable[, sentinel])</p></td>
+<td><p>Return <code class="docutils literal notranslate"><span class="pre">iter(iterable)</span></code>, or, given a sentinel, an iterator stopping just before that value.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.util.iterate_skipping_errors" title="creek.util.iterate_skipping_errors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iterate_skipping_errors</span></code></a>(g[, error_callback, ...])</p></td>
+<td><p>Iterate over a generator, skipping errors and calling an error callback if provided.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.util.iterate_until_exception" title="creek.util.iterate_until_exception"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iterate_until_exception</span></code></a>(iterator[, ...])</p></td>
+<td><p>Call <code class="docutils literal notranslate"><span class="pre">next</span></code> on <code class="docutils literal notranslate"><span class="pre">iterator</span></code> until one of <code class="docutils literal notranslate"><span class="pre">interrupt_exceptions</span></code> is raised, then print <code class="docutils literal notranslate"><span class="pre">ending</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.util.iterator_to_cursor" title="creek.util.iterator_to_cursor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iterator_to_cursor</span></code></a>(iterator[, default])</p></td>
+<td><p>Get a cursor function for the input iterator.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.util.iterize" title="creek.util.iterize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iterize</span></code></a>(func[, name])</p></td>
+<td><p>From an In-&gt;Out function, makes a Iterator[In]-&gt;Itertor[Out] function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.util.static_identity_method" title="creek.util.static_identity_method"><code class="xref py py-obj docutils literal notranslate"><span class="pre">static_identity_method</span></code></a>(x)</p></td>
+<td><p>Return <code class="docutils literal notranslate"><span class="pre">x</span></code> unchanged.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.util.to_iterator" title="creek.util.to_iterator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_iterator</span></code></a>()</p></td>
+<td><p>Get an iterator from an iterable or a cursor function</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Classes</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.util.CursorFunc" title="creek.util.CursorFunc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CursorFunc</span></code></a>(*args, **kwargs)</p></td>
+<td><p>An argument-less function returning an iterator's values</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.util.IterableType" title="creek.util.IterableType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IterableType</span></code></a>(*args, **kwargs)</p></td>
+<td><p>An iterable type that can actually be used in singledispatch</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.util.IteratorType" title="creek.util.IteratorType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IteratorType</span></code></a>(*args, **kwargs)</p></td>
+<td><p>An iterator type that can actually be used in singledispatch</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.util.Pipe" title="creek.util.Pipe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Pipe</span></code></a>(*funcs, **named_funcs)</p></td>
+<td><p>Simple function composition.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.util.PreIter" title="creek.util.PreIter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PreIter</span></code></a>()</p></td>
+<td><p>Namespace holding <code class="docutils literal notranslate"><span class="pre">skip_items</span></code>, a <code class="docutils literal notranslate"><span class="pre">pre_iter</span></code> that skips the first <code class="docutils literal notranslate"><span class="pre">n</span></code> items.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.util.stream_util" title="creek.util.stream_util"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stream_util</span></code></a>()</p></td>
+<td><p>A namespace of small stream helpers.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Exceptions</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.util.IteratorExit" title="creek.util.IteratorExit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IteratorExit</span></code></a></p></td>
+<td><p>Raised when an iterator should quit being iterated on, signaling this event any process that cares to catch the signal.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="creek.util.CursorFunc">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">CursorFunc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/util.html#CursorFunc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.CursorFunc" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></a></p>
+<p>An argument-less function returning an iterator’s values</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="creek.util.IterableType">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">IterableType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/util.html#IterableType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.IterableType" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></a></p>
+<p>An iterable type that can actually be used in singledispatch</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">IterableType</span><span class="p">)</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">IterableType</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="creek.util.IteratorExit">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">IteratorExit</span></span><a class="reference internal" href="../_modules/creek/util.html#IteratorExit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.IteratorExit" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#BaseException" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseException</span></code></a></p>
+<p>Raised when an iterator should quit being iterated on, signaling this event
+any process that cares to catch the signal.
+We chose to inherit directly from <code class="docutils literal notranslate"><span class="pre">BaseException</span></code> instead of <code class="docutils literal notranslate"><span class="pre">Exception</span></code>
+for the same reason that <code class="docutils literal notranslate"><span class="pre">GeneratorExit</span></code> does: Because it’s not technically
+an error.</p>
+<p>See: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#GeneratorExit">https://docs.python.org/3/library/exceptions.html#GeneratorExit</a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="creek.util.IteratorType">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">IteratorType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/util.html#IteratorType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.IteratorType" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></a></p>
+<p>An iterator type that can actually be used in singledispatch</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="n">IteratorType</span><span class="p">)</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">IteratorType</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="creek.util.Pipe">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">Pipe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">funcs</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">named_funcs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/util.html#Pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.Pipe" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Simple function composition. That is, gives you a callable that implements input -&gt; f_1 -&gt; … -&gt; f_n -&gt; output.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+</span><span data-line="2"><span class="gp">... </span>    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">Pipe</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"x: </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">"</span><span class="p">))</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span><span data-line="5"><span class="go">x: 5</span>
+</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span><span data-line="7"><span class="go">2</span>
+</span></pre></div>
+</div>
+<p>You can name functions, but this would just be for documentation purposes.
+The names are completely ignored.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Pipe</span><span class="p">(</span>
+</span><span data-line="2"><span class="gp">... </span>    <span class="n">add_numbers</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span>
+</span><span data-line="3"><span class="gp">... </span>    <span class="n">multiply_by_2</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+</span><span data-line="4"><span class="gp">... </span>    <span class="n">stringify</span> <span class="o">=</span> <span class="nb">str</span>
+</span><span data-line="5"><span class="gp">... </span><span class="p">)</span>
+</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span><span data-line="7"><span class="go">'10'</span>
+</span><span data-line="8"><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+</span><span data-line="9"><span class="go">3</span>
+</span></pre></div>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Pipe instances don’t have a __name__ etc. So some expectations of normal functions are not met.</p></li>
+<li><p>Pipe instance are pickalable (as long as the functions that compose them are)</p></li>
+</ul>
+<p>You can specify a single functions:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">Pipe</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)(</span><span class="mi">2</span><span class="p">)</span>
+</span><span data-line="2"><span class="go">3</span>
+</span></pre></div>
+</div>
+<p>but</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">Pipe</span><span class="p">()</span>
+</span><span data-line="2"><span class="gt">Traceback (most recent call last):</span>
+</span><span data-line="3"><span class="w">  </span><span class="c">...</span>
+</span><span data-line="4"><span class="gr">ValueError</span>: <span class="n">You need to specify at least one function!</span>
+</span></pre></div>
+</div>
+<p>You can specify an instance name and/or doc with the special (reserved) argument
+names <code class="docutils literal notranslate"><span class="pre">__name__</span></code> and <code class="docutils literal notranslate"><span class="pre">__doc__</span></code> (which therefore can’t be used as function names):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">Pipe</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="n">add_it</span><span class="o">=</span><span class="nb">sum</span><span class="p">,</span> <span class="vm">__name__</span><span class="o">=</span><span class="s1">'map_and_sum'</span><span class="p">,</span> <span class="vm">__doc__</span><span class="o">=</span><span class="s1">'Apply func and add'</span><span class="p">)</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">10</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+</span><span data-line="3"><span class="go">60</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="vm">__name__</span>
+</span><span data-line="5"><span class="go">'map_and_sum'</span>
+</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="vm">__doc__</span>
+</span><span data-line="7"><span class="go">'Apply func and add'</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="creek.util.PreIter">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">PreIter</span></span><a class="reference internal" href="../_modules/creek/util.html#PreIter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.PreIter" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Namespace holding <code class="docutils literal notranslate"><span class="pre">skip_items</span></code>, a <code class="docutils literal notranslate"><span class="pre">pre_iter</span></code> that skips the first <code class="docutils literal notranslate"><span class="pre">n</span></code> items.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="creek.util.PreIter.skip_items">
+<span class="sig-name descname"><span class="pre">skip_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/util.html#PreIter.skip_items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.PreIter.skip_items" title="Link to this definition">#</a></dt>
+<dd><p>Skip the first <code class="docutils literal notranslate"><span class="pre">n</span></code> items of <code class="docutils literal notranslate"><span class="pre">instance</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.util.cls_wrap">
+<span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">cls_wrap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/util.html#cls_wrap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.cls_wrap" title="Link to this definition">#</a></dt>
+<dd><p>Wrap <code class="docutils literal notranslate"><span class="pre">obj</span></code> in <code class="docutils literal notranslate"><span class="pre">cls</span></code>: a subclass wrapping instances at construction if <code class="docutils literal notranslate"><span class="pre">obj</span></code> is a class, else <code class="docutils literal notranslate"><span class="pre">cls(obj)</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.util.cursor_to_iterator">
+<span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">cursor_to_iterator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sentinel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;creek.util.no_sentinel</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/util.html#cursor_to_iterator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.cursor_to_iterator" title="Link to this definition">#</a></dt>
+<dd><p>Get an iterator from a cursor function.</p>
+<p>A cursor function is a callable that you call (without arguments) to get items of
+data one by one.</p>
+<p>Sometimes, especially in live io contexts, that’s the kind interface you’re given
+to consume a stream.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="fm">__next__</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>If you want to consume your stream as an iterator instead, use <code class="docutils literal notranslate"><span class="pre">cursor_to_iterator</span></code>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span> <span class="o">=</span> <span class="n">cursor_to_iterator</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
+</span><span data-line="4"><span class="go">[1, 2, 3]</span>
+</span></pre></div>
+</div>
+<p>If you want your iterator to stop (without a fuss) as soon as the cursor returns a
+particular element (called a sentinel), say it:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="fm">__next__</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span> <span class="o">=</span> <span class="n">cursor_to_iterator</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="nb">sentinel</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
+</span><span data-line="4"><span class="go">[1, 2]</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.util.identity_func">
+<span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">identity_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/util.html#identity_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.identity_func" title="Link to this definition">#</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">x</span></code> unchanged.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.util.iterable_to_cursor">
+<span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">iterable_to_cursor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/util.html#iterable_to_cursor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.iterable_to_cursor" title="Link to this definition">#</a></dt>
+<dd><p>Get a cursor function from an iterable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#creek.util.CursorFunc" title="creek.util.CursorFunc"><code class="xref py py-class docutils literal notranslate"><span class="pre">CursorFunc</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.util.iterable_to_iterator">
+<span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">iterable_to_iterator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sentinel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;creek.util.no_sentinel</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/util.html#iterable_to_iterator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.iterable_to_iterator" title="Link to this definition">#</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">iter(iterable)</span></code>, or, given a sentinel, an iterator stopping just before that value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">iterable</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span> <span class="o">=</span> <span class="n">iterable_to_iterator</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">)</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span> <span class="o">==</span> <span class="n">iterable</span>
+</span></pre></div>
+</div>
+<p>You can also specify a sentinel, which will result in the iterator stoping just
+before it encounters that sentinel value</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">iterable</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span> <span class="o">=</span> <span class="n">iterable_to_iterator</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">)</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
+</span><span data-line="5"><span class="go">[1, 2, 3, 4]</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.util.iterate_skipping_errors">
+<span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">iterate_skipping_errors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caught_exceptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(&lt;class</span> <span class="pre">'Exception'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/util.html#iterate_skipping_errors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.iterate_skipping_errors" title="Link to this definition">#</a></dt>
+<dd><p>Iterate over a generator, skipping errors and calling an error callback if provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>g</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a></span>) – The generator to iterate over</p></li>
+<li><p><strong>error_callback</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#BaseException" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseException</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>] | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – A callback to call when an error is encountered.</p></li>
+<li><p><strong>caught_exceptions</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#BaseException" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseException</span></code></a>]</span>) – The exceptions to catch and skip.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generator</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A generator that yields the values of the original generator,
+skipping errors.</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">iterate_skipping_errors</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])))</span>
+</span><span data-line="2"><span class="go">[1.0, 0.5]</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">iterate_skipping_errors</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span> <span class="nb">print</span><span class="p">))</span>
+</span><span data-line="4"><span class="go">division by zero</span>
+</span><span data-line="5"><span class="go">[1.0, 0.5]</span>
+</span></pre></div>
+</div>
+<p>See <a class="reference external" href="https://github.com/i2mint/creek/issues/6">https://github.com/i2mint/creek/issues/6</a> for more info.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.util.iterate_until_exception">
+<span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">iterate_until_exception</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interrupt_exceptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(&lt;class</span> <span class="pre">'StopIteration'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'creek.util.IteratorExit'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'KeyboardInterrupt'&gt;)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/util.html#iterate_until_exception"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.iterate_until_exception" title="Link to this definition">#</a></dt>
+<dd><p>Call <code class="docutils literal notranslate"><span class="pre">next</span></code> on <code class="docutils literal notranslate"><span class="pre">iterator</span></code> until one of <code class="docutils literal notranslate"><span class="pre">interrupt_exceptions</span></code> is raised, then print <code class="docutils literal notranslate"><span class="pre">ending</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.util.iterator_to_cursor">
+<span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">iterator_to_cursor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;creek.util.no_default</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/util.html#iterator_to_cursor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.iterator_to_cursor" title="Link to this definition">#</a></dt>
+<dd><p>Get a cursor function for the input iterator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#creek.util.CursorFunc" title="creek.util.CursorFunc"><code class="xref py py-class docutils literal notranslate"><span class="pre">CursorFunc</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span> <span class="o">=</span> <span class="n">iterator_to_cursor</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">cursor</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span>
+</span><span data-line="5"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">cursor_to_iterator</span><span class="p">(</span><span class="n">cursor</span><span class="p">))</span> <span class="o">==</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</span></pre></div>
+</div>
+<p>Note how we consumed the cursor till the end; by using cursor_to_iterator.
+Indeed, <code class="docutils literal notranslate"><span class="pre">list(iter(cursor))</span></code> wouldn’t have worked since a cursor isn’t a iterator,
+but a callable to get the items an the iterator would give you.</p>
+<p>You can specify a default. The default has the same role that it has for the
+<code class="docutils literal notranslate"><span class="pre">next</span></code> function: It makes the cursor function return that default when the iterator
+has been “consumed” (i.e. would raise a <code class="docutils literal notranslate"><span class="pre">StopIteration</span></code>).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span> <span class="o">=</span> <span class="n">iterator_to_cursor</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="p">()</span>
+</span><span data-line="5"><span class="go">1</span>
+</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span><span class="p">()</span>
+</span><span data-line="7"><span class="go">2</span>
+</span></pre></div>
+</div>
+<p>And then…</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">cursor</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">cursor</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span>
+</span></pre></div>
+</div>
+<p>forever.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.util.iterize">
+<span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">iterize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/util.html#iterize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.iterize" title="Link to this definition">#</a></dt>
+<dd><p>From an In-&gt;Out function, makes a Iterator[In]-&gt;Itertor[Out] function.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">10</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span><span data-line="3"><span class="go">20</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="n">iterized_f</span> <span class="o">=</span> <span class="n">iterize</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span><span data-line="5"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">iterized_f</span><span class="p">(</span><span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])))</span>
+</span><span data-line="6"><span class="go">[10, 20, 30]</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.util.static_identity_method">
+<span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">static_identity_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#creek.util.static_identity_method" title="Link to this definition">#</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">x</span></code> unchanged.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="creek.util.stream_util">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">stream_util</span></span><a class="reference internal" href="../_modules/creek/util.html#stream_util"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.stream_util" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A namespace of small stream helpers.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="creek.util.stream_util.always_true">
+<span class="sig-name descname"><span class="pre">always_true</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/util.html#stream_util.always_true"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.stream_util.always_true" title="Link to this definition">#</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="creek.util.stream_util.do_nothing">
+<span class="sig-name descname"><span class="pre">do_nothing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/util.html#stream_util.do_nothing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.stream_util.do_nothing" title="Link to this definition">#</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="creek.util.stream_util.rewind">
+<span class="sig-name descname"><span class="pre">rewind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/util.html#stream_util.rewind"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.stream_util.rewind" title="Link to this definition">#</a></dt>
+<dd><p>Seek <code class="docutils literal notranslate"><span class="pre">instance</span></code> back to 0.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="creek.util.stream_util.skip_lines">
+<span class="sig-name descname"><span class="pre">skip_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_lines_to_skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/util.html#stream_util.skip_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.stream_util.skip_lines" title="Link to this definition">#</a></dt>
+<dd><p>Seek <code class="docutils literal notranslate"><span class="pre">instance</span></code> back to 0 (<code class="docutils literal notranslate"><span class="pre">n_lines_to_skip</span></code> is currently ignored).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.util.to_iterator">
+<span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">to_iterator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sentinel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;creek.util.no_sentinel</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/util.html#to_iterator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.util.to_iterator" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">to_iterator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sentinel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;creek.util.no_sentinel</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span></dt>
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">creek.util.</span></span><span class="sig-name descname"><span class="pre">to_iterator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sentinel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;creek.util.no_sentinel</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Get an iterator from an iterable or a cursor function</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">it</span> <span class="o">=</span> <span class="n">to_iterator</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">)</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+</span><span data-line="5"><span class="go">[1, 2, 3]</span>
+</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+</span><span data-line="7"><span class="go">[]</span>
+</span></pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="fm">__next__</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">CursorFunc</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">it</span> <span class="o">=</span> <span class="n">to_iterator</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">)</span>
+</span><span data-line="5"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+</span><span data-line="6"><span class="go">[1, 2, 3]</span>
+</span><span data-line="7"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+</span><span data-line="8"><span class="go">[]</span>
+</span></pre></div>
+</div>
+<p>You can use sentinels too</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="nb">sentinel</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
+</span><span data-line="2"><span class="go">[1, 2]</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">cursor</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span><span class="o">.</span><span class="fm">__next__</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="nb">sentinel</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+</span><span data-line="5"><span class="go">[1, 2, 3]</span>
+</span></pre></div>
+</div>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="creek.tools.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">creek.tools</div></div>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright">
+  <p>
+    Made with
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+  <a href="https://github.com/i2mint/creek" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../_static/documentation_options.js?v=2b6ce006"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=fd10adb8"></script>
+      <script src="../_static/shibuya.js?v=50760d75"></script></body>
+</html>

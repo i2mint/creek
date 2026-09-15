@@ -1,243 +1,279 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html lang="en" data-accent-color="jade" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to creek’s documentation! &mdash; creek 0.1.34 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>creek</title><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="API reference" href="api.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d88b86f9" />
+    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="creek"/>
+    <meta name="twitter:card" content="summary"/>
   
-      <script src="_static/jquery.js?v=5d32c60e"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=8f14641f"></script>
+<link rel="alternate" type="text/markdown" href="index.html.md">
+<link rel="describedby" href="llms.txt" type="text/markdown">
+</head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="#">
+      
+      
+      <strong>creek</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/i2mint/creek" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/creek.html">creek</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/creek.automatas.html">creek.automatas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/creek.base.html">creek.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/creek.infinite_sequence.html">creek.infinite_sequence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/creek.labeling.html">creek.labeling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/creek.multi_streams.html">creek.multi_streams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/creek.tools.html">creek.tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/creek.util.html">creek.util</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#for-ai-agents">For AI agents</a></li>
+<li><a class="reference internal" href="#the-creek-layers">The Creek layers</a></li>
+<li><a class="reference internal" href="#beyond-creek">Beyond Creek</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="#"><span itemprop="name">creek</span></a>
+        <meta itemprop="position" content="1" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue dark-code" role="main">
+          <!-- generated by epythet -->
+<section id="creek">
+<h1>creek<a class="headerlink" href="#creek" title="Link to this heading">#</a></h1>
+<p>A simple facade for streams: wrap an iterable, layer transformations on it, and read unbounded streams as if they were lists.</p>
+<p>To install: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">creek</span></code></p>
+<p>The smallest complete example: a <code class="docutils literal notranslate"><span class="pre">Creek</span></code> subclass that parses each line of a file-like stream.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">creek</span><span class="w"> </span><span class="kn">import</span> <span class="n">Creek</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">CsvCreek</span><span class="p">(</span><span class="n">Creek</span><span class="p">):</span>
+</span><span data-line="4"><span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">data_to_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+</span><span data-line="5"><span class="gp">... </span>        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)]</span>
+</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="n">stream</span> <span class="o">=</span> <span class="n">CsvCreek</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="s1">'a, b, c</span><span class="se">\n</span><span class="s1">1,2, 3</span><span class="se">\n</span><span class="s1">'</span><span class="p">))</span>
+</span><span data-line="7"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+</span><span data-line="8"><span class="go">[['a', 'b', 'c'], ['1', '2', '3']]</span>
+</span><span data-line="9">
+</span></pre></div>
+</div>
+<!-- epythet:agentic-readme:start -->
+<section id="for-ai-agents">
+<h2>For AI agents<a class="headerlink" href="#for-ai-agents" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">creek</span></code> ships tooling for coding agents. If you are one, start here.</p>
+<p><strong>The documentation, machine-readable</strong>: <a class="reference external" href="https://i2mint.github.io/creek/llms.txt"><code class="docutils literal notranslate"><span class="pre">llms.txt</span></code></a> indexes every page; <a class="reference external" href="https://i2mint.github.io/creek/creek.md"><code class="docutils literal notranslate"><span class="pre">creek.md</span></code></a> is the whole documentation in one file; every page has a <code class="docutils literal notranslate"><span class="pre">.md</span></code> twin; <a class="reference external" href="https://i2mint.github.io/creek/objects.inv"><code class="docutils literal notranslate"><span class="pre">objects.inv</span></code></a> maps symbols to URLs.</p>
+<p>If you are a control freak, the rest of this README is written for you, starting at <a class="reference internal" href="#the-creek-layers">The Creek layers</a>.</p>
+<!-- epythet:agentic-readme:end -->
+</section>
+<section id="the-creek-layers">
+<h2>The Creek layers<a class="headerlink" href="#the-creek-layers" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Creek</span></code> base class offers a layer-able wrap of the stream interface. There are three layering methods, <code class="docutils literal notranslate"><span class="pre">pre_iter</span></code>, <code class="docutils literal notranslate"><span class="pre">data_to_obj</span></code> and <code class="docutils literal notranslate"><span class="pre">post_iter</span></code>, each the identity by default. Iterating over a creek is exactly:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_iter</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_to_obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">)))</span>
+</span></pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pre_iter(stream)</span></code>: prepare and/or filter the raw stream (skip a header, enumerate lines, …)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data_to_obj(item)</span></code>: transform each item the stream yields</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">post_iter(objs)</span></code>: further process or filter the transformed objects</p></li>
+</ul>
+<p>Everything else (<code class="docutils literal notranslate"><span class="pre">seek</span></code>, <code class="docutils literal notranslate"><span class="pre">close</span></code>, the context manager protocol, …) is delegated to the wrapped stream:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">src</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span>
+</span><span data-line="2"><span class="gp">... </span><span class="sd">'''a, b, c</span>
+</span><span data-line="3"><span class="gp">... </span><span class="sd">1,2, 3</span>
+</span><span data-line="4"><span class="gp">... </span><span class="sd">4, 5,6</span>
+</span><span data-line="5"><span class="gp">... </span><span class="sd">'''</span>
+</span><span data-line="6"><span class="gp">... </span><span class="p">)</span>
+</span><span data-line="7"><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">MyCreek</span><span class="p">(</span><span class="n">Creek</span><span class="p">):</span>
+</span><span data-line="8"><span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">data_to_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+</span><span data-line="9"><span class="gp">... </span>        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)]</span>
+</span><span data-line="10"><span class="gp">...</span>
+</span><span data-line="11"><span class="gp">&gt;&gt;&gt; </span><span class="n">stream</span> <span class="o">=</span> <span class="n">MyCreek</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+</span><span data-line="12"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+</span><span data-line="13"><span class="go">[['a', 'b', 'c'], ['1', '2', '3'], ['4', '5', '6']]</span>
+</span><span data-line="14"><span class="gp">&gt;&gt;&gt; </span><span class="n">stream</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># oh!... but we consumed the stream already, so let's go back to the beginning</span>
+</span><span data-line="15"><span class="go">0</span>
+</span><span data-line="16"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+</span><span data-line="17"><span class="go">[['a', 'b', 'c'], ['1', '2', '3'], ['4', '5', '6']]</span>
+</span><span data-line="18"><span class="gp">&gt;&gt;&gt; </span><span class="n">stream</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># rewind again</span>
+</span><span data-line="19"><span class="go">0</span>
+</span><span data-line="20"><span class="gp">&gt;&gt;&gt; </span><span class="nb">next</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+</span><span data-line="21"><span class="go">['a', 'b', 'c']</span>
+</span><span data-line="22"><span class="gp">&gt;&gt;&gt; </span><span class="nb">next</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+</span><span data-line="23"><span class="go">['1', '2', '3']</span>
+</span><span data-line="24">
+</span></pre></div>
+</div>
+<p>Let’s add a filter! There are two kinds you can use: one applied to the line before the data is transformed by <code class="docutils literal notranslate"><span class="pre">data_to_obj</span></code> (in <code class="docutils literal notranslate"><span class="pre">pre_iter</span></code>), and one applied after, to the objects (in <code class="docutils literal notranslate"><span class="pre">post_iter</span></code>).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">src</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span>
+</span><span data-line="2"><span class="gp">... </span><span class="w">    </span><span class="sd">'''a, b, c</span>
+</span><span data-line="3"><span class="gp">... </span><span class="sd">1,2, 3</span>
+</span><span data-line="4"><span class="gp">... </span><span class="sd">4, 5,6</span>
+</span><span data-line="5"><span class="gp">... </span><span class="sd">'''</span><span class="p">)</span>
+</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">MyFilteredCreek</span><span class="p">(</span><span class="n">MyCreek</span><span class="p">):</span>
+</span><span data-line="7"><span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">post_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objs</span><span class="p">):</span>
+</span><span data-line="8"><span class="gp">... </span>        <span class="k">yield from</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">str</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">objs</span><span class="p">)</span>
+</span><span data-line="9"><span class="gp">&gt;&gt;&gt;</span>
+</span><span data-line="10"><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">MyFilteredCreek</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+</span><span data-line="11"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</span><span data-line="12"><span class="go">[['1', '2', '3'], ['4', '5', '6']]</span>
+</span><span data-line="13"><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span data-line="14"><span class="go">0</span>
+</span><span data-line="15"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</span><span data-line="16"><span class="go">[['1', '2', '3'], ['4', '5', '6']]</span>
+</span><span data-line="17"><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span data-line="18"><span class="go">0</span>
+</span><span data-line="19"><span class="gp">&gt;&gt;&gt; </span><span class="nb">next</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</span><span data-line="20"><span class="go">['1', '2', '3']</span>
+</span><span data-line="21">
+</span></pre></div>
+</div>
+<p>Recipes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pre_iter</span></code>: <code class="docutils literal notranslate"><span class="pre">itertools.islice</span></code> to skip header lines</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pre_iter</span></code>: <code class="docutils literal notranslate"><span class="pre">enumerate</span></code> to get line indices in the stream iterator</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pre_iter</span> <span class="pre">=</span> <span class="pre">functools.partial(map,</span> <span class="pre">line_pre_proc_func)</span></code> to preprocess all lines with <code class="docutils literal notranslate"><span class="pre">line_pre_proc_func</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pre_iter</span></code>: <code class="docutils literal notranslate"><span class="pre">functools.partial(filter,</span> <span class="pre">condition)</span></code> to filter before <code class="docutils literal notranslate"><span class="pre">data_to_obj</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">post_iter</span></code>: <code class="docutils literal notranslate"><span class="pre">itertools.chain.from_iterable</span></code> to flatten a chunked/segmented stream</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">post_iter</span></code>: <code class="docutils literal notranslate"><span class="pre">functools.partial(filter,</span> <span class="pre">condition)</span></code> to filter the yielded objects</p></li>
+</ul>
+</section>
+<section id="beyond-creek">
+<h2>Beyond Creek<a class="headerlink" href="#beyond-creek" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">InfiniteSeq</span></code> and <code class="docutils literal notranslate"><span class="pre">IndexedBuffer</span></code> (<code class="docutils literal notranslate"><span class="pre">creek.infinite_sequence</span></code>): list-like <code class="docutils literal notranslate"><span class="pre">s[i:j]</span></code> access to an unbounded stream, through a bounded buffer.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BufferStats</span></code> and <code class="docutils literal notranslate"><span class="pre">Segmenter</span></code> (<code class="docutils literal notranslate"><span class="pre">creek.tools</span></code>): rolling-window statistics and segmentation of a stream.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dynamically_index</span></code> and <code class="docutils literal notranslate"><span class="pre">filter_and_index_stream</span></code> (<code class="docutils literal notranslate"><span class="pre">creek.tools</span></code>): <code class="docutils literal notranslate"><span class="pre">enumerate</span></code> with a custom index rule, and filtered indexing.</p></li>
+</ul>
+</section>
+<section id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Rendered docs: https://i2mint.github.io/creek/</p></li>
+<li><p>The whole API in one Markdown file: https://i2mint.github.io/creek/creek.md</p></li>
+</ul>
+<p class="epythet-aggregates">This documentation as a single file: <a href="creek.md">creek.md</a> (Markdown, for agents).</p>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-09-15 10:07 UTC from <a href="https://github.com/i2mint/creek/commit/7a19d20cee5109a9f298d5ad8ccfba73bc131802">7a19d20</a> (master) · creek 0.1.35 · <a href="about-this-build.html">about this build</a></p>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-next">
+    <a href="api.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">API reference</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright">
+  <p>
+    Made with
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+  <a href="https://github.com/i2mint/creek" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div>
+    </div>
+  </div>
+</footer>
+      <script src="_static/documentation_options.js?v=2b6ce006"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-      <script src="_static/toggleprompt.js?v=d7ede5d2"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="_static/copybutton.js?v=f281be69"></script>
-    <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="creek" href="module_docs/creek.html" /> 
-</head>
-
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="#" class="icon icon-home">
-            creek
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek.html">creek</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/automatas.html">creek.automatas</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/base.html">creek.base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/infinite_sequence.html">creek.infinite_sequence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/labeling.html">creek.labeling</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/multi_streams.html">creek.multi_streams</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/scrap/annotators.html">creek.scrap.annotators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/scrap/async_utils.html">creek.scrap.async_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/scrap/creek_layers.html">creek.scrap.creek_layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/scrap/multi_streams.html">creek.scrap.multi_streams</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/scrap/sequences.html">creek.scrap.sequences</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/tests/automatas.html">creek.tests.automatas</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/tests/labeling.html">creek.tests.labeling</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/tests/test_base.html">creek.tests.test_base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/tests/test_tools.html">creek.tests.test_tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/tools.html">creek.tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/util.html">creek.util</a></li>
-</ul>
-
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">creek</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Welcome to creek’s documentation!</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="welcome-to-creek-s-documentation">
-<h1>Welcome to creek’s documentation!<a class="headerlink" href="#welcome-to-creek-s-documentation" title="Link to this heading"></a></h1>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek.html">creek</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/automatas.html">creek.automatas</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/automatas.html#creek.automatas.BasicAutomata"><code class="docutils literal notranslate"><span class="pre">BasicAutomata</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/automatas.html#creek.automatas.MappingTransitionFunc"><code class="docutils literal notranslate"><span class="pre">MappingTransitionFunc</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/automatas.html#creek.automatas.mapping_to_transition_func"><code class="docutils literal notranslate"><span class="pre">mapping_to_transition_func()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/base.html">creek.base</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/base.html#creek.base.Creek"><code class="docutils literal notranslate"><span class="pre">Creek</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/infinite_sequence.html">creek.infinite_sequence</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.BufferedGetter"><code class="docutils literal notranslate"><span class="pre">BufferedGetter</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.ExceptionRaiserCallbackMixin"><code class="docutils literal notranslate"><span class="pre">ExceptionRaiserCallbackMixin</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.IndexedBuffer"><code class="docutils literal notranslate"><span class="pre">IndexedBuffer</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.InfiniteSeq"><code class="docutils literal notranslate"><span class="pre">InfiniteSeq</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.NotDuringError"><code class="docutils literal notranslate"><span class="pre">NotDuringError</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.OverlapsFutureError"><code class="docutils literal notranslate"><span class="pre">OverlapsFutureError</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.OverlapsPastError"><code class="docutils literal notranslate"><span class="pre">OverlapsPastError</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.RelationNotHandledError"><code class="docutils literal notranslate"><span class="pre">RelationNotHandledError</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.Relations"><code class="docutils literal notranslate"><span class="pre">Relations</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.absolute_item"><code class="docutils literal notranslate"><span class="pre">absolute_item()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.consume"><code class="docutils literal notranslate"><span class="pre">consume()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.none_safe_addition"><code class="docutils literal notranslate"><span class="pre">none_safe_addition()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.simple_interval_relationship"><code class="docutils literal notranslate"><span class="pre">simple_interval_relationship()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/infinite_sequence.html#creek.infinite_sequence.validate_interval"><code class="docutils literal notranslate"><span class="pre">validate_interval()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/labeling.html">creek.labeling</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/labeling.html#creek.labeling.DictLabeledElement"><code class="docutils literal notranslate"><span class="pre">DictLabeledElement</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/labeling.html#creek.labeling.LabeledElement"><code class="docutils literal notranslate"><span class="pre">LabeledElement</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/labeling.html#creek.labeling.ListLabeledElement"><code class="docutils literal notranslate"><span class="pre">ListLabeledElement</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/labeling.html#creek.labeling.SetLabeledElement"><code class="docutils literal notranslate"><span class="pre">SetLabeledElement</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/labeling.html#creek.labeling.label_element"><code class="docutils literal notranslate"><span class="pre">label_element()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/multi_streams.html">creek.multi_streams</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/multi_streams.html#creek.multi_streams.MergedStreams"><code class="docutils literal notranslate"><span class="pre">MergedStreams</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/multi_streams.html#creek.multi_streams.multi_stream_items"><code class="docutils literal notranslate"><span class="pre">multi_stream_items()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/multi_streams.html#creek.multi_streams.staticmethods"><code class="docutils literal notranslate"><span class="pre">staticmethods()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/multi_streams.html#creek.multi_streams.transform_methods"><code class="docutils literal notranslate"><span class="pre">transform_methods()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/scrap/annotators.html">creek.scrap.annotators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/scrap/async_utils.html">creek.scrap.async_utils</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/scrap/async_utils.html#creek.scrap.async_utils.aiter_with_sentinel"><code class="docutils literal notranslate"><span class="pre">aiter_with_sentinel()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/scrap/async_utils.html#creek.scrap.async_utils.iterable_to_iterator"><code class="docutils literal notranslate"><span class="pre">iterable_to_iterator()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/scrap/creek_layers.html">creek.scrap.creek_layers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/scrap/creek_layers.html#wrapper-interfaces">Wrapper interfaces</a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/scrap/creek_layers.html#creek.scrap.creek_layers.CreekLayer"><code class="docutils literal notranslate"><span class="pre">CreekLayer</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/scrap/multi_streams.html">creek.scrap.multi_streams</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/scrap/multi_streams.html#creek.scrap.multi_streams.IntervalSlicer"><code class="docutils literal notranslate"><span class="pre">IntervalSlicer</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/scrap/multi_streams.html#creek.scrap.multi_streams.MyType"><code class="docutils literal notranslate"><span class="pre">MyType()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/scrap/sequences.html">creek.scrap.sequences</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/scrap/sequences.html#creek.scrap.sequences.Seq"><code class="docutils literal notranslate"><span class="pre">Seq</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/tests/automatas.html">creek.tests.automatas</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/tests/infinite_sequence.html">creek.tests.infinite_sequence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/tests/labeling.html">creek.tests.labeling</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/tests/test_base.html">creek.tests.test_base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/tests/test_tools.html">creek.tests.test_tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/tools.html">creek.tools</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/tools.html#creek.tools.BufferStats"><code class="docutils literal notranslate"><span class="pre">BufferStats</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/tools.html#creek.tools.DynamicIndexer"><code class="docutils literal notranslate"><span class="pre">DynamicIndexer</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/tools.html#creek.tools.Segmenter"><code class="docutils literal notranslate"><span class="pre">Segmenter</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/tools.html#creek.tools.alt_dynamically_index"><code class="docutils literal notranslate"><span class="pre">alt_dynamically_index()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/tools.html#creek.tools.apply_and_fanout"><code class="docutils literal notranslate"><span class="pre">apply_and_fanout()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/tools.html#creek.tools.apply_func_to_index"><code class="docutils literal notranslate"><span class="pre">apply_func_to_index()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/tools.html#creek.tools.current_time"><code class="docutils literal notranslate"><span class="pre">current_time()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/tools.html#creek.tools.dynamically_index"><code class="docutils literal notranslate"><span class="pre">dynamically_index()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/tools.html#creek.tools.fanout_and_flatten"><code class="docutils literal notranslate"><span class="pre">fanout_and_flatten()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/tools.html#creek.tools.fanout_and_flatten_dicts"><code class="docutils literal notranslate"><span class="pre">fanout_and_flatten_dicts()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/tools.html#creek.tools.filter_and_index_stream"><code class="docutils literal notranslate"><span class="pre">filter_and_index_stream()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/tools.html#creek.tools.return_buffer_on_stats_condition"><code class="docutils literal notranslate"><span class="pre">return_buffer_on_stats_condition()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/tools.html#creek.tools.segment_overlaps"><code class="docutils literal notranslate"><span class="pre">segment_overlaps()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/creek/util.html">creek.util</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/util.html#creek.util.CursorFunc"><code class="docutils literal notranslate"><span class="pre">CursorFunc</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/util.html#creek.util.IterableType"><code class="docutils literal notranslate"><span class="pre">IterableType</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/util.html#creek.util.IteratorExit"><code class="docutils literal notranslate"><span class="pre">IteratorExit</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/util.html#creek.util.IteratorType"><code class="docutils literal notranslate"><span class="pre">IteratorType</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/util.html#creek.util.Pipe"><code class="docutils literal notranslate"><span class="pre">Pipe</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/util.html#creek.util.cursor_to_iterator"><code class="docutils literal notranslate"><span class="pre">cursor_to_iterator()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/util.html#creek.util.iterable_to_cursor"><code class="docutils literal notranslate"><span class="pre">iterable_to_cursor()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/util.html#creek.util.iterable_to_iterator"><code class="docutils literal notranslate"><span class="pre">iterable_to_iterator()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/util.html#creek.util.iterate_skipping_errors"><code class="docutils literal notranslate"><span class="pre">iterate_skipping_errors()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/util.html#creek.util.iterator_to_cursor"><code class="docutils literal notranslate"><span class="pre">iterator_to_cursor()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/util.html#creek.util.iterize"><code class="docutils literal notranslate"><span class="pre">iterize()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/creek/util.html#creek.util.to_iterator"><code class="docutils literal notranslate"><span class="pre">to_iterator()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</div>
-</section>
-<section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
-</ul>
-<p>Release: 0.1.34</p>
-<p>Last change: May 27, 2026</p>
-</section>
-
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="module_docs/creek.html" class="btn btn-neutral float-right" title="creek" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright NO COPYRIGHT.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
-      </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+      <script src="_static/copybutton.js?v=fd10adb8"></script>
+      <script src="_static/shibuya.js?v=50760d75"></script></body>
 </html>

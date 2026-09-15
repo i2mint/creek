@@ -1,0 +1,33 @@
+creek.tools
+===========
+
+.. automodule:: creek.tools
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      alt_dynamically_index
+      always_true
+      apply_and_fanout
+      apply_func_to_index
+      count_increments
+      current_time
+      dynamically_index
+      fanout_and_flatten
+      fanout_and_flatten_dicts
+      filter_and_index_stream
+      is_not_none
+      return_buffer_on_stats_condition
+      segment_overlaps
+      size_increments
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BufferStats
+      DynamicIndexer
+      Segmenter
+   

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="jade" data-content_root="../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>creek.labeling - creek</title><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="creek.multi_streams" href="creek.multi_streams.html" /><link rel="prev" title="creek.infinite_sequence" href="creek.infinite_sequence.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d88b86f9" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link media="print" rel="stylesheet" type="text/css" href="../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="creek.labeling"/>
+    <meta name="twitter:card" content="summary"/>
+  
+<link rel="alternate" type="text/markdown" href="creek.labeling.html.md">
+<link rel="describedby" href="../llms.txt" type="text/markdown">
+</head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../index.html">
+      
+      
+      <strong>creek</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/i2mint/creek" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="creek.html">creek</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="creek.automatas.html">creek.automatas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.base.html">creek.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.infinite_sequence.html">creek.infinite_sequence</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">creek.labeling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.multi_streams.html">creek.multi_streams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.tools.html">creek.tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.util.html">creek.util</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#creek.labeling.DictLabeledElement"><code class="docutils literal notranslate"><span class="pre">DictLabeledElement</span></code></a><ul>
+<li><a class="reference internal" href="#creek.labeling.DictLabeledElement.add_new_label"><code class="docutils literal notranslate"><span class="pre">DictLabeledElement.add_new_label()</span></code></a></li>
+<li><a class="reference internal" href="#creek.labeling.DictLabeledElement.mk_new_labels_container"><code class="docutils literal notranslate"><span class="pre">DictLabeledElement.mk_new_labels_container</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#creek.labeling.LabeledElement"><code class="docutils literal notranslate"><span class="pre">LabeledElement</span></code></a><ul>
+<li><a class="reference internal" href="#creek.labeling.LabeledElement.add_label"><code class="docutils literal notranslate"><span class="pre">LabeledElement.add_label()</span></code></a></li>
+<li><a class="reference internal" href="#creek.labeling.LabeledElement.add_new_label"><code class="docutils literal notranslate"><span class="pre">LabeledElement.add_new_label()</span></code></a></li>
+<li><a class="reference internal" href="#creek.labeling.LabeledElement.mk_new_labels_container"><code class="docutils literal notranslate"><span class="pre">LabeledElement.mk_new_labels_container()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#creek.labeling.ListLabeledElement"><code class="docutils literal notranslate"><span class="pre">ListLabeledElement</span></code></a><ul>
+<li><a class="reference internal" href="#creek.labeling.ListLabeledElement.add_new_label"><code class="docutils literal notranslate"><span class="pre">ListLabeledElement.add_new_label()</span></code></a></li>
+<li><a class="reference internal" href="#creek.labeling.ListLabeledElement.mk_new_labels_container"><code class="docutils literal notranslate"><span class="pre">ListLabeledElement.mk_new_labels_container</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#creek.labeling.SetLabeledElement"><code class="docutils literal notranslate"><span class="pre">SetLabeledElement</span></code></a><ul>
+<li><a class="reference internal" href="#creek.labeling.SetLabeledElement.add_new_label"><code class="docutils literal notranslate"><span class="pre">SetLabeledElement.add_new_label()</span></code></a></li>
+<li><a class="reference internal" href="#creek.labeling.SetLabeledElement.mk_new_labels_container"><code class="docutils literal notranslate"><span class="pre">SetLabeledElement.mk_new_labels_container</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#creek.labeling.label_element"><code class="docutils literal notranslate"><span class="pre">label_element()</span></code></a></li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">creek</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../api.html"><span itemprop="name">API reference</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="creek.html"><span itemprop="name">creek</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="3" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">creek.labeling</strong>
+        <meta itemprop="position" content="4" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue dark-code" role="main">
+          <section id="module-creek.labeling">
+<span id="creek-labeling"></span><h1>creek.labeling<a class="headerlink" href="#module-creek.labeling" title="Link to this heading">#</a></h1>
+<p>Tools to label/annotate stream elements</p>
+<p>The motivating example is the case of an incoming stream
+that we need to segment, according to the detection of an event.</p>
+<p>For example, take a stream of integers and detect the event “multiple of 5”:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="mi">1</span><span class="o">-&gt;</span><span class="mi">2</span><span class="o">-&gt;</span><span class="mi">3</span><span class="o">-&gt;</span><span class="mi">4</span><span class="o">-&gt;</span><span class="s1">'multiple of 5'</span><span class="o">-&gt;</span><span class="mi">6</span><span class="o">-&gt;</span><span class="mi">7</span><span class="o">-&gt;...</span>
+</span></pre></div>
+</div>
+<p>When the stream is “live”, we don’t want to process it immediately, but instead
+we prefer to annotate it on the fly, by adding some metadata to it.</p>
+<p>The simplest addition of metadata information could look like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="mi">3</span><span class="o">-&gt;</span><span class="mi">4</span><span class="o">-&gt;</span><span class="p">(</span><span class="s1">'multiple of 5'</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="mi">6</span> <span class="o">-&gt;</span> <span class="o">...</span>
+</span></pre></div>
+</div>
+<p>One critique of using  tuples to contain both annotated (here, <code class="docutils literal notranslate"><span class="pre">5</span></code>) and annotation (here, <code class="docutils literal notranslate"><span class="pre">'multiple</span> <span class="pre">of</span> <span class="pre">5'</span></code>)
+is that the semantics aren’t explicit.
+The fact that the original element was annotated the distinction of annotation and annotated is based on an
+implicit convention.
+This is not too much of a problem here, but becomes unwieldy in more complex situations, for example,
+if we want to accommodate for multiple labels.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">LabeledElement</span></code> <code class="docutils literal notranslate"><span class="pre">x</span></code> has an attribute <code class="docutils literal notranslate"><span class="pre">x.element</span></code>,
+and a container of labels <code class="docutils literal notranslate"><span class="pre">x.labels</span></code> (list, set or dict).</p>
+<p>Multiple labels can be used to segment streams into overlapping segments.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="p">(</span><span class="n">group0</span><span class="p">)</span><span class="o">-&gt;</span><span class="p">(</span><span class="n">group0</span><span class="p">)</span><span class="o">-&gt;</span><span class="p">(</span><span class="n">group0</span><span class="p">,</span> <span class="n">group1</span><span class="p">)</span><span class="o">-&gt;</span><span class="p">(</span><span class="n">group0</span><span class="p">,</span> <span class="n">group1</span><span class="p">)</span><span class="o">-&gt;</span> <span class="p">(</span><span class="n">group1</span><span class="p">)</span><span class="o">-&gt;</span><span class="p">(</span><span class="n">group1</span><span class="p">)</span><span class="o">-&gt;...</span>
+</span></pre></div>
+</div>
+<p class="rubric">Functions</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.labeling.label_element" title="creek.labeling.label_element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">label_element</span></code></a>(elem, label, labeled_element_cls)</p></td>
+<td><p>Label <code class="docutils literal notranslate"><span class="pre">element</span></code> with <code class="docutils literal notranslate"><span class="pre">label</span></code> (or add this label to the existing labels).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Classes</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.labeling.DictLabeledElement" title="creek.labeling.DictLabeledElement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DictLabeledElement</span></code></a>(element)</p></td>
+<td><p>A LabeledElement that uses a <code class="docutils literal notranslate"><span class="pre">dict</span></code> as the labels container.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.labeling.LabeledElement" title="creek.labeling.LabeledElement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LabeledElement</span></code></a>(element)</p></td>
+<td><p>Abstract class to label elements -- that is, associate some metadata to an element.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.labeling.ListLabeledElement" title="creek.labeling.ListLabeledElement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ListLabeledElement</span></code></a>(element)</p></td>
+<td><p>A LabeledElement that uses a <code class="docutils literal notranslate"><span class="pre">list</span></code> as the labels container.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.labeling.SetLabeledElement" title="creek.labeling.SetLabeledElement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SetLabeledElement</span></code></a>(element)</p></td>
+<td><p>A LabeledElement that uses a <code class="docutils literal notranslate"><span class="pre">set</span></code> as the labels container.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="creek.labeling.DictLabeledElement">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">creek.labeling.</span></span><span class="sig-name descname"><span class="pre">DictLabeledElement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/labeling.html#DictLabeledElement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.labeling.DictLabeledElement" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#creek.labeling.LabeledElement" title="creek.labeling.LabeledElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">LabeledElement</span></code></a></p>
+<p>A LabeledElement that uses a <code class="docutils literal notranslate"><span class="pre">dict</span></code> as the labels container.
+Use this when you need to keep labels classified and have quick access to the
+a specific class of labels.
+Note that when adding a label, you need to specify it as a <code class="docutils literal notranslate"><span class="pre">{key:</span> <span class="pre">val,</span> <span class="pre">...}</span></code>
+<code class="docutils literal notranslate"><span class="pre">dict</span></code>, the keys being the (hashable) label kinds,
+and the vals being the values for those kinds.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">DictLabeledElement</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">add_label</span><span class="p">({</span><span class="s1">'string'</span><span class="p">:</span> <span class="s1">'forty-two'</span><span class="p">})</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">element</span>
+</span><span data-line="3"><span class="go">42</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">labels</span>
+</span><span data-line="5"><span class="go">{'string': 'forty-two'}</span>
+</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">add_label</span><span class="p">({</span><span class="s1">'type'</span><span class="p">:</span> <span class="s1">'number'</span><span class="p">,</span> <span class="s1">'prime'</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+</span><span data-line="7"><span class="go">DictLabeledElement(42)</span>
+</span><span data-line="8"><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">element</span>
+</span><span data-line="9"><span class="go">42</span>
+</span><span data-line="10"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">x</span><span class="o">.</span><span class="n">labels</span> <span class="o">==</span> <span class="p">{</span><span class="s1">'string'</span><span class="p">:</span> <span class="s1">'forty-two'</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'number'</span><span class="p">,</span> <span class="s1">'prime'</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+</span></pre></div>
+</div>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="creek.labeling.DictLabeledElement.add_new_label">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">add_new_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/labeling.html#DictLabeledElement.add_new_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.labeling.DictLabeledElement.add_new_label" title="Link to this definition">#</a></dt>
+<dd><p>Merge the <code class="docutils literal notranslate"><span class="pre">label</span></code> dict into <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="creek.labeling.DictLabeledElement.mk_new_labels_container">
+<span class="sig-name descname"><span class="pre">mk_new_labels_container</span></span><a class="headerlink" href="#creek.labeling.DictLabeledElement.mk_new_labels_container" title="Link to this definition">#</a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="creek.labeling.LabeledElement">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">creek.labeling.</span></span><span class="sig-name descname"><span class="pre">LabeledElement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/labeling.html#LabeledElement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.labeling.LabeledElement" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<p>Abstract class to label elements – that is, associate some metadata to an element.</p>
+<p>To make a concrete LabeledElement, one must subclass LabeledElement and provide</p>
+<ul class="simple">
+<li><p>a <code class="docutils literal notranslate"><span class="pre">mk_new_labels_container</span></code>, a <code class="docutils literal notranslate"><span class="pre">LabelFactory</span></code>, which is a callable that takes
+no input and returns a new empty labels container</p></li>
+<li><p>an <code class="docutils literal notranslate"><span class="pre">add_new_label</span></code>, an <code class="docutils literal notranslate"><span class="pre">AddLabel</span></code>, a <code class="docutils literal notranslate"><span class="pre">(Labels,</span> <span class="pre">Label)</span></code> callable that adds
+a single label to the labels container.</p></li>
+</ul>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="creek.labeling.LabeledElement.add_label">
+<span class="sig-name descname"><span class="pre">add_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/labeling.html#LabeledElement.add_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.labeling.LabeledElement.add_label" title="Link to this definition">#</a></dt>
+<dd><p>Add <code class="docutils literal notranslate"><span class="pre">label</span></code> to this element’s labels and return <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="creek.labeling.LabeledElement.add_new_label">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">add_new_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/labeling.html#LabeledElement.add_new_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.labeling.LabeledElement.add_new_label" title="Link to this definition">#</a></dt>
+<dd><p>Add <code class="docutils literal notranslate"><span class="pre">label</span></code> to <code class="docutils literal notranslate"><span class="pre">labels</span></code> in place.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="creek.labeling.LabeledElement.mk_new_labels_container">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">mk_new_labels_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/labeling.html#LabeledElement.mk_new_labels_container"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.labeling.LabeledElement.mk_new_labels_container" title="Link to this definition">#</a></dt>
+<dd><p>Return a new, empty labels container.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Label</span></code> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>)]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="creek.labeling.ListLabeledElement">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">creek.labeling.</span></span><span class="sig-name descname"><span class="pre">ListLabeledElement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/labeling.html#ListLabeledElement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.labeling.ListLabeledElement" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#creek.labeling.LabeledElement" title="creek.labeling.LabeledElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">LabeledElement</span></code></a></p>
+<p>A LabeledElement that uses a <code class="docutils literal notranslate"><span class="pre">list</span></code> as the labels container.
+Use this when you need to use unhashable labels, or label insertion order matters,
+or don’t need fast <code class="docutils literal notranslate"><span class="pre">label</span> <span class="pre">in</span> <span class="pre">labels</span></code> checks or label deduplication.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ListLabeledElement</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">add_label</span><span class="p">(</span><span class="s1">'forty-two'</span><span class="p">)</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">element</span>
+</span><span data-line="3"><span class="go">42</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">labels</span>
+</span><span data-line="5"><span class="go">['forty-two']</span>
+</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">add_label</span><span class="p">(</span><span class="s1">'number'</span><span class="p">)</span>
+</span><span data-line="7"><span class="go">ListLabeledElement(42)</span>
+</span><span data-line="8"><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">element</span>
+</span><span data-line="9"><span class="go">42</span>
+</span><span data-line="10"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">x</span><span class="o">.</span><span class="n">labels</span> <span class="o">==</span> <span class="p">[</span><span class="s1">'forty-two'</span><span class="p">,</span> <span class="s1">'number'</span><span class="p">]</span>
+</span></pre></div>
+</div>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="creek.labeling.ListLabeledElement.add_new_label">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">add_new_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#creek.labeling.ListLabeledElement.add_new_label" title="Link to this definition">#</a></dt>
+<dd><p>Append object to the end of the list.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="creek.labeling.ListLabeledElement.mk_new_labels_container">
+<span class="sig-name descname"><span class="pre">mk_new_labels_container</span></span><a class="headerlink" href="#creek.labeling.ListLabeledElement.mk_new_labels_container" title="Link to this definition">#</a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="creek.labeling.SetLabeledElement">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">creek.labeling.</span></span><span class="sig-name descname"><span class="pre">SetLabeledElement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/labeling.html#SetLabeledElement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.labeling.SetLabeledElement" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#creek.labeling.LabeledElement" title="creek.labeling.LabeledElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">LabeledElement</span></code></a></p>
+<p>A LabeledElement that uses a <code class="docutils literal notranslate"><span class="pre">set</span></code> as the labels container.
+Use this when you want to get fast <code class="docutils literal notranslate"><span class="pre">label</span> <span class="pre">in</span> <span class="pre">labels</span></code> check and/or maintain the
+labels unduplicated.
+Note that since <code class="docutils literal notranslate"><span class="pre">set</span></code> is the container, the labels will have to be hashable.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">SetLabeledElement</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">add_label</span><span class="p">(</span><span class="s1">'forty-two'</span><span class="p">)</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">element</span>
+</span><span data-line="3"><span class="go">42</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">labels</span>
+</span><span data-line="5"><span class="go">{'forty-two'}</span>
+</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">add_label</span><span class="p">(</span><span class="s1">'number'</span><span class="p">)</span>
+</span><span data-line="7"><span class="go">SetLabeledElement(42)</span>
+</span><span data-line="8"><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">element</span>
+</span><span data-line="9"><span class="go">42</span>
+</span><span data-line="10"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">x</span><span class="o">.</span><span class="n">labels</span> <span class="o">==</span> <span class="p">{</span><span class="s1">'forty-two'</span><span class="p">,</span> <span class="s1">'number'</span><span class="p">}</span>
+</span></pre></div>
+</div>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="creek.labeling.SetLabeledElement.add_new_label">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">add_new_label</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#creek.labeling.SetLabeledElement.add_new_label" title="Link to this definition">#</a></dt>
+<dd><p>Add an element to a set.</p>
+<p>This has no effect if the element is already present.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="creek.labeling.SetLabeledElement.mk_new_labels_container">
+<span class="sig-name descname"><span class="pre">mk_new_labels_container</span></span><a class="headerlink" href="#creek.labeling.SetLabeledElement.mk_new_labels_container" title="Link to this definition">#</a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#set" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.labeling.label_element">
+<span class="sig-prename descclassname"><span class="pre">creek.labeling.</span></span><span class="sig-name descname"><span class="pre">label_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labeled_element_cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/labeling.html#label_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.labeling.label_element" title="Link to this definition">#</a></dt>
+<dd><p>Label <code class="docutils literal notranslate"><span class="pre">element</span></code> with <code class="docutils literal notranslate"><span class="pre">label</span></code> (or add this label to the existing labels).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">labeled_element_cls</span></code>, the <code class="docutils literal notranslate"><span class="pre">LabeledElement</span></code> class to use to label the element,
+is meant to be “partialized out”, like this:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">creek.labeling</span><span class="w"> </span><span class="kn">import</span> <span class="n">DictLabeledElement</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">my_label_element</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">label_element</span><span class="p">,</span> <span class="n">labeled_element_cls</span><span class="o">=</span><span class="n">DictLabeledElement</span><span class="p">)</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="c1"># and then just use my_label_element(elem, label) to label elem</span>
+</span></pre></div>
+</div>
+<p>You’ll probably often want to use <code class="docutils literal notranslate"><span class="pre">DictLabeledElement</span></code>, because, for example:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span><span data-line="1">{'n_channels': 2, 'phase', 2, 'session': 16987485}
+</span></pre></div>
+</div>
+<p>is a lot easier (and less dangerous) to use then, say:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span><span data-line="1">[2, 2, 16987485]
+</span></pre></div>
+</div>
+<p>But there are cases where, say:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">creek.labeling</span><span class="w"> </span><span class="kn">import</span> <span class="n">SetLabeledElement</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">my_label_element</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">label_element</span><span class="p">,</span> <span class="n">labeled_element_cls</span><span class="o">=</span><span class="n">SetLabeledElement</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">my_label_element</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="s1">'divisible_by_seven'</span><span class="p">)</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">my_label_element</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">'is_a_number'</span><span class="p">)</span>
+</span><span data-line="5"><span class="gp">&gt;&gt;&gt; </span><span class="s1">'divisible_by_seven'</span> <span class="ow">in</span> <span class="n">x</span>  <span class="c1"># equivalent to 'divisible_by_seven' in x.labels</span>
+</span><span data-line="6"><span class="go">True</span>
+</span><span data-line="7"><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">labels</span><span class="o">.</span><span class="n">issuperset</span><span class="p">({</span><span class="s1">'is_a_number'</span><span class="p">,</span> <span class="s1">'divisible_by_seven'</span><span class="p">})</span>
+</span><span data-line="8"><span class="go">True</span>
+</span></pre></div>
+</div>
+<p>is more convenient to use then using a dict with boolean values to do the same</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>elem</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>), <a class="reference internal" href="#creek.labeling.LabeledElement" title="creek.labeling.LabeledElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">LabeledElement</span></code></a>]</span>) – The element that is being labeled</p></li>
+<li><p><strong>label</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Label</span></code> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>)</span>) – The label to add to the element</p></li>
+<li><p><strong>labeled_element_cls</strong> – The <code class="docutils literal notranslate"><span class="pre">LabeledElement</span></code> class to use to label the element</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#creek.labeling.LabeledElement" title="creek.labeling.LabeledElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">LabeledElement</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The labeled element: a new <code class="docutils literal notranslate"><span class="pre">labeled_element_cls</span></code> wrapping <code class="docutils literal notranslate"><span class="pre">elem</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">elem</span></code> itself (with the label added) if it already is a <code class="docutils literal notranslate"><span class="pre">labeled_element_cls</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="creek.infinite_sequence.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">creek.infinite_sequence</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="creek.multi_streams.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">creek.multi_streams</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright">
+  <p>
+    Made with
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+  <a href="https://github.com/i2mint/creek" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../_static/documentation_options.js?v=2b6ce006"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=fd10adb8"></script>
+      <script src="../_static/shibuya.js?v=50760d75"></script></body>
+</html>

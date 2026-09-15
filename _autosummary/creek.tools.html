@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="jade" data-content_root="../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>creek.tools - creek</title><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="creek.util" href="creek.util.html" /><link rel="prev" title="creek.multi_streams" href="creek.multi_streams.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d88b86f9" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link media="print" rel="stylesheet" type="text/css" href="../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="creek.tools"/>
+    <meta name="twitter:card" content="summary"/>
+  
+<link rel="alternate" type="text/markdown" href="creek.tools.html.md">
+<link rel="describedby" href="../llms.txt" type="text/markdown">
+</head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../index.html">
+      
+      
+      <strong>creek</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/i2mint/creek" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="creek.html">creek</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="creek.automatas.html">creek.automatas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.base.html">creek.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.infinite_sequence.html">creek.infinite_sequence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.labeling.html">creek.labeling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.multi_streams.html">creek.multi_streams</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">creek.tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creek.util.html">creek.util</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#creek.tools.BufferStats"><code class="docutils literal notranslate"><span class="pre">BufferStats</span></code></a></li>
+<li><a class="reference internal" href="#creek.tools.DynamicIndexer"><code class="docutils literal notranslate"><span class="pre">DynamicIndexer</span></code></a><ul>
+<li><a class="reference internal" href="#creek.tools.DynamicIndexer.count_increments"><code class="docutils literal notranslate"><span class="pre">DynamicIndexer.count_increments()</span></code></a></li>
+<li><a class="reference internal" href="#creek.tools.DynamicIndexer.idx_updater"><code class="docutils literal notranslate"><span class="pre">DynamicIndexer.idx_updater()</span></code></a></li>
+<li><a class="reference internal" href="#creek.tools.DynamicIndexer.size_increments"><code class="docutils literal notranslate"><span class="pre">DynamicIndexer.size_increments()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#creek.tools.Segmenter"><code class="docutils literal notranslate"><span class="pre">Segmenter</span></code></a><ul>
+<li><a class="reference internal" href="#creek.tools.Segmenter.stats_buffer_callback"><code class="docutils literal notranslate"><span class="pre">Segmenter.stats_buffer_callback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#creek.tools.alt_dynamically_index"><code class="docutils literal notranslate"><span class="pre">alt_dynamically_index()</span></code></a></li>
+<li><a class="reference internal" href="#creek.tools.always_true"><code class="docutils literal notranslate"><span class="pre">always_true()</span></code></a></li>
+<li><a class="reference internal" href="#creek.tools.apply_and_fanout"><code class="docutils literal notranslate"><span class="pre">apply_and_fanout()</span></code></a></li>
+<li><a class="reference internal" href="#creek.tools.apply_func_to_index"><code class="docutils literal notranslate"><span class="pre">apply_func_to_index()</span></code></a></li>
+<li><a class="reference internal" href="#creek.tools.count_increments"><code class="docutils literal notranslate"><span class="pre">count_increments()</span></code></a></li>
+<li><a class="reference internal" href="#creek.tools.current_time"><code class="docutils literal notranslate"><span class="pre">current_time()</span></code></a></li>
+<li><a class="reference internal" href="#creek.tools.dynamically_index"><code class="docutils literal notranslate"><span class="pre">dynamically_index()</span></code></a></li>
+<li><a class="reference internal" href="#creek.tools.fanout_and_flatten"><code class="docutils literal notranslate"><span class="pre">fanout_and_flatten()</span></code></a></li>
+<li><a class="reference internal" href="#creek.tools.fanout_and_flatten_dicts"><code class="docutils literal notranslate"><span class="pre">fanout_and_flatten_dicts()</span></code></a></li>
+<li><a class="reference internal" href="#creek.tools.filter_and_index_stream"><code class="docutils literal notranslate"><span class="pre">filter_and_index_stream()</span></code></a></li>
+<li><a class="reference internal" href="#creek.tools.is_not_none"><code class="docutils literal notranslate"><span class="pre">is_not_none()</span></code></a></li>
+<li><a class="reference internal" href="#creek.tools.return_buffer_on_stats_condition"><code class="docutils literal notranslate"><span class="pre">return_buffer_on_stats_condition()</span></code></a></li>
+<li><a class="reference internal" href="#creek.tools.segment_overlaps"><code class="docutils literal notranslate"><span class="pre">segment_overlaps()</span></code></a></li>
+<li><a class="reference internal" href="#creek.tools.size_increments"><code class="docutils literal notranslate"><span class="pre">size_increments()</span></code></a></li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">creek</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../api.html"><span itemprop="name">API reference</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="creek.html"><span itemprop="name">creek</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="3" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">creek.tools</strong>
+        <meta itemprop="position" content="4" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue dark-code" role="main">
+          <section id="module-creek.tools">
+<span id="creek-tools"></span><h1>creek.tools<a class="headerlink" href="#module-creek.tools" title="Link to this heading">#</a></h1>
+<p>Tools to index, window and segment streams.</p>
+<p>Everything here is a plain function or a small callable class that you compose
+with <code class="docutils literal notranslate"><span class="pre">map</span></code>, <code class="docutils literal notranslate"><span class="pre">filter</span></code> and <code class="docutils literal notranslate"><span class="pre">functools.partial</span></code>; nothing depends on <code class="docutils literal notranslate"><span class="pre">Creek</span></code>.</p>
+<p>Main entry points:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">filter_and_index_stream</span></code>: index a stream (<code class="docutils literal notranslate"><span class="pre">enumerate</span></code> by default) and filter on the items</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dynamically_index</span> <span class="pre">/</span> <span class="pre">DynamicIndexer</span></code>: <code class="docutils literal notranslate"><span class="pre">enumerate</span></code> where you choose how the index advances</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BufferStats</span></code>: a fixed-size buffer that returns a statistic of its contents each time it is fed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Segmenter</span></code>: feed a <code class="docutils literal notranslate"><span class="pre">BufferStats</span></code> and hand its contents to a callback after each value</p></li>
+</ul>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">creek.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">BufferStats</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">BufferStats</span><span class="p">(</span><span class="n">maxlen</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="nb">sum</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)))</span>
+</span><span data-line="3"><span class="go">[0, 1, 3, 6, 9]</span>
+</span></pre></div>
+</div>
+<p class="rubric">Functions</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.tools.alt_dynamically_index" title="creek.tools.alt_dynamically_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">alt_dynamically_index</span></code></a>([idx_updater, start])</p></td>
+<td><p>Alternative to dynamically_index using itertools and partial</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.tools.always_true" title="creek.tools.always_true"><code class="xref py py-obj docutils literal notranslate"><span class="pre">always_true</span></code></a>(x)</p></td>
+<td><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code>, whatever <code class="docutils literal notranslate"><span class="pre">x</span></code> is.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.tools.apply_and_fanout" title="creek.tools.apply_and_fanout"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_and_fanout</span></code></a>(seq, func, idx)</p></td>
+<td><p>Apply function (that returns an Iterable) to an element of a sequence and fanout (broadcast) the resulting items, to produce an iterable of tuples each containing one of these items along with 'a copy' of the other tuple elements</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.tools.apply_func_to_index" title="creek.tools.apply_func_to_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_func_to_index</span></code></a>(seq, apply_to_idx, func)</p></td>
+<td><p>Apply <code class="docutils literal notranslate"><span class="pre">func</span></code> to the element at <code class="docutils literal notranslate"><span class="pre">apply_to_idx</span></code> of <code class="docutils literal notranslate"><span class="pre">seq</span></code>, returning a tuple.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.tools.count_increments" title="creek.tools.count_increments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">count_increments</span></code></a>(current_idx, obj[, step])</p></td>
+<td><p>Index updater that ignores <code class="docutils literal notranslate"><span class="pre">obj</span></code> and advances the index by <code class="docutils literal notranslate"><span class="pre">step</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.tools.current_time" title="creek.tools.current_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">current_time</span></code></a>(current_idx, obj)</p></td>
+<td><p>Doesn't even look at current_idx or obj.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.tools.dynamically_index" title="creek.tools.dynamically_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dynamically_index</span></code></a>(iterable[, start, idx_updater])</p></td>
+<td><p>Generalization of <code class="docutils literal notranslate"><span class="pre">enumerate(iterable)</span></code> that allows one to specify how the indices should be updated.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.tools.fanout_and_flatten" title="creek.tools.fanout_and_flatten"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fanout_and_flatten</span></code></a>(iterable_of_seqs, func, idx)</p></td>
+<td><p>Apply apply_and_fanout to an iterable of sequences.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.tools.fanout_and_flatten_dicts" title="creek.tools.fanout_and_flatten_dicts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fanout_and_flatten_dicts</span></code></a>(iterable_of_dicts, ...)</p></td>
+<td><p>Apply apply_and_fanout to an iterable of dicts.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.tools.filter_and_index_stream" title="creek.tools.filter_and_index_stream"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_and_index_stream</span></code></a>(stream, data_item_filt)</p></td>
+<td><p>Index a stream and filter it (based only on the data items).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.tools.is_not_none" title="creek.tools.is_not_none"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_not_none</span></code></a>(x)</p></td>
+<td><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">x</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.tools.return_buffer_on_stats_condition" title="creek.tools.return_buffer_on_stats_condition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">return_buffer_on_stats_condition</span></code></a>(stats, buffer)</p></td>
+<td><p>Return <code class="docutils literal notranslate"><span class="pre">buffer</span></code> if <code class="docutils literal notranslate"><span class="pre">cond(stats)</span></code> holds, else <code class="docutils literal notranslate"><span class="pre">else_val</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.tools.segment_overlaps" title="creek.tools.segment_overlaps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">segment_overlaps</span></code></a>(bt_tt_segment, query_bt, ...)</p></td>
+<td><p>Returns True if, and only if, bt_tt_segment overlaps query interval.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.tools.size_increments" title="creek.tools.size_increments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">size_increments</span></code></a>(current_idx, obj[, size_func])</p></td>
+<td><p>Index updater that advances the index by <code class="docutils literal notranslate"><span class="pre">size_func(obj)</span></code>, <code class="docutils literal notranslate"><span class="pre">len</span></code> by default.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Classes</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.tools.BufferStats" title="creek.tools.BufferStats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BufferStats</span></code></a>([values, maxlen, func, add_new_val])</p></td>
+<td><p>A callable, fixed-size (fifo) buffer returning a statistic of its contents on every call.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#creek.tools.DynamicIndexer" title="creek.tools.DynamicIndexer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DynamicIndexer</span></code></a>([start, idx_updater])</p></td>
+<td><p>Turn data items into <code class="docutils literal notranslate"><span class="pre">(index,</span> <span class="pre">item)</span></code> pairs, with a pluggable index update rule.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#creek.tools.Segmenter" title="creek.tools.Segmenter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Segmenter</span></code></a>(buffer[, stats_buffer_callback])</p></td>
+<td><p>Feed values to a <code class="docutils literal notranslate"><span class="pre">BufferStats</span></code> and hand its contents to a callback after each one.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="creek.tools.BufferStats">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">creek.tools.</span></span><span class="sig-name descname"><span class="pre">BufferStats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;object</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">sum&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_new_val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;method</span> <span class="pre">'append'</span> <span class="pre">of</span> <span class="pre">'collections.deque'</span> <span class="pre">objects&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/tools.html#BufferStats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.tools.BufferStats" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.deque" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">deque</span></code></a></p>
+<p>A callable, fixed-size (fifo) buffer returning a statistic of its contents on every call.</p>
+<p>Each call adds the input to the buffer (<code class="docutils literal notranslate"><span class="pre">deque.append</span></code> by default, configurable
+through <code class="docutils literal notranslate"><span class="pre">add_new_val</span></code>) and returns <code class="docutils literal notranslate"><span class="pre">func</span></code> applied to the buffer’s contents.
+Use it with <code class="docutils literal notranslate"><span class="pre">map</span></code> to get rolling-window statistics of a stream.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> – Initial contents of the buffer.</p></li>
+<li><p><strong>maxlen</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Size of the buffer. Required.</p></li>
+<li><p><strong>func</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a></span>) – The function computed on the buffer contents and returned on each
+call; <code class="docutils literal notranslate"><span class="pre">sum</span></code> by default.</p></li>
+<li><p><strong>add_new_val</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a></span>) – The <code class="docutils literal notranslate"><span class="pre">(buffer,</span> <span class="pre">new_val)</span></code> function that adds a value to the
+buffer: a <code class="docutils literal notranslate"><span class="pre">deque</span></code> method (<code class="docutils literal notranslate"><span class="pre">deque.append</span></code> by default, <code class="docutils literal notranslate"><span class="pre">deque.extend</span></code>,
+<code class="docutils literal notranslate"><span class="pre">deque.appendleft</span></code>…), its name as a string, or any function with that
+signature.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">maxlen</span></code> is not given, or is not an <code class="docutils literal notranslate"><span class="pre">int</span></code>.</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">bs</span> <span class="o">=</span> <span class="n">BufferStats</span><span class="p">(</span><span class="n">maxlen</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="nb">sum</span><span class="p">)</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">)))</span>
+</span><span data-line="3"><span class="go">[0, 1, 3, 6, 10, 14, 18]</span>
+</span></pre></div>
+</div>
+<p>See what happens when you feed the same sequence again:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">)))</span>
+</span><span data-line="2"><span class="go">[15, 12, 9, 6, 10, 14, 18]</span>
+</span></pre></div>
+</div>
+<p>More examples:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">BufferStats</span><span class="p">(</span><span class="n">maxlen</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">),</span> <span class="s1">'abcdefgh'</span><span class="p">))</span>
+</span><span data-line="2"><span class="go">['a', 'ab', 'abc', 'abcd', 'bcde', 'cdef', 'defg', 'efgh']</span>
+</span></pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">prod</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">BufferStats</span><span class="p">(</span><span class="n">maxlen</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">prod</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">)))</span>
+</span><span data-line="3"><span class="go">[0, 0, 0, 0, 24, 120, 360]</span>
+</span></pre></div>
+</div>
+<p>With a different <code class="docutils literal notranslate"><span class="pre">add_new_val</span></code> choice.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">bs</span> <span class="o">=</span> <span class="n">BufferStats</span><span class="p">(</span><span class="n">maxlen</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">,</span> <span class="n">add_new_val</span><span class="o">=</span><span class="n">deque</span><span class="o">.</span><span class="n">appendleft</span><span class="p">)</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="s1">'abcdefgh'</span><span class="p">))</span>
+</span><span data-line="3"><span class="go">['a', 'ba', 'cba', 'dcba', 'edcb', 'fedc', 'gfed', 'hgfe']</span>
+</span></pre></div>
+</div>
+<p>With <code class="docutils literal notranslate"><span class="pre">add_new_val=deque.extend</span></code>, data can be fed in chunks.
+In the following, also see how we use iterize to get a function that
+takes an iterator and returns an iterator</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">creek.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">iterize</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">window_stats</span> <span class="o">=</span> <span class="n">iterize</span><span class="p">(</span><span class="n">BufferStats</span><span class="p">(</span>
+</span><span data-line="3"><span class="gp">... </span>    <span class="n">maxlen</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">,</span> <span class="n">add_new_val</span><span class="o">=</span><span class="n">deque</span><span class="o">.</span><span class="n">extend</span><span class="p">)</span>
+</span><span data-line="4"><span class="gp">... </span><span class="p">)</span>
+</span><span data-line="5"><span class="gp">&gt;&gt;&gt; </span><span class="n">chks</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'bc'</span><span class="p">,</span> <span class="s1">'def'</span><span class="p">,</span> <span class="s1">'gh'</span><span class="p">]</span>
+</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">window_stats</span><span class="p">(</span><span class="n">chks</span><span class="p">):</span>
+</span><span data-line="7"><span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span><span data-line="8"><span class="go">a</span>
+</span><span data-line="9"><span class="go">abc</span>
+</span><span data-line="10"><span class="go">cdef</span>
+</span><span data-line="11"><span class="go">efgh</span>
+</span></pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To those who might think that they can optimize this for special
+cases: Yes you can.
+But SHOULD you? Is it worth the increase in complexity and reduction in
+flexibility?
+See <a class="reference external" href="https://github.com/thorwhalen/umpyre/blob/master/misc/performance_of_rolling_window_stats.md">https://github.com/thorwhalen/umpyre/blob/master/misc/performance_of_rolling_window_stats.md</a></p>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="creek.tools.DynamicIndexer">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">creek.tools.</span></span><span class="sig-name descname"><span class="pre">DynamicIndexer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx_updater</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">count_increments&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/tools.html#DynamicIndexer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.tools.DynamicIndexer" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Turn data items into <code class="docutils literal notranslate"><span class="pre">(index,</span> <span class="pre">item)</span></code> pairs, with a pluggable index update rule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – The index to start at (the first data item will have this index)</p></li>
+<li><p><strong>idx_updater</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">DataItem</span></code>)], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</span>) – The <code class="docutils literal notranslate"><span class="pre">(current_idx,</span> <span class="pre">data_item)</span> <span class="pre">-&gt;</span> <span class="pre">next_idx</span></code> function
+computing the index the next data item will get</p></li>
+</ul>
+</dd>
+</dl>
+<p>Let’s take a finite stream of finite iterables (strings here):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">stream</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'stream'</span><span class="p">,</span> <span class="s1">'of'</span><span class="p">,</span> <span class="s1">'different'</span><span class="p">,</span> <span class="s1">'sized'</span><span class="p">,</span> <span class="s1">'chunks'</span><span class="p">]</span>
+</span></pre></div>
+</div>
+<p>The default <code class="docutils literal notranslate"><span class="pre">DynamicIndexer</span></code> just does what <code class="docutils literal notranslate"><span class="pre">enumerate</span></code> does:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">counter_index</span> <span class="o">=</span> <span class="n">DynamicIndexer</span><span class="p">()</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">counter_index</span><span class="p">,</span> <span class="n">stream</span><span class="p">))</span>
+</span><span data-line="3"><span class="go">[(0, 'stream'), (1, 'of'), (2, 'different'), (3, 'sized'), (4, 'chunks')]</span>
+</span></pre></div>
+</div>
+<p>That’s because it uses the default <code class="docutils literal notranslate"><span class="pre">idx_updater</span></code> function just increments by one.
+This function, DynamicIndexer.count_increments, is shown below</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">count_increments</span><span class="p">(</span><span class="n">current_idx</span><span class="p">,</span> <span class="n">data_item</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+</span><span data-line="2"><span class="gp">... </span>    <span class="k">return</span> <span class="n">current_idx</span> <span class="o">+</span> <span class="n">step</span>
+</span></pre></div>
+</div>
+<p>To get the index starting at 10, we can specify <code class="docutils literal notranslate"><span class="pre">start=10</span></code>, and to step the
+index by 3 we can partialize <code class="docutils literal notranslate"><span class="pre">count_increments</span></code>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">step3</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">count_increments</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">DynamicIndexer</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">idx_updater</span><span class="o">=</span><span class="n">step3</span><span class="p">),</span> <span class="n">stream</span><span class="p">))</span>
+</span><span data-line="4"><span class="go">[(10, 'stream'), (13, 'of'), (16, 'different'), (19, 'sized'), (22, 'chunks')]</span>
+</span></pre></div>
+</div>
+<p>You can specify any custom <code class="docutils literal notranslate"><span class="pre">idx_updater</span></code> you want: The requirements being that
+this function should take <code class="docutils literal notranslate"><span class="pre">(current_idx,</span> <span class="pre">data_item)</span></code> as the input, and
+return the next “current index”, that is, what the index of the next data item will
+be.
+Note that <code class="docutils literal notranslate"><span class="pre">count_increments</span></code> ignored the <code class="docutils literal notranslate"><span class="pre">data_item</span></code> completely, but sometimes
+you want to take the data item into account.
+For example, your data item may contain several elements, and you want your
+index to index these elements, therefore you should update your index by
+incrementing it with the number of elements.</p>
+<p>We have <code class="docutils literal notranslate"><span class="pre">DynamicIndexer.size_increments</span></code> for that, the code is shown below:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">size_increments</span><span class="p">(</span><span class="n">current_idx</span><span class="p">,</span> <span class="n">data_item</span><span class="p">,</span> <span class="n">size_func</span><span class="o">=</span><span class="nb">len</span><span class="p">):</span>
+</span><span data-line="2"><span class="gp">... </span>    <span class="k">return</span> <span class="n">current_idx</span> <span class="o">+</span> <span class="n">size_func</span><span class="p">(</span><span class="n">data_item</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">size_index</span> <span class="o">=</span> <span class="n">DynamicIndexer</span><span class="p">(</span><span class="n">idx_updater</span><span class="o">=</span><span class="n">DynamicIndexer</span><span class="o">.</span><span class="n">size_increments</span><span class="p">)</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">size_index</span><span class="p">,</span> <span class="n">stream</span><span class="p">))</span>
+</span><span data-line="5"><span class="go">[(0, 'stream'), (6, 'of'), (8, 'different'), (17, 'sized'), (22, 'chunks')]</span>
+</span></pre></div>
+</div>
+<p>Q: What if I want the index of a data item to be a function of the data item itself?</p>
+<p>A: Then you would use that function to make the <code class="docutils literal notranslate"><span class="pre">(idxof(data_item),</span> <span class="pre">data_item)</span></code>
+pairs directly. <code class="docutils literal notranslate"><span class="pre">DynamicIndexer</span></code> is for the use case where the index of an item
+depends on the (number of, sizes of, etc.) items that came before it.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="creek.tools.DynamicIndexer.count_increments">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">count_increments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#creek.tools.DynamicIndexer.count_increments" title="Link to this definition">#</a></dt>
+<dd><p>Index updater that ignores <code class="docutils literal notranslate"><span class="pre">obj</span></code> and advances the index by <code class="docutils literal notranslate"><span class="pre">step</span></code>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">count_increments</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'whatever'</span><span class="p">)</span>
+</span><span data-line="2"><span class="go">11</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">count_increments</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'whatever'</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</span><span data-line="4"><span class="go">15</span>
+</span></pre></div>
+</div>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="creek.tools.DynamicIndexer.idx_updater">
+<span class="sig-name descname"><span class="pre">idx_updater</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#creek.tools.DynamicIndexer.idx_updater" title="Link to this definition">#</a></dt>
+<dd><p>Index updater that ignores <code class="docutils literal notranslate"><span class="pre">obj</span></code> and advances the index by <code class="docutils literal notranslate"><span class="pre">step</span></code>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">count_increments</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'whatever'</span><span class="p">)</span>
+</span><span data-line="2"><span class="go">11</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">count_increments</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'whatever'</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</span><span data-line="4"><span class="go">15</span>
+</span></pre></div>
+</div>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="creek.tools.DynamicIndexer.size_increments">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">size_increments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">len&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#creek.tools.DynamicIndexer.size_increments" title="Link to this definition">#</a></dt>
+<dd><p>Index updater that advances the index by <code class="docutils literal notranslate"><span class="pre">size_func(obj)</span></code>, <code class="docutils literal notranslate"><span class="pre">len</span></code> by default.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">size_increments</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'abc'</span><span class="p">)</span>
+</span><span data-line="2"><span class="go">13</span>
+</span></pre></div>
+</div>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="creek.tools.Segmenter">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">creek.tools.</span></span><span class="sig-name descname"><span class="pre">Segmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stats_buffer_callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">return_buffer_on_stats_condition&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/tools.html#Segmenter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.tools.Segmenter" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Feed values to a <code class="docutils literal notranslate"><span class="pre">BufferStats</span></code> and hand its contents to a callback after each one.</p>
+<p>Each call <code class="docutils literal notranslate"><span class="pre">seg(new_val)</span></code> adds <code class="docutils literal notranslate"><span class="pre">new_val</span></code> to <code class="docutils literal notranslate"><span class="pre">buffer</span></code> (which returns its
+statistic), then returns <code class="docutils literal notranslate"><span class="pre">stats_buffer_callback(stats,</span> <span class="pre">list(buffer))</span></code>.
+With the default callback that is the buffer contents when the statistic is
+not <code class="docutils literal notranslate"><span class="pre">None</span></code>, and <code class="docutils literal notranslate"><span class="pre">None</span></code> otherwise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>buffer</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#creek.tools.BufferStats" title="creek.tools.BufferStats"><code class="xref py py-class docutils literal notranslate"><span class="pre">BufferStats</span></code></a></span>) – The <code class="docutils literal notranslate"><span class="pre">BufferStats</span></code> instance that stores values and computes the
+statistic.</p></li>
+<li><p><strong>stats_buffer_callback</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</span>) – <code class="docutils literal notranslate"><span class="pre">(stats,</span> <span class="pre">buffer_contents)</span> <span class="pre">-&gt;</span> <span class="pre">result</span></code>;
+<code class="docutils literal notranslate"><span class="pre">return_buffer_on_stats_condition</span></code> by default.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">gen</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">200</span><span class="p">))</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">bs</span> <span class="o">=</span> <span class="n">BufferStats</span><span class="p">(</span><span class="n">maxlen</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="nb">sum</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">return_if_stats_is_odd</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
+</span><span data-line="4"><span class="gp">... </span>    <span class="n">return_buffer_on_stats_condition</span><span class="p">,</span>
+</span><span data-line="5"><span class="gp">... </span>    <span class="n">cond</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">else_val</span><span class="o">=</span><span class="s1">'The sum is not odd!'</span>
+</span><span data-line="6"><span class="gp">... </span><span class="p">)</span>
+</span><span data-line="7"><span class="gp">&gt;&gt;&gt; </span><span class="n">seg</span> <span class="o">=</span> <span class="n">Segmenter</span><span class="p">(</span><span class="n">buffer</span><span class="o">=</span><span class="n">bs</span><span class="p">,</span> <span class="n">stats_buffer_callback</span><span class="o">=</span><span class="n">return_if_stats_is_odd</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>Since the sum of the values in the buffer [1] is odd, the buffer is returned:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">seg</span><span class="p">(</span><span class="n">new_val</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span data-line="2"><span class="go">[1]</span>
+</span></pre></div>
+</div>
+<p>Adding <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">+</span> <span class="pre">2</span></code> is still odd so:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">seg</span><span class="p">(</span><span class="n">new_val</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span><span data-line="2"><span class="go">[1, 2]</span>
+</span></pre></div>
+</div>
+<p>Now since <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">+</span> <span class="pre">2</span> <span class="pre">+</span> <span class="pre">5</span></code> is even, the <code class="docutils literal notranslate"><span class="pre">else_val</span></code> of <code class="docutils literal notranslate"><span class="pre">return_if_stats_is_odd</span></code>
+is returned instead</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">seg</span><span class="p">(</span><span class="n">new_val</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</span><span data-line="2"><span class="go">'The sum is not odd!'</span>
+</span></pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="creek.tools.Segmenter.stats_buffer_callback">
+<span class="sig-name descname"><span class="pre">stats_buffer_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cond</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">is_not_none&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">else_val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#creek.tools.Segmenter.stats_buffer_callback" title="Link to this definition">#</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">buffer</span></code> if <code class="docutils literal notranslate"><span class="pre">cond(stats)</span></code> holds, else <code class="docutils literal notranslate"><span class="pre">else_val</span></code>.</p>
+<p>The default <code class="docutils literal notranslate"><span class="pre">stats_buffer_callback</span></code> of <code class="docutils literal notranslate"><span class="pre">Segmenter</span></code>; partialize <code class="docutils literal notranslate"><span class="pre">cond</span></code> and
+<code class="docutils literal notranslate"><span class="pre">else_val</span></code> to make your own.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">return_buffer_on_stats_condition</span><span class="p">(</span>
+</span><span data-line="2"><span class="gp">... </span><span class="n">stats</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">cond</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span>
+</span><span data-line="3"><span class="gp">... </span><span class="p">)</span>
+</span><span data-line="4"><span class="go">[1, 2, 3, 4]</span>
+</span><span data-line="5"><span class="gp">&gt;&gt;&gt; </span><span class="n">return_buffer_on_stats_condition</span><span class="p">(</span>
+</span><span data-line="6"><span class="gp">... </span><span class="n">stats</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">cond</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">else_val</span><span class="o">=</span><span class="s1">'3 is not even!'</span>
+</span><span data-line="7"><span class="gp">... </span><span class="p">)</span>
+</span><span data-line="8"><span class="go">'3 is not even!'</span>
+</span></pre></div>
+</div>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.tools.alt_dynamically_index">
+<span class="sig-prename descclassname"><span class="pre">creek.tools.</span></span><span class="sig-name descname"><span class="pre">alt_dynamically_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx_updater</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">count_increments&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/tools.html#alt_dynamically_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.tools.alt_dynamically_index" title="Link to this definition">#</a></dt>
+<dd><p>Alternative to dynamically_index using itertools and partial</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">size_increments</span><span class="p">(</span><span class="n">current_idx</span><span class="p">,</span> <span class="n">data_item</span><span class="p">,</span> <span class="n">size_func</span><span class="o">=</span><span class="nb">len</span><span class="p">):</span>
+</span><span data-line="2"><span class="gp">... </span>    <span class="k">return</span> <span class="n">current_idx</span> <span class="o">+</span> <span class="n">size_func</span><span class="p">(</span><span class="n">data_item</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">...</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="n">stream</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'stream'</span><span class="p">,</span> <span class="s1">'of'</span><span class="p">,</span> <span class="s1">'different'</span><span class="p">,</span> <span class="s1">'sized'</span><span class="p">,</span> <span class="s1">'chunks'</span><span class="p">]</span>
+</span><span data-line="5"><span class="gp">&gt;&gt;&gt; </span><span class="n">indexer</span> <span class="o">=</span> <span class="n">alt_dynamically_index</span><span class="p">(</span><span class="n">size_increments</span><span class="p">)</span>
+</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">indexer</span><span class="p">(</span><span class="n">stream</span><span class="p">))</span>
+</span><span data-line="7"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">t</span> <span class="o">==</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">'stream'</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s1">'of'</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">'different'</span><span class="p">),</span> <span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="s1">'sized'</span><span class="p">),</span>
+</span><span data-line="8"><span class="gp">... </span>             <span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="s1">'chunks'</span><span class="p">)]</span>
+</span></pre></div>
+</div>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.tools.always_true">
+<span class="sig-prename descclassname"><span class="pre">creek.tools.</span></span><span class="sig-name descname"><span class="pre">always_true</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/tools.html#always_true"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.tools.always_true" title="Link to this definition">#</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code>, whatever <code class="docutils literal notranslate"><span class="pre">x</span></code> is.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.tools.apply_and_fanout">
+<span class="sig-prename descclassname"><span class="pre">creek.tools.</span></span><span class="sig-name descname"><span class="pre">apply_and_fanout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/tools.html#apply_and_fanout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.tools.apply_and_fanout" title="Link to this definition">#</a></dt>
+<dd><p>Apply function (that returns an Iterable) to an element of a sequence
+and fanout (broadcast) the resulting items, to produce an iterable of tuples each
+containing
+one of these items along with ‘a copy’ of the other tuple elements</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>]</span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">apply_and_fanout</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'abc'</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="nb">iter</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</span><span data-line="2"><span class="go">[(1, 'a', 3), (1, 'b', 3), (1, 'c', 3)]</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">apply_and_fanout</span><span class="p">([</span><span class="s1">'bob'</span><span class="p">,</span> <span class="s1">'alice'</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="p">[</span><span class="s1">'hi'</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
+</span><span data-line="4"><span class="go">[('bob', 'alice', 'hi'), ('bob', 'alice', 'hi')]</span>
+</span><span data-line="5"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">apply_and_fanout</span><span class="p">([</span><span class="s2">"bob"</span><span class="p">,</span> <span class="s2">"alice"</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="mi">1</span><span class="p">))</span>
+</span><span data-line="6"><span class="go">[('bob', 'A', 2), ('bob', 'L', 2), ('bob', 'I', 2), ('bob', 'C', 2), ('bob', 'E', 2)]</span>
+</span></pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="docutils literal notranslate"><span class="pre">fanout_and_flatten</span></code> and <code class="docutils literal notranslate"><span class="pre">fanout_and_flatten_dicts</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.tools.apply_func_to_index">
+<span class="sig-prename descclassname"><span class="pre">creek.tools.</span></span><span class="sig-name descname"><span class="pre">apply_func_to_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_to_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/tools.html#apply_func_to_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.tools.apply_func_to_index" title="Link to this definition">#</a></dt>
+<dd><p>Apply <code class="docutils literal notranslate"><span class="pre">func</span></code> to the element at <code class="docutils literal notranslate"><span class="pre">apply_to_idx</span></code> of <code class="docutils literal notranslate"><span class="pre">seq</span></code>, returning a tuple.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">apply_func_to_index</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span>
+</span><span data-line="2"><span class="go">(1, 20, 3)</span>
+</span></pre></div>
+</div>
+<p>If you’re going to apply the same function to the same index, you might
+want to partialize <code class="docutils literal notranslate"><span class="pre">apply_func_to_index</span></code> to be able to reuse it simply:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">apply_func_to_index</span><span class="p">,</span> <span class="n">apply_to_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="nb">str</span><span class="o">.</span><span class="n">upper</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="p">[</span><span class="s1">'abc'</span><span class="p">,</span> <span class="s1">'defgh'</span><span class="p">]))</span>
+</span><span data-line="4"><span class="go">[('A', 'b', 'c'), ('D', 'e', 'f', 'g', 'h')]</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.tools.count_increments">
+<span class="sig-prename descclassname"><span class="pre">creek.tools.</span></span><span class="sig-name descname"><span class="pre">count_increments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/tools.html#count_increments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.tools.count_increments" title="Link to this definition">#</a></dt>
+<dd><p>Index updater that ignores <code class="docutils literal notranslate"><span class="pre">obj</span></code> and advances the index by <code class="docutils literal notranslate"><span class="pre">step</span></code>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">count_increments</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'whatever'</span><span class="p">)</span>
+</span><span data-line="2"><span class="go">11</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">count_increments</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'whatever'</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</span><span data-line="4"><span class="go">15</span>
+</span></pre></div>
+</div>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.tools.current_time">
+<span class="sig-prename descclassname"><span class="pre">creek.tools.</span></span><span class="sig-name descname"><span class="pre">current_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/tools.html#current_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.tools.current_time" title="Link to this definition">#</a></dt>
+<dd><p>Doesn’t even look at current_idx or obj. Just gives the current time</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.tools.dynamically_index">
+<span class="sig-prename descclassname"><span class="pre">creek.tools.</span></span><span class="sig-name descname"><span class="pre">dynamically_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx_updater</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">count_increments&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/tools.html#dynamically_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.tools.dynamically_index" title="Link to this definition">#</a></dt>
+<dd><p>Generalization of <code class="docutils literal notranslate"><span class="pre">enumerate(iterable)</span></code> that allows one to specify how the
+indices should be updated.</p>
+<p>The default is the same behavior as <code class="docutils literal notranslate"><span class="pre">enumerate</span></code>: Starts with 0 and increments by 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iterable</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a></span>) – The items to index.</p></li>
+<li><p><strong>start</strong> – The index of the first item.</p></li>
+<li><p><strong>idx_updater</strong> – <code class="docutils literal notranslate"><span class="pre">(current_idx,</span> <span class="pre">item)</span> <span class="pre">-&gt;</span> <span class="pre">next_idx</span></code>; <code class="docutils literal notranslate"><span class="pre">count_increments</span></code>
+(add 1) by default, <code class="docutils literal notranslate"><span class="pre">size_increments</span></code> adds <code class="docutils literal notranslate"><span class="pre">len(item)</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An iterator of <code class="docutils literal notranslate"><span class="pre">(index,</span> <span class="pre">item)</span></code> pairs.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="docutils literal notranslate"><span class="pre">DynamicIndexer</span></code>, the callable doing the work, when you want to apply the
+same indexing rule to several streams or keep the current index around.</p>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">stream</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'stream'</span><span class="p">,</span> <span class="s1">'of'</span><span class="p">,</span> <span class="s1">'different'</span><span class="p">,</span> <span class="s1">'sized'</span><span class="p">,</span> <span class="s1">'chunks'</span><span class="p">]</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dynamically_index</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+</span><span data-line="3"><span class="gp">... </span>    <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+</span><span data-line="4"><span class="gp">... </span>    <span class="o">==</span> <span class="p">[(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'stream'</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'of'</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">'different'</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s1">'sized'</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s1">'chunks'</span><span class="p">)]</span>
+</span><span data-line="5"><span class="gp">... </span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>Say we wanted to increment the indices according to the size of the last item
+instead of just incrementing by 1 at every iteration tick…</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">size_increments</span><span class="p">(</span><span class="n">current_idx</span><span class="p">,</span> <span class="n">data_item</span><span class="p">,</span> <span class="n">size_func</span><span class="o">=</span><span class="nb">len</span><span class="p">):</span>
+</span><span data-line="2"><span class="gp">... </span>    <span class="k">return</span> <span class="n">current_idx</span> <span class="o">+</span> <span class="n">size_func</span><span class="p">(</span><span class="n">data_item</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">size_index</span> <span class="o">=</span> <span class="n">DynamicIndexer</span><span class="p">(</span><span class="n">idx_updater</span><span class="o">=</span><span class="n">DynamicIndexer</span><span class="o">.</span><span class="n">size_increments</span><span class="p">)</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">size_index</span><span class="p">,</span> <span class="n">stream</span><span class="p">))</span>
+</span><span data-line="5"><span class="go">[(0, 'stream'), (6, 'of'), (8, 'different'), (17, 'sized'), (22, 'chunks')]</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.tools.fanout_and_flatten">
+<span class="sig-prename descclassname"><span class="pre">creek.tools.</span></span><span class="sig-name descname"><span class="pre">fanout_and_flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable_of_seqs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;built-in</span> <span class="pre">method</span> <span class="pre">from_iterable</span> <span class="pre">of</span> <span class="pre">type</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/tools.html#fanout_and_flatten"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.tools.fanout_and_flatten" title="Link to this definition">#</a></dt>
+<dd><p>Apply apply_and_fanout to an iterable of sequences.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">seq_iterable</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">'abcdef'</span><span class="p">,</span> <span class="s1">'first'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'ghij'</span><span class="p">,</span> <span class="s1">'second'</span><span class="p">)]</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">([</span><span class="nb">iter</span><span class="p">(</span><span class="n">a</span><span class="p">)]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>  <span class="c1"># func is a chunker</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">fanout_and_flatten</span><span class="p">(</span><span class="n">seq_iterable</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">==</span> <span class="p">[</span>
+</span><span data-line="4"><span class="gp">... </span>    <span class="p">((</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">),</span> <span class="s1">'first'</span><span class="p">),</span>
+</span><span data-line="5"><span class="gp">... </span>    <span class="p">((</span><span class="s1">'c'</span><span class="p">,</span> <span class="s1">'d'</span><span class="p">),</span> <span class="s1">'first'</span><span class="p">),</span>
+</span><span data-line="6"><span class="gp">... </span>    <span class="p">((</span><span class="s1">'e'</span><span class="p">,</span> <span class="s1">'f'</span><span class="p">),</span> <span class="s1">'first'</span><span class="p">),</span>
+</span><span data-line="7"><span class="gp">... </span>    <span class="p">((</span><span class="s1">'g'</span><span class="p">,</span> <span class="s1">'h'</span><span class="p">),</span> <span class="s1">'second'</span><span class="p">),</span>
+</span><span data-line="8"><span class="gp">... </span>    <span class="p">((</span><span class="s1">'i'</span><span class="p">,</span> <span class="s1">'j'</span><span class="p">),</span> <span class="s1">'second'</span><span class="p">)</span>
+</span><span data-line="9"><span class="gp">... </span><span class="p">]</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.tools.fanout_and_flatten_dicts">
+<span class="sig-prename descclassname"><span class="pre">creek.tools.</span></span><span class="sig-name descname"><span class="pre">fanout_and_flatten_dicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable_of_dicts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx_field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;built-in</span> <span class="pre">method</span> <span class="pre">from_iterable</span> <span class="pre">of</span> <span class="pre">type</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/tools.html#fanout_and_flatten_dicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.tools.fanout_and_flatten_dicts" title="Link to this definition">#</a></dt>
+<dd><p>Apply apply_and_fanout to an iterable of dicts.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">iterable_of_dicts</span> <span class="o">=</span> <span class="p">[</span>
+</span><span data-line="2"><span class="gp">... </span>    <span class="p">{</span><span class="s1">'wf'</span><span class="p">:</span> <span class="s1">'abcdef'</span><span class="p">,</span> <span class="s1">'tag'</span><span class="p">:</span> <span class="s1">'first'</span><span class="p">},</span> <span class="p">{</span><span class="s1">'wf'</span><span class="p">:</span> <span class="s1">'ghij'</span><span class="p">,</span> <span class="s1">'tag'</span><span class="p">:</span> <span class="s1">'second'</span><span class="p">}</span>
+</span><span data-line="3"><span class="gp">... </span><span class="p">]</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">([</span><span class="nb">iter</span><span class="p">(</span><span class="n">a</span><span class="p">)]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>  <span class="c1"># func is a chunker</span>
+</span><span data-line="5"><span class="gp">&gt;&gt;&gt; </span><span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'wf'</span><span class="p">,</span> <span class="s1">'tag'</span><span class="p">]</span>
+</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="n">idx_field</span> <span class="o">=</span> <span class="s1">'wf'</span>
+</span><span data-line="7"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">list</span><span class="p">(</span>
+</span><span data-line="8"><span class="gp">... </span>    <span class="n">fanout_and_flatten_dicts</span><span class="p">(</span><span class="n">iterable_of_dicts</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">idx_field</span><span class="p">))</span> <span class="o">==</span> <span class="p">[</span>
+</span><span data-line="9"><span class="gp">... </span>        <span class="p">{</span><span class="s1">'wf'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">),</span> <span class="s1">'tag'</span><span class="p">:</span> <span class="s1">'first'</span><span class="p">},</span>
+</span><span data-line="10"><span class="gp">... </span>        <span class="p">{</span><span class="s1">'wf'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'c'</span><span class="p">,</span> <span class="s1">'d'</span><span class="p">),</span> <span class="s1">'tag'</span><span class="p">:</span> <span class="s1">'first'</span><span class="p">},</span>
+</span><span data-line="11"><span class="gp">... </span>        <span class="p">{</span><span class="s1">'wf'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'e'</span><span class="p">,</span> <span class="s1">'f'</span><span class="p">),</span> <span class="s1">'tag'</span><span class="p">:</span> <span class="s1">'first'</span><span class="p">},</span>
+</span><span data-line="12"><span class="gp">... </span>        <span class="p">{</span><span class="s1">'wf'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'g'</span><span class="p">,</span> <span class="s1">'h'</span><span class="p">),</span> <span class="s1">'tag'</span><span class="p">:</span> <span class="s1">'second'</span><span class="p">},</span>
+</span><span data-line="13"><span class="gp">... </span>        <span class="p">{</span><span class="s1">'wf'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'i'</span><span class="p">,</span> <span class="s1">'j'</span><span class="p">),</span> <span class="s1">'tag'</span><span class="p">:</span> <span class="s1">'second'</span><span class="p">}</span>
+</span><span data-line="14"><span class="gp">... </span><span class="p">]</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.tools.filter_and_index_stream">
+<span class="sig-prename descclassname"><span class="pre">creek.tools.</span></span><span class="sig-name descname"><span class="pre">filter_and_index_stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_item_filt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;class</span> <span class="pre">'enumerate'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/tools.html#filter_and_index_stream"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.tools.filter_and_index_stream" title="Link to this definition">#</a></dt>
+<dd><p>Index a stream and filter it (based only on the data items).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stream</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a></span>) – The items to index and filter.</p></li>
+<li><p><strong>data_item_filt</strong> – <p>A predicate on the data item, or a non-callable value:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">items</span> <span class="n">equal</span> <span class="n">to</span> <span class="n">that</span> <span class="n">value</span> <span class="n">are</span> <span class="n">then</span> <span class="n">dropped</span><span class="o">.</span>
+</span></pre></div>
+</div>
+</p></li>
+<li><p><strong>timestamper</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">DataItem</span></code>)], <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">DataItem</span></code>)]]</span>) – Turns the stream into <code class="docutils literal notranslate"><span class="pre">(index,</span> <span class="pre">item)</span></code> pairs; <code class="docutils literal notranslate"><span class="pre">enumerate</span></code>
+by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An iterator of <code class="docutils literal notranslate"><span class="pre">(index,</span> <span class="pre">item)</span></code> pairs for the items that pass the filter.</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="p">(</span>
+</span><span data-line="2"><span class="gp">... </span><span class="nb">list</span><span class="p">(</span><span class="n">filter_and_index_stream</span><span class="p">(</span><span class="s1">'this  is   a   stream'</span><span class="p">,</span> <span class="n">data_item_filt</span><span class="o">=</span><span class="s1">' '</span><span class="p">))</span> <span class="o">==</span> <span class="p">[</span>
+</span><span data-line="3"><span class="gp">... </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">'t'</span><span class="p">),</span>
+</span><span data-line="4"><span class="gp">... </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'h'</span><span class="p">),</span>
+</span><span data-line="5"><span class="gp">... </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'i'</span><span class="p">),</span>
+</span><span data-line="6"><span class="gp">... </span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'s'</span><span class="p">),</span>
+</span><span data-line="7"><span class="gp">... </span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s1">'i'</span><span class="p">),</span>
+</span><span data-line="8"><span class="gp">... </span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="s1">'s'</span><span class="p">),</span>
+</span><span data-line="9"><span class="gp">... </span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="s1">'a'</span><span class="p">),</span>
+</span><span data-line="10"><span class="gp">... </span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="s1">'s'</span><span class="p">),</span>
+</span><span data-line="11"><span class="gp">... </span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="s1">'t'</span><span class="p">),</span>
+</span><span data-line="12"><span class="gp">... </span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">),</span>
+</span><span data-line="13"><span class="gp">... </span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="s1">'e'</span><span class="p">),</span>
+</span><span data-line="14"><span class="gp">... </span><span class="p">(</span><span class="mi">19</span><span class="p">,</span> <span class="s1">'a'</span><span class="p">),</span>
+</span><span data-line="15"><span class="gp">... </span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="s1">'m'</span><span class="p">)</span>
+</span><span data-line="16"><span class="gp">... </span><span class="p">])</span>
+</span></pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">filter_and_index_stream</span><span class="p">(</span>
+</span><span data-line="2"><span class="gp">... </span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
+</span><span data-line="3"><span class="gp">... </span>    <span class="n">data_item_filt</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">%</span> <span class="mi">2</span><span class="p">))</span>
+</span><span data-line="4"><span class="go">[(0, 1), (2, 3), (4, 5), (6, 7)]</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.tools.is_not_none">
+<span class="sig-prename descclassname"><span class="pre">creek.tools.</span></span><span class="sig-name descname"><span class="pre">is_not_none</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/tools.html#is_not_none"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.tools.is_not_none" title="Link to this definition">#</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">x</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.tools.return_buffer_on_stats_condition">
+<span class="sig-prename descclassname"><span class="pre">creek.tools.</span></span><span class="sig-name descname"><span class="pre">return_buffer_on_stats_condition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cond</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">is_not_none&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">else_val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/tools.html#return_buffer_on_stats_condition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.tools.return_buffer_on_stats_condition" title="Link to this definition">#</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">buffer</span></code> if <code class="docutils literal notranslate"><span class="pre">cond(stats)</span></code> holds, else <code class="docutils literal notranslate"><span class="pre">else_val</span></code>.</p>
+<p>The default <code class="docutils literal notranslate"><span class="pre">stats_buffer_callback</span></code> of <code class="docutils literal notranslate"><span class="pre">Segmenter</span></code>; partialize <code class="docutils literal notranslate"><span class="pre">cond</span></code> and
+<code class="docutils literal notranslate"><span class="pre">else_val</span></code> to make your own.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">return_buffer_on_stats_condition</span><span class="p">(</span>
+</span><span data-line="2"><span class="gp">... </span><span class="n">stats</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">cond</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span>
+</span><span data-line="3"><span class="gp">... </span><span class="p">)</span>
+</span><span data-line="4"><span class="go">[1, 2, 3, 4]</span>
+</span><span data-line="5"><span class="gp">&gt;&gt;&gt; </span><span class="n">return_buffer_on_stats_condition</span><span class="p">(</span>
+</span><span data-line="6"><span class="gp">... </span><span class="n">stats</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">cond</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">else_val</span><span class="o">=</span><span class="s1">'3 is not even!'</span>
+</span><span data-line="7"><span class="gp">... </span><span class="p">)</span>
+</span><span data-line="8"><span class="go">'3 is not even!'</span>
+</span></pre></div>
+</div>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.tools.segment_overlaps">
+<span class="sig-prename descclassname"><span class="pre">creek.tools.</span></span><span class="sig-name descname"><span class="pre">segment_overlaps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bt_tt_segment</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_bt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_tt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/tools.html#segment_overlaps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.tools.segment_overlaps" title="Link to this definition">#</a></dt>
+<dd><p>Returns True if, and only if, bt_tt_segment overlaps query interval.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">bt_tt_segment</span></code> will need to be of the <code class="docutils literal notranslate"><span class="pre">(bt,</span> <span class="pre">tt,</span> <span class="pre">*data)</span></code> format.
+That is, an iterable of at least two elements (the <code class="docutils literal notranslate"><span class="pre">bt</span></code> and <code class="docutils literal notranslate"><span class="pre">tt</span></code>) followed with
+more elements (the actual segment data).</p>
+<p>This function is made to be curried, as shown in the following example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">overlapping_segments_filt</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">segment_overlaps</span><span class="p">,</span> <span class="n">query_bt</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">query_tt</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt;</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">overlapping_segments_filt</span><span class="p">,</span> <span class="p">[</span>
+</span><span data-line="5"><span class="gp">... </span>    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">'completely before'</span><span class="p">),</span>
+</span><span data-line="6"><span class="gp">... </span>    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">'still completely before (upper bounds are strict)'</span><span class="p">),</span>
+</span><span data-line="7"><span class="gp">... </span>    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">'partially before, but overlaps bottom'</span><span class="p">),</span>
+</span><span data-line="8"><span class="gp">... </span>    <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">'totally'</span><span class="p">,</span> <span class="s1">'inside'</span><span class="p">),</span>  <span class="c1"># &lt;- note this tuple has 4 elements</span>
+</span><span data-line="9"><span class="gp">... </span>    <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>  <span class="c1"># &lt;- note this tuple has only the minimum (2) elements,</span>
+</span><span data-line="10"><span class="gp">... </span>    <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">'partially after, but overlaps top'</span><span class="p">),</span>
+</span><span data-line="11"><span class="gp">... </span>    <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">'completely after (strict upper bound)'</span><span class="p">),</span>
+</span><span data-line="12"><span class="gp">... </span>    <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="s1">'completely after (obviously)'</span><span class="p">)</span>
+</span><span data-line="13"><span class="gp">... </span><span class="p">]))</span>
+</span><span data-line="14"><span class="go">[(3, 6, 'partially before, but overlaps bottom'),</span>
+</span><span data-line="15"><span class="go">(4, 5, 'totally', 'inside'),</span>
+</span><span data-line="16"><span class="go">(5, 8),</span>
+</span><span data-line="17"><span class="go">(7, 10, 'partially after, but overlaps top')]</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="creek.tools.size_increments">
+<span class="sig-prename descclassname"><span class="pre">creek.tools.</span></span><span class="sig-name descname"><span class="pre">size_increments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">len&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/tools.html#size_increments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.tools.size_increments" title="Link to this definition">#</a></dt>
+<dd><p>Index updater that advances the index by <code class="docutils literal notranslate"><span class="pre">size_func(obj)</span></code>, <code class="docutils literal notranslate"><span class="pre">len</span></code> by default.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">size_increments</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'abc'</span><span class="p">)</span>
+</span><span data-line="2"><span class="go">13</span>
+</span></pre></div>
+</div>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="creek.multi_streams.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">creek.multi_streams</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="creek.util.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">creek.util</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright">
+  <p>
+    Made with
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+  <a href="https://github.com/i2mint/creek" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../_static/documentation_options.js?v=2b6ce006"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=fd10adb8"></script>
+      <script src="../_static/shibuya.js?v=50760d75"></script></body>
+</html>

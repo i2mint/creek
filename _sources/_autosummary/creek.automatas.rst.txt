@@ -1,0 +1,21 @@
+creek.automatas
+===============
+
+.. automodule:: creek.automatas
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      automata
+      basic_automata
+      mapping_to_transition_func
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BasicAutomata
+      MappingTransitionFunc
+   

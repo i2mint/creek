@@ -1,0 +1,26 @@
+# creek
+
+> Simple streams facade
+
+
+## Pages
+
+- [creek](index.html.md): A simple facade for streams: wrap an iterable, layer transformations on it, and read unbounded strea...
+- [API reference](api.html.md): | [`creek`](_autosummary/creek.html.md#module-creek)   | creek: a simple facade for streams.   |
+- [creek](_autosummary/creek.html.md): creek: a simple facade for streams.
+- [creek.automatas](_autosummary/creek.automatas.html.md): Automatas (finite state machines): step a state through a stream of symbols.
+- [creek.base](_autosummary/creek.base.html.md): The `Creek` base class: a layer-able wrapper around a stream.
+- [creek.infinite_sequence](_autosummary/creek.infinite_sequence.html.md): List-like read access to an unbounded stream, through a bounded buffer.
+- [creek.labeling](_autosummary/creek.labeling.html.md): Tools to label/annotate stream elements
+- [creek.multi_streams](_autosummary/creek.multi_streams.html.md): Merge several sorted streams into one stream of `(stream_id, item)` pairs.
+- [creek.tools](_autosummary/creek.tools.html.md): Tools to index, window and segment streams.
+- [creek.util](_autosummary/creek.util.html.md): Iterator, cursor and function-composition utilities used across creek.
+- [About this build](about-this-build.html.md): This documentation was built on **2026-09-15 10:07 UTC** from commit <a href="https://github.com/i2m...
+
+---
+
+For more comprehensive documentation, see [creek.md](creek.md)
+
+## Build
+
+- [build_info.json](build_info.json): build provenance (commit, version, tool versions, whether the docs match the package)
