@@ -339,3 +339,24 @@ class TestSegmenter:
         stats, buf = result
         assert buf == [3, 4, 5]
         assert stats == 12
+
+
+def test_segment_indices_single_pass_and_edges():
+    from creek.tools import segment_indices
+
+    consumed = []
+
+    def items():
+        for i in [-1, 0, 1, 5, 9]:
+            consumed.append(i)
+            yield i
+
+    def infinite_intervals():
+        n = 0
+        while True:
+            yield (n, n + 2)
+            n += 2
+
+    out = list(segment_indices(items(), infinite_intervals()))
+    assert out == [[0, 1], [], [5], [], [9]]  # -1 is before every interval: dropped
+    assert consumed == [-1, 0, 1, 5, 9]
