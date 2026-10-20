@@ -5,19 +5,17 @@ orphan: true
 
 # About this build
 
-This documentation was built on **2026-09-15 10:07 UTC** from commit <a href="https://github.com/i2mint/creek/commit/7a19d20cee5109a9f298d5ad8ccfba73bc131802"><code>7a19d20</code></a> on branch <code>master</code>, for **creek 0.1.35** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-20 02:59 UTC** from commit <a href="https://github.com/i2mint/creek/commit/d3baecf956b3fa303b5b608b384346576eb3a5d1"><code>d3baecf</code></a> on branch <code>master</code>, for **creek 0.1.36** (from <code>pyproject.toml</code>).
 
-:::{warning}
-The documentation and the package may be misaligned:
-
-- The documented version (0.1.35) is behind the latest release on PyPI (0.1.36): `pip install creek` gives newer code than these docs describe.
+:::{note}
+Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
 :::
 
 ## Source
 
 | | |
 |---|---|
-| Commit | <a href="https://github.com/i2mint/creek/commit/7a19d20cee5109a9f298d5ad8ccfba73bc131802"><code>7a19d20cee5109a9f298d5ad8ccfba73bc131802</code></a> |
+| Commit | <a href="https://github.com/i2mint/creek/commit/d3baecf956b3fa303b5b608b384346576eb3a5d1"><code>d3baecf956b3fa303b5b608b384346576eb3a5d1</code></a> |
 | Branch | <code>master</code> |
 | Tags at this commit | none |
 | Working tree | clean |
@@ -28,18 +26,18 @@ The documentation and the package may be misaligned:
 | | |
 |---|---|
 | Repository | <code>i2mint/creek</code> |
-| Run | <a href="https://github.com/i2mint/creek/actions/runs/34956128089">34956128089</a> |
+| Run | <a href="https://github.com/i2mint/creek/actions/runs/39361774977">39361774977</a> |
 | Ref | <code>refs/heads/master</code> |
-| Event commit | <code>7a19d20cee5109a9f298d5ad8ccfba73bc131802</code> (in the history of the built commit) |
+| Event commit | <code>d3baecf956b3fa303b5b608b384346576eb3a5d1</code> (in the history of the built commit) |
 
 ## Tools
 
 | | |
 |---|---|
-| epythet | 0.2.8 |
-| Sphinx | 9.1.0 |
+| epythet | 0.2.18 |
+| Sphinx | 9.1.1 |
 | docutils | 0.22.4 |
-| Python | 3.12.14 |
+| Python | 3.12.15 |
 
 ## Configuration as resolved
 
@@ -55,14 +53,14 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/creek/0.1.36/">0.1.36</a>, newer than the documented version (0.1.35).
+Latest release: <a href="https://pypi.org/project/creek/0.1.36/">0.1.36</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/creek && cd creek
-git checkout 7a19d20cee5109a9f298d5ad8ccfba73bc131802
-pip install "epythet==0.2.8"
+git checkout d3baecf956b3fa303b5b608b384346576eb3a5d1
+pip install "epythet==0.2.18"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 

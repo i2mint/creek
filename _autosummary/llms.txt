@@ -1,0 +1,19 @@
+# creek
+
+> Simple streams facade
+
+
+## Pages in this subsection
+
+- [creek](creek.html.md): creek: a simple facade for streams.
+- [creek.automatas](creek.automatas.html.md): Automatas (finite state machines): step a state through a stream of symbols.
+- [creek.base](creek.base.html.md): The &#96;Creek&#96; base class: a layer-able wrapper around a stream.
+- [creek.infinite_sequence](creek.infinite_sequence.html.md): List-like read access to an unbounded stream, through a bounded buffer.
+- [creek.labeling](creek.labeling.html.md): Tools to label/annotate stream elements
+- [creek.multi_streams](creek.multi_streams.html.md): Merge several sorted streams into one stream of &#96;(stream_id, item)&#96; pairs.
+- [creek.tools](creek.tools.html.md): Tools to index, window and segment streams.
+- [creek.util](creek.util.html.md): Iterator, cursor and function-composition utilities used across creek.
+
+## Optional
+
+- [Top-level llms.txt](../llms.txt): Complete documentation index.

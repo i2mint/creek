@@ -10,6 +10,7 @@ Main entry points:
 - `filter_and_index_stream`: index a stream (`enumerate` by default) and filter on the items
 - `dynamically_index / DynamicIndexer`: `enumerate` where you choose how the index advances
 - `BufferStats`: a fixed-size buffer that returns a statistic of its contents each time it is fed
+- `segment_indices`: group a stream’s items by the interval containing their index
 - `Segmenter`: feed a `BufferStats` and hand its contents to a callback after each value
 
 ```pycon
@@ -33,6 +34,7 @@ Main entry points:
 | [`filter_and_index_stream`](#creek.tools.filter_and_index_stream)(stream, data_item_filt)   | Index a stream and filter it (based only on the data items).                                                                                                                                                                          |
 | [`is_not_none`](#creek.tools.is_not_none)(x)                                    | Return `True` if `x` is not `None`.                                                                                                                                                                                                   |
 | [`return_buffer_on_stats_condition`](#creek.tools.return_buffer_on_stats_condition)(stats, buffer)   | Return `buffer` if `cond(stats)` holds, else `else_val`.                                                                                                                                                                              |
+| [`segment_indices`](#creek.tools.segment_indices)(items, intervals, \*[, key])      | Group `items` by the `(bt, tt)` interval that contains their index.                                                                                                                                                                   |
 | [`segment_overlaps`](#creek.tools.segment_overlaps)(bt_tt_segment, query_bt, ...)    | Returns True if, and only if, bt_tt_segment overlaps query interval.                                                                                                                                                                  |
 | [`size_increments`](#creek.tools.size_increments)(current_idx, obj[, size_func])    | Index updater that advances the index by `size_func(obj)`, `len` by default.                                                                                                                                                          |
 
@@ -132,7 +134,7 @@ Turn data items into `(index, item)` pairs, with a pluggable index update rule.
 
 * **Parameters:**
   * **start** ([`Any`](https://docs.python.org/3/library/typing.html#typing.Any)) – The index to start at (the first data item will have this index)
-  * **idx_updater** ([`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[[`Any`](https://docs.python.org/3/library/typing.html#typing.Any), [`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`DataItem`)], [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]) – The `(current_idx, data_item) -> next_idx` function
+  * **idx_updater** ([`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[[`Any`](https://docs.python.org/3/library/typing.html#typing.Any), `DataItem`], [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]) – The `(current_idx, data_item) -> next_idx` function
     computing the index the next data item will get
 
 Let’s take a finite stream of finite iterables (strings here):
@@ -193,7 +195,7 @@ A: Then you would use that function to make the `(idxof(data_item), data_item)`
 pairs directly. `DynamicIndexer` is for the use case where the index of an item
 depends on the (number of, sizes of, etc.) items that came before it.
 
-#### *static* count_increments(obj, step=1)
+#### *static* count_increments(current_idx, obj, step=1)
 
 Index updater that ignores `obj` and advances the index by `step`.
 
@@ -215,7 +217,7 @@ Index updater that ignores `obj` and advances the index by `step`.
 15
 ```
 
-#### *static* size_increments(obj, size_func=<built-in function len>)
+#### *static* size_increments(current_idx, obj, size_func=<built-in function len>)
 
 Index updater that advances the index by `size_func(obj)`, `len` by default.
 
@@ -317,9 +319,6 @@ and fanout (broadcast) the resulting items, to produce an iterable of tuples eac
 containing
 one of these items along with ‘a copy’ of the other tuple elements
 
-* **Return type:**
-  [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[[`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)]
-
 ```pycon
 >>> list(apply_and_fanout([1, 'abc', 3], iter, 1))
 [(1, 'a', 3), (1, 'b', 3), (1, 'c', 3)]
@@ -331,6 +330,9 @@ one of these items along with ‘a copy’ of the other tuple elements
 
 #### SEE ALSO
 `fanout_and_flatten` and `fanout_and_flatten_dicts`
+
+* **Return type:**
+  [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[[`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)]
 
 ### creek.tools.apply_func_to_index(seq, apply_to_idx, func)
 
@@ -447,13 +449,9 @@ Index a stream and filter it (based only on the data items).
 
 * **Parameters:**
   * **stream** ([`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)) – The items to index and filter.
-  * **data_item_filt** – 
-
-    A predicate on the data item, or a non-callable value:
-    ```default
+  * **data_item_filt** – A predicate on the data item, or a non-callable value:
     items equal to that value are then dropped.
-    ```
-  * **timestamper** ([`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[[`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`DataItem`)], [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`Any`](https://docs.python.org/3/library/typing.html#typing.Any), [`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`DataItem`)]]) – Turns the stream into `(index, item)` pairs; `enumerate`
+  * **timestamper** ([`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[`DataItem`], [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`Any`](https://docs.python.org/3/library/typing.html#typing.Any), `DataItem`]]) – Turns the stream into `(index, item)` pairs; `enumerate`
     by default.
 * **Returns:**
   An iterator of `(index, item)` pairs for the items that pass the filter.
@@ -505,6 +503,38 @@ The default `stats_buffer_callback` of `Segmenter`; partialize `cond` and
 ... )
 '3 is not even!'
 ```
+
+### creek.tools.segment_indices(items, intervals, , key=None)
+
+Group `items` by the `(bt, tt)` interval that contains their index.
+
+Both iterables are consumed once, lazily, in step: `items` must be in
+non-decreasing index order, `intervals` sorted and non-overlapping, each half-open
+(`bt <= index < tt`, as in `segment_overlaps`). One list is yielded per interval,
+empty if no item fell in it; items outside every interval are dropped. Intervals after
+the last one that received an item are not yielded (so `intervals` may be infinite).
+
+`key` extracts the index from an item (default: the item is its own index).
+
+```pycon
+>>> list(segment_indices(range(7), [(0, 2), (2, 4), (4, 6)]))
+[[0, 1], [2, 3], [4, 5]]
+>>> list(segment_indices([0, 1, 5, 6], [(0, 2), (2, 4), (4, 7)]))
+[[0, 1], [], [5, 6]]
+```
+
+The target use case, slabs from a flattened multi-stream:
+
+```pycon
+>>> from creek.multi_streams import MergedStreams
+>>> flat = MergedStreams({'hello': [(2, 'two'), (3, 'three')], 'world': [(0, 'zero'), (3, 'three')]})
+>>> [[name for name, _ in slab] for slab in
+...  segment_indices(flat, [(0, 2), (2, 4)], key=lambda x: x[1][0])]
+[['world'], ['hello', 'hello', 'world']]
+```
+
+* **Return type:**
+  [`Iterator`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator)[[`list`](https://docs.python.org/3/builtins/stdtypes.html#list)]
 
 ### creek.tools.segment_overlaps(bt_tt_segment, query_bt, query_tt)
 

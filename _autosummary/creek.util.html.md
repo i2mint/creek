@@ -174,9 +174,6 @@ data one by one.
 Sometimes, especially in live io contexts, that’s the kind interface you’re given
 to consume a stream.
 
-* **Return type:**
-  [`Iterator`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator)
-
 ```pycon
 >>> cursor = iter([1, 2, 3]).__next__
 >>> assert not isinstance(cursor, Iterator)
@@ -203,6 +200,9 @@ particular element (called a sentinel), say it:
 [1, 2]
 ```
 
+* **Return type:**
+  [`Iterator`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator)
+
 ### creek.util.identity_func(x)
 
 Return `x` unchanged.
@@ -217,9 +217,6 @@ Get a cursor function from an iterable.
 ### creek.util.iterable_to_iterator(iterable, sentinel=<creek.util.no_sentinel object>)
 
 Return `iter(iterable)`, or, given a sentinel, an iterator stopping just before that value.
-
-* **Return type:**
-  [`Iterator`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator)
 
 ```pycon
 >>> iterable = [1, 2, 3]
@@ -238,6 +235,9 @@ before it encounters that sentinel value
 >>> list(iterator)
 [1, 2, 3, 4]
 ```
+
+* **Return type:**
+  [`Iterator`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator)
 
 ### creek.util.iterate_skipping_errors(g, error_callback=None, caught_exceptions=(<class 'Exception'>, ))
 
@@ -270,9 +270,6 @@ Call `next` on `iterator` until one of `interrupt_exceptions` is raised, then pr
 ### creek.util.iterator_to_cursor(iterator, default=<creek.util.no_default object>)
 
 Get a cursor function for the input iterator.
-
-* **Return type:**
-  [`CursorFunc`](#creek.util.CursorFunc)
 
 ```pycon
 >>> iterator = iter([1, 2, 3])
@@ -308,6 +305,9 @@ And then…
 ```
 
 forever.
+
+* **Return type:**
+  [`CursorFunc`](#creek.util.CursorFunc)
 
 ### creek.util.iterize(func, name=None)
 

@@ -1,4 +1,4 @@
-> built 2026-09-15 10:07 UTC from 7a19d20 (master) · creek 0.1.35. Details: build_info.json
+> built 2026-10-20 02:59 UTC from d3baecf (master) · creek 0.1.36. Details: build_info.json
 
 # index.html.md
 
@@ -173,7 +173,7 @@ Reset state to initial state and return self.
 Apply one `symbol` to the current state and return the new state.
 
 * **Return type:**
-  [`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`State`)
+  `State`
 
 ### *class* creek.automatas.MappingTransitionFunc(mapping, strict=True)
 
@@ -194,26 +194,26 @@ state_mapper applied to the states.
 Make an automata: `basic_automata(f, state)(symbols)` yields the state after each symbol.
 
 * **Return type:**
-  [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[[`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`State`), [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[[`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`Symbol`)]], [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[[`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`State`)]]
+  [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[`State`, [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[`Symbol`]], [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[`State`]]
 
 ### creek.automatas.basic_automata(transition_func, state)
 
 Make an automata: `basic_automata(f, state)(symbols)` yields the state after each symbol.
 
 * **Return type:**
-  [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[[`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`State`), [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[[`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`Symbol`)]], [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[[`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`State`)]]
+  [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[`State`, [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[`Symbol`]], [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[`State`]]
 
 ### creek.automatas.mapping_to_transition_func(mapping, strict=True)
 
 Make a transition function from a `{(state, symbol): next_state}` mapping.
 
 * **Parameters:**
-  * **mapping** ([`Mapping`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping)[[`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`State`), [`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`Symbol`)], [`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`State`)]) – The transitions.
+  * **mapping** ([`Mapping`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping)[[`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[`State`, `Symbol`], `State`]) – The transitions.
   * **strict** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – If true (the default), an unmapped `(state, symbol)` pair is a
     lookup error (`KeyError` for a `dict`); if false, the state is left
     unchanged.
 * **Return type:**
-  [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[[`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`State`), [`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`Symbol`)], [`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`State`)]
+  [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[`State`, `Symbol`], `State`]
 
 
 # _autosummary/creek.base.html.md
@@ -918,8 +918,8 @@ Return `slice_obj` with `start` and `stop` shifted by `shift` (`None` bounds sta
 Get the simple relationship between intervals x and y.
 
 * **Parameters:**
-  * **x** ([`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[`Union`[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`float`](https://docs.python.org/3/builtins/functions.html#float)], `Union`[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`float`](https://docs.python.org/3/builtins/functions.html#float)]]) – A point (a number), an interval (a 2-tuple of numbers), or a slice.
-  * **y** ([`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[`Union`[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`float`](https://docs.python.org/3/builtins/functions.html#float)], `Union`[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`float`](https://docs.python.org/3/builtins/functions.html#float)]]) – An interval; a 2-tuple of numbers.
+  * **x** ([`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`float`](https://docs.python.org/3/builtins/functions.html#float)], [`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`float`](https://docs.python.org/3/builtins/functions.html#float)]]) – A point (a number), an interval (a 2-tuple of numbers), or a slice.
+  * **y** ([`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`float`](https://docs.python.org/3/builtins/functions.html#float)], [`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`float`](https://docs.python.org/3/builtins/functions.html#float)]]) – An interval; a 2-tuple of numbers.
   * **above_bt** ([`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)) – `above_bt(x_bt, y_bt)` boolean function (`ge` or `gt`)
     deciding if x starts after y does.
   * **below_tt** ([`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)) – `below_tt(x_tt, y_tt)` boolean function (`lt` or `le`)
@@ -1223,7 +1223,7 @@ True
 is more convenient to use then using a dict with boolean values to do the same
 
 * **Parameters:**
-  * **elem** (`Union`[`Element` ([`Any`](https://docs.python.org/3/library/typing.html#typing.Any)), [`LabeledElement`](_autosummary/creek.labeling.html.md#creek.labeling.LabeledElement)]) – The element that is being labeled
+  * **elem** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[`Element` ([`Any`](https://docs.python.org/3/library/typing.html#typing.Any)), [`LabeledElement`](_autosummary/creek.labeling.html.md#creek.labeling.LabeledElement)]) – The element that is being labeled
   * **label** (`Label` ([`Any`](https://docs.python.org/3/library/typing.html#typing.Any))) – The label to add to the element
   * **labeled_element_cls** – The `LabeledElement` class to use to label the element
 * **Return type:**
@@ -1391,6 +1391,7 @@ Main entry points:
 - `filter_and_index_stream`: index a stream (`enumerate` by default) and filter on the items
 - `dynamically_index / DynamicIndexer`: `enumerate` where you choose how the index advances
 - `BufferStats`: a fixed-size buffer that returns a statistic of its contents each time it is fed
+- `segment_indices`: group a stream’s items by the interval containing their index
 - `Segmenter`: feed a `BufferStats` and hand its contents to a callback after each value
 
 ```pycon
@@ -1414,6 +1415,7 @@ Main entry points:
 | [`filter_and_index_stream`](_autosummary/creek.tools.html.md#creek.tools.filter_and_index_stream)(stream, data_item_filt)   | Index a stream and filter it (based only on the data items).                                                                                                                                                                          |
 | [`is_not_none`](_autosummary/creek.tools.html.md#creek.tools.is_not_none)(x)                                    | Return `True` if `x` is not `None`.                                                                                                                                                                                                   |
 | [`return_buffer_on_stats_condition`](_autosummary/creek.tools.html.md#creek.tools.return_buffer_on_stats_condition)(stats, buffer)   | Return `buffer` if `cond(stats)` holds, else `else_val`.                                                                                                                                                                              |
+| [`segment_indices`](_autosummary/creek.tools.html.md#creek.tools.segment_indices)(items, intervals, \*[, key])      | Group `items` by the `(bt, tt)` interval that contains their index.                                                                                                                                                                   |
 | [`segment_overlaps`](_autosummary/creek.tools.html.md#creek.tools.segment_overlaps)(bt_tt_segment, query_bt, ...)    | Returns True if, and only if, bt_tt_segment overlaps query interval.                                                                                                                                                                  |
 | [`size_increments`](_autosummary/creek.tools.html.md#creek.tools.size_increments)(current_idx, obj[, size_func])    | Index updater that advances the index by `size_func(obj)`, `len` by default.                                                                                                                                                          |
 
@@ -1513,7 +1515,7 @@ Turn data items into `(index, item)` pairs, with a pluggable index update rule.
 
 * **Parameters:**
   * **start** ([`Any`](https://docs.python.org/3/library/typing.html#typing.Any)) – The index to start at (the first data item will have this index)
-  * **idx_updater** ([`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[[`Any`](https://docs.python.org/3/library/typing.html#typing.Any), [`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`DataItem`)], [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]) – The `(current_idx, data_item) -> next_idx` function
+  * **idx_updater** ([`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[[`Any`](https://docs.python.org/3/library/typing.html#typing.Any), `DataItem`], [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]) – The `(current_idx, data_item) -> next_idx` function
     computing the index the next data item will get
 
 Let’s take a finite stream of finite iterables (strings here):
@@ -1574,7 +1576,7 @@ A: Then you would use that function to make the `(idxof(data_item), data_item)`
 pairs directly. `DynamicIndexer` is for the use case where the index of an item
 depends on the (number of, sizes of, etc.) items that came before it.
 
-#### *static* count_increments(obj, step=1)
+#### *static* count_increments(current_idx, obj, step=1)
 
 Index updater that ignores `obj` and advances the index by `step`.
 
@@ -1596,7 +1598,7 @@ Index updater that ignores `obj` and advances the index by `step`.
 15
 ```
 
-#### *static* size_increments(obj, size_func=<built-in function len>)
+#### *static* size_increments(current_idx, obj, size_func=<built-in function len>)
 
 Index updater that advances the index by `size_func(obj)`, `len` by default.
 
@@ -1698,9 +1700,6 @@ and fanout (broadcast) the resulting items, to produce an iterable of tuples eac
 containing
 one of these items along with ‘a copy’ of the other tuple elements
 
-* **Return type:**
-  [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[[`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)]
-
 ```pycon
 >>> list(apply_and_fanout([1, 'abc', 3], iter, 1))
 [(1, 'a', 3), (1, 'b', 3), (1, 'c', 3)]
@@ -1712,6 +1711,9 @@ one of these items along with ‘a copy’ of the other tuple elements
 
 #### SEE ALSO
 `fanout_and_flatten` and `fanout_and_flatten_dicts`
+
+* **Return type:**
+  [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[[`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)]
 
 ### creek.tools.apply_func_to_index(seq, apply_to_idx, func)
 
@@ -1828,13 +1830,9 @@ Index a stream and filter it (based only on the data items).
 
 * **Parameters:**
   * **stream** ([`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)) – The items to index and filter.
-  * **data_item_filt** – 
-
-    A predicate on the data item, or a non-callable value:
-    ```default
+  * **data_item_filt** – A predicate on the data item, or a non-callable value:
     items equal to that value are then dropped.
-    ```
-  * **timestamper** ([`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[[`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`DataItem`)], [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`Any`](https://docs.python.org/3/library/typing.html#typing.Any), [`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`DataItem`)]]) – Turns the stream into `(index, item)` pairs; `enumerate`
+  * **timestamper** ([`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[`DataItem`], [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`Any`](https://docs.python.org/3/library/typing.html#typing.Any), `DataItem`]]) – Turns the stream into `(index, item)` pairs; `enumerate`
     by default.
 * **Returns:**
   An iterator of `(index, item)` pairs for the items that pass the filter.
@@ -1886,6 +1884,38 @@ The default `stats_buffer_callback` of `Segmenter`; partialize `cond` and
 ... )
 '3 is not even!'
 ```
+
+### creek.tools.segment_indices(items, intervals, , key=None)
+
+Group `items` by the `(bt, tt)` interval that contains their index.
+
+Both iterables are consumed once, lazily, in step: `items` must be in
+non-decreasing index order, `intervals` sorted and non-overlapping, each half-open
+(`bt <= index < tt`, as in `segment_overlaps`). One list is yielded per interval,
+empty if no item fell in it; items outside every interval are dropped. Intervals after
+the last one that received an item are not yielded (so `intervals` may be infinite).
+
+`key` extracts the index from an item (default: the item is its own index).
+
+```pycon
+>>> list(segment_indices(range(7), [(0, 2), (2, 4), (4, 6)]))
+[[0, 1], [2, 3], [4, 5]]
+>>> list(segment_indices([0, 1, 5, 6], [(0, 2), (2, 4), (4, 7)]))
+[[0, 1], [], [5, 6]]
+```
+
+The target use case, slabs from a flattened multi-stream:
+
+```pycon
+>>> from creek.multi_streams import MergedStreams
+>>> flat = MergedStreams({'hello': [(2, 'two'), (3, 'three')], 'world': [(0, 'zero'), (3, 'three')]})
+>>> [[name for name, _ in slab] for slab in
+...  segment_indices(flat, [(0, 2), (2, 4)], key=lambda x: x[1][0])]
+[['world'], ['hello', 'hello', 'world']]
+```
+
+* **Return type:**
+  [`Iterator`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator)[[`list`](https://docs.python.org/3/builtins/stdtypes.html#list)]
 
 ### creek.tools.segment_overlaps(bt_tt_segment, query_bt, query_tt)
 
@@ -2105,9 +2135,6 @@ data one by one.
 Sometimes, especially in live io contexts, that’s the kind interface you’re given
 to consume a stream.
 
-* **Return type:**
-  [`Iterator`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator)
-
 ```pycon
 >>> cursor = iter([1, 2, 3]).__next__
 >>> assert not isinstance(cursor, Iterator)
@@ -2134,6 +2161,9 @@ particular element (called a sentinel), say it:
 [1, 2]
 ```
 
+* **Return type:**
+  [`Iterator`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator)
+
 ### creek.util.identity_func(x)
 
 Return `x` unchanged.
@@ -2148,9 +2178,6 @@ Get a cursor function from an iterable.
 ### creek.util.iterable_to_iterator(iterable, sentinel=<creek.util.no_sentinel object>)
 
 Return `iter(iterable)`, or, given a sentinel, an iterator stopping just before that value.
-
-* **Return type:**
-  [`Iterator`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator)
 
 ```pycon
 >>> iterable = [1, 2, 3]
@@ -2169,6 +2196,9 @@ before it encounters that sentinel value
 >>> list(iterator)
 [1, 2, 3, 4]
 ```
+
+* **Return type:**
+  [`Iterator`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator)
 
 ### creek.util.iterate_skipping_errors(g, error_callback=None, caught_exceptions=(<class 'Exception'>, ))
 
@@ -2201,9 +2231,6 @@ Call `next` on `iterator` until one of `interrupt_exceptions` is raised, then pr
 ### creek.util.iterator_to_cursor(iterator, default=<creek.util.no_default object>)
 
 Get a cursor function for the input iterator.
-
-* **Return type:**
-  [`CursorFunc`](_autosummary/creek.util.html.md#creek.util.CursorFunc)
 
 ```pycon
 >>> iterator = iter([1, 2, 3])
@@ -2239,6 +2266,9 @@ And then…
 ```
 
 forever.
+
+* **Return type:**
+  [`CursorFunc`](_autosummary/creek.util.html.md#creek.util.CursorFunc)
 
 ### creek.util.iterize(func, name=None)
 
@@ -2325,18 +2355,16 @@ You can use sentinels too
 
 # About this build
 
-This documentation was built on **2026-09-15 10:07 UTC** from commit <a href="https://github.com/i2mint/creek/commit/7a19d20cee5109a9f298d5ad8ccfba73bc131802"><code>7a19d20</code></a> on branch <code>master</code>, for **creek 0.1.35** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-20 02:59 UTC** from commit <a href="https://github.com/i2mint/creek/commit/d3baecf956b3fa303b5b608b384346576eb3a5d1"><code>d3baecf</code></a> on branch <code>master</code>, for **creek 0.1.36** (from <code>pyproject.toml</code>).
 
-#### WARNING
-The documentation and the package may be misaligned:
-
-- The documented version (0.1.35) is behind the latest release on PyPI (0.1.36): `pip install creek` gives newer code than these docs describe.
+#### NOTE
+Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
 
 ## Source
 
 |                     |                                                                                                                                                     |
 |---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/i2mint/creek/commit/7a19d20cee5109a9f298d5ad8ccfba73bc131802"><code>7a19d20cee5109a9f298d5ad8ccfba73bc131802</code></a> |
+| Commit              | <a href="https://github.com/i2mint/creek/commit/d3baecf956b3fa303b5b608b384346576eb3a5d1"><code>d3baecf956b3fa303b5b608b384346576eb3a5d1</code></a> |
 | Branch              | <code>master</code>                                                                                                                                 |
 | Tags at this commit | none                                                                                                                                                |
 | Working tree        | clean                                                                                                                                               |
@@ -2347,18 +2375,18 @@ The documentation and the package may be misaligned:
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>i2mint/creek</code>                                                                  |
-| Run          | <a href="https://github.com/i2mint/creek/actions/runs/34956128089">34956128089</a>         |
+| Run          | <a href="https://github.com/i2mint/creek/actions/runs/39361774977">39361774977</a>         |
 | Ref          | <code>refs/heads/master</code>                                                             |
-| Event commit | <code>7a19d20cee5109a9f298d5ad8ccfba73bc131802</code> (in the history of the built commit) |
+| Event commit | <code>d3baecf956b3fa303b5b608b384346576eb3a5d1</code> (in the history of the built commit) |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.8   |
-| Sphinx   | 9.1.0   |
+| epythet  | 0.2.18  |
+| Sphinx   | 9.1.1   |
 | docutils | 0.22.4  |
-| Python   | 3.12.14 |
+| Python   | 3.12.15 |
 
 ## Configuration as resolved
 
@@ -2374,14 +2402,14 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/creek/0.1.36/">0.1.36</a>, newer than the documented version (0.1.35).
+Latest release: <a href="https://pypi.org/project/creek/0.1.36/">0.1.36</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/creek && cd creek
-git checkout 7a19d20cee5109a9f298d5ad8ccfba73bc131802
-pip install "epythet==0.2.8"
+git checkout d3baecf956b3fa303b5b608b384346576eb3a5d1
+pip install "epythet==0.2.18"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 

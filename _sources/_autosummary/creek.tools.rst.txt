@@ -20,6 +20,7 @@ creek.tools
       filter_and_index_stream
       is_not_none
       return_buffer_on_stats_condition
+      segment_indices
       segment_overlaps
       size_increments
    

@@ -212,7 +212,7 @@ True
 is more convenient to use then using a dict with boolean values to do the same
 
 * **Parameters:**
-  * **elem** (`Union`[`Element` ([`Any`](https://docs.python.org/3/library/typing.html#typing.Any)), [`LabeledElement`](#creek.labeling.LabeledElement)]) – The element that is being labeled
+  * **elem** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[`Element` ([`Any`](https://docs.python.org/3/library/typing.html#typing.Any)), [`LabeledElement`](#creek.labeling.LabeledElement)]) – The element that is being labeled
   * **label** (`Label` ([`Any`](https://docs.python.org/3/library/typing.html#typing.Any))) – The label to add to the element
   * **labeled_element_cls** – The `LabeledElement` class to use to label the element
 * **Return type:**

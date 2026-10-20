@@ -43,7 +43,7 @@ Reset state to initial state and return self.
 Apply one `symbol` to the current state and return the new state.
 
 * **Return type:**
-  [`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`State`)
+  `State`
 
 ### *class* creek.automatas.MappingTransitionFunc(mapping, strict=True)
 
@@ -64,23 +64,23 @@ state_mapper applied to the states.
 Make an automata: `basic_automata(f, state)(symbols)` yields the state after each symbol.
 
 * **Return type:**
-  [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[[`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`State`), [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[[`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`Symbol`)]], [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[[`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`State`)]]
+  [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[`State`, [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[`Symbol`]], [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[`State`]]
 
 ### creek.automatas.basic_automata(transition_func, state)
 
 Make an automata: `basic_automata(f, state)(symbols)` yields the state after each symbol.
 
 * **Return type:**
-  [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[[`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`State`), [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[[`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`Symbol`)]], [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[[`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`State`)]]
+  [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[`State`, [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[`Symbol`]], [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[`State`]]
 
 ### creek.automatas.mapping_to_transition_func(mapping, strict=True)
 
 Make a transition function from a `{(state, symbol): next_state}` mapping.
 
 * **Parameters:**
-  * **mapping** ([`Mapping`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping)[[`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`State`), [`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`Symbol`)], [`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`State`)]) – The transitions.
+  * **mapping** ([`Mapping`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping)[[`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[`State`, `Symbol`], `State`]) – The transitions.
   * **strict** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – If true (the default), an unmapped `(state, symbol)` pair is a
     lookup error (`KeyError` for a `dict`); if false, the state is left
     unchanged.
 * **Return type:**
-  [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[[`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`State`), [`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`Symbol`)], [`TypeVar`](https://docs.python.org/3/library/typing.html#typing.TypeVar)(`State`)]
+  [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[`State`, `Symbol`], `State`]
