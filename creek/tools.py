@@ -8,6 +8,7 @@ Main entry points:
 - ``filter_and_index_stream``: index a stream (``enumerate`` by default) and filter on the items
 - ``dynamically_index / DynamicIndexer``: ``enumerate`` where you choose how the index advances
 - ``BufferStats``: a fixed-size buffer that returns a statistic of its contents each time it is fed
+- ``segment_indices``: group a stream's items by the interval containing their index
 - ``Segmenter``: feed a ``BufferStats`` and hand its contents to a callback after each value
 
 >>> from creek.tools import BufferStats
@@ -23,7 +24,7 @@ from typing import (
     Any,
     cast,
 )
-from collections.abc import Callable, Iterable, Sequence
+from collections.abc import Callable, Iterable, Iterator, Sequence
 from dataclasses import dataclass
 from itertools import chain
 from operator import itemgetter
@@ -397,6 +398,56 @@ def segment_overlaps(bt_tt_segment, query_bt, query_tt):
         or query_bt <= bt < query_tt  # the bottom part of the segment intersects
         # If it's both, the interval is entirely inside the query
     )
+
+
+def segment_indices(
+    items: Iterable,
+    intervals: Iterable[tuple],
+    *,
+    key: Callable = None,
+) -> Iterator[list]:
+    """Group ``items`` by the ``(bt, tt)`` interval that contains their index.
+
+    Both iterables are consumed once, lazily, in step: ``items`` must be in
+    non-decreasing index order, ``intervals`` sorted and non-overlapping, each half-open
+    (``bt <= index < tt``, as in ``segment_overlaps``). One list is yielded per interval,
+    empty if no item fell in it; items outside every interval are dropped. Intervals after
+    the last one that received an item are not yielded (so ``intervals`` may be infinite).
+
+    ``key`` extracts the index from an item (default: the item is its own index).
+
+    >>> list(segment_indices(range(7), [(0, 2), (2, 4), (4, 6)]))
+    [[0, 1], [2, 3], [4, 5]]
+    >>> list(segment_indices([0, 1, 5, 6], [(0, 2), (2, 4), (4, 7)]))
+    [[0, 1], [], [5, 6]]
+
+    The target use case, slabs from a flattened multi-stream:
+
+    >>> from creek.multi_streams import MergedStreams
+    >>> flat = MergedStreams({'hello': [(2, 'two'), (3, 'three')], 'world': [(0, 'zero'), (3, 'three')]})
+    >>> [[name for name, _ in slab] for slab in
+    ...  segment_indices(flat, [(0, 2), (2, 4)], key=lambda x: x[1][0])]
+    [['world'], ['hello', 'hello', 'world']]
+    """
+    if key is None:
+        key = lambda x: x
+    intervals = iter(intervals)
+    interval = next(intervals, None)
+    group: list = []
+    for item in items:
+        if interval is None:
+            return
+        index = key(item)
+        while index >= interval[1]:  # item is past this interval: close it
+            yield group
+            group = []
+            interval = next(intervals, None)
+            if interval is None:
+                return
+        if index >= interval[0]:
+            group.append(item)
+    if group:
+        yield group
 
 
 Stats = Any
