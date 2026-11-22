@@ -2,16 +2,18 @@
 
 # About this build
 
-This documentation was built on **2026-11-22 14:12 UTC** from commit <a href="https://github.com/i2mint/creek/commit/d196c598c9764d3768d4f4f87646eeec6c278676"><code>d196c59</code></a> on branch <code>master</code>, for **creek 0.1.37** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-22 18:30 UTC** from commit <a href="https://github.com/i2mint/creek/commit/ee2a87472c4a08453d235b924ce9bcccbb151cec"><code>ee2a874</code></a> on branch <code>master</code>, for **creek 0.1.37** (from <code>pyproject.toml</code>).
 
-#### NOTE
-Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
+#### WARNING
+The documentation and the package may be misaligned:
+
+- The documented version (0.1.37) is behind the latest release on PyPI (0.1.38): `pip install creek` gives newer code than these docs describe.
 
 ## Source
 
 |                     |                                                                                                                                                     |
 |---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/i2mint/creek/commit/d196c598c9764d3768d4f4f87646eeec6c278676"><code>d196c598c9764d3768d4f4f87646eeec6c278676</code></a> |
+| Commit              | <a href="https://github.com/i2mint/creek/commit/ee2a87472c4a08453d235b924ce9bcccbb151cec"><code>ee2a87472c4a08453d235b924ce9bcccbb151cec</code></a> |
 | Branch              | <code>master</code>                                                                                                                                 |
 | Tags at this commit | none                                                                                                                                                |
 | Working tree        | clean                                                                                                                                               |
@@ -22,9 +24,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>i2mint/creek</code>                                                                  |
-| Run          | <a href="https://github.com/i2mint/creek/actions/runs/45031433130">45031433130</a>         |
+| Run          | <a href="https://github.com/i2mint/creek/actions/runs/45055302328">45055302328</a>         |
 | Ref          | <code>refs/heads/master</code>                                                             |
-| Event commit | <code>d196c598c9764d3768d4f4f87646eeec6c278676</code> (in the history of the built commit) |
+| Event commit | <code>ee2a87472c4a08453d235b924ce9bcccbb151cec</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -49,13 +51,13 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/creek/0.1.37/">0.1.37</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/creek/0.1.38/">0.1.38</a>, newer than the documented version (0.1.37).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/creek && cd creek
-git checkout d196c598c9764d3768d4f4f87646eeec6c278676
+git checkout ee2a87472c4a08453d235b924ce9bcccbb151cec
 pip install "epythet==0.2.23"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

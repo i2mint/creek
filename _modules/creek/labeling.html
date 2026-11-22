@@ -198,7 +198,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="73">    <span class="nd">@abstractmethod</span>
 </span><span data-line="74">    <span class="k">def</span><span class="w"> </span><span class="nf">mk_new_labels_container</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Labels</span><span class="p">:</span>
 </span><span data-line="75"><span class="w">        </span><span class="sd">"""Return a new, empty labels container."""</span>
-</span><span data-line="76">        <span class="k">raise</span> <span class="bp">NotImplemented</span><span class="p">(</span><span class="s2">"Need to implement mk_new_labels_container"</span><span class="p">)</span></div>
+</span><span data-line="76">        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"Need to implement mk_new_labels_container"</span><span class="p">)</span></div>
 
 </span><span data-line="77">
 </span><span data-line="78">    <span class="n">add_new_label</span><span class="p">:</span> <span class="n">AddLabel</span>
@@ -209,7 +209,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="81">    <span class="nd">@abstractmethod</span>
 </span><span data-line="82">    <span class="k">def</span><span class="w"> </span><span class="nf">add_new_label</span><span class="p">(</span><span class="n">labels</span><span class="p">:</span> <span class="n">Labels</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="n">Label</span><span class="p">):</span>
 </span><span data-line="83"><span class="w">        </span><span class="sd">"""Add ``label`` to ``labels`` in place."""</span>
-</span><span data-line="84">        <span class="k">raise</span> <span class="bp">NotImplemented</span><span class="p">(</span><span class="s2">"Need to implement add_new_label"</span><span class="p">)</span></div>
+</span><span data-line="84">        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"Need to implement add_new_label"</span><span class="p">)</span></div>
 
 </span><span data-line="85">
 </span><span data-line="86">    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
