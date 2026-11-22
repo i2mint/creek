@@ -194,76 +194,78 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="71">    <span class="n">sort_key</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span data-line="72">
 </span><span data-line="73">    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span data-line="74">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="75">            <span class="bp">self</span><span class="o">.</span><span class="n">effective_sort_key</span> <span class="o">=</span> <span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span data-line="76">        <span class="k">else</span><span class="p">:</span>
-</span><span data-line="77">            <span class="bp">self</span><span class="o">.</span><span class="n">effective_sort_key</span> <span class="o">=</span> <span class="n">Pipe</span><span class="p">(</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_key</span><span class="p">)</span>
-</span><span data-line="78">
-</span><span data-line="79">    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span data-line="80">        <span class="k">yield from</span> <span class="n">heapq</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-</span><span data-line="81">            <span class="o">*</span><span class="n">multi_stream_items</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">streams_map</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">effective_sort_key</span>
-</span><span data-line="82">        <span class="p">)</span></div>
+</span><span data-line="74"><span class="w">        </span><span class="sd">"""Set the sort key: the given ``sort_key`` applied to the second item of each pair (the default is that second item itself)."""</span>
+</span><span data-line="75">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="76">            <span class="bp">self</span><span class="o">.</span><span class="n">effective_sort_key</span> <span class="o">=</span> <span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span data-line="77">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="78">            <span class="bp">self</span><span class="o">.</span><span class="n">effective_sort_key</span> <span class="o">=</span> <span class="n">Pipe</span><span class="p">(</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_key</span><span class="p">)</span>
+</span><span data-line="79">
+</span><span data-line="80">    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span data-line="81"><span class="w">        </span><span class="sd">"""Merge the streams into one stream of ``(key, item)`` pairs sorted by the effective sort key."""</span>
+</span><span data-line="82">        <span class="k">yield from</span> <span class="n">heapq</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+</span><span data-line="83">            <span class="o">*</span><span class="n">multi_stream_items</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">streams_map</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">effective_sort_key</span>
+</span><span data-line="84">        <span class="p">)</span></div>
 
-</span><span data-line="83">
-</span><span data-line="84">
+</span><span data-line="85">
+</span><span data-line="86">
 <div class="viewcode-block" id="multi_stream_items">
 <a class="viewcode-back" href="../../_autosummary/creek.multi_streams.html#creek.multi_streams.multi_stream_items">[docs]</a>
-</span><span data-line="85"><span class="k">def</span><span class="w"> </span><span class="nf">multi_stream_items</span><span class="p">(</span><span class="n">streams_map</span><span class="p">:</span> <span class="n">StreamsMap</span><span class="p">):</span>
-</span><span data-line="86"><span class="w">    </span><span class="sd">"""Provides a iterable of (k1, v1_1), (k1, v1_2), ...</span>
-</span><span data-line="87">
-</span><span data-line="88"><span class="sd">    &gt;&gt;&gt; streams_map = {'hello': 'abc', 'world': [1, 2]}</span>
-</span><span data-line="89"><span class="sd">    &gt;&gt;&gt; hello_items, world_items = multi_stream_items(streams_map)</span>
-</span><span data-line="90"><span class="sd">    &gt;&gt;&gt; list(hello_items)</span>
-</span><span data-line="91"><span class="sd">    [('hello', 'a'), ('hello', 'b'), ('hello', 'c')]</span>
-</span><span data-line="92"><span class="sd">    &gt;&gt;&gt; list(world_items)</span>
-</span><span data-line="93"><span class="sd">    [('world', 1), ('world', 2)]</span>
-</span><span data-line="94"><span class="sd">    """</span>
-</span><span data-line="95">    <span class="k">for</span> <span class="n">stream_id</span><span class="p">,</span> <span class="n">stream</span> <span class="ow">in</span> <span class="n">streams_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-</span><span data-line="96">        <span class="k">yield</span> <span class="n">product</span><span class="p">([</span><span class="n">stream_id</span><span class="p">],</span> <span class="n">stream</span><span class="p">)</span></div>
+</span><span data-line="87"><span class="k">def</span><span class="w"> </span><span class="nf">multi_stream_items</span><span class="p">(</span><span class="n">streams_map</span><span class="p">:</span> <span class="n">StreamsMap</span><span class="p">):</span>
+</span><span data-line="88"><span class="w">    </span><span class="sd">"""Provides a iterable of (k1, v1_1), (k1, v1_2), ...</span>
+</span><span data-line="89">
+</span><span data-line="90"><span class="sd">    &gt;&gt;&gt; streams_map = {'hello': 'abc', 'world': [1, 2]}</span>
+</span><span data-line="91"><span class="sd">    &gt;&gt;&gt; hello_items, world_items = multi_stream_items(streams_map)</span>
+</span><span data-line="92"><span class="sd">    &gt;&gt;&gt; list(hello_items)</span>
+</span><span data-line="93"><span class="sd">    [('hello', 'a'), ('hello', 'b'), ('hello', 'c')]</span>
+</span><span data-line="94"><span class="sd">    &gt;&gt;&gt; list(world_items)</span>
+</span><span data-line="95"><span class="sd">    [('world', 1), ('world', 2)]</span>
+</span><span data-line="96"><span class="sd">    """</span>
+</span><span data-line="97">    <span class="k">for</span> <span class="n">stream_id</span><span class="p">,</span> <span class="n">stream</span> <span class="ow">in</span> <span class="n">streams_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span data-line="98">        <span class="k">yield</span> <span class="n">product</span><span class="p">([</span><span class="n">stream_id</span><span class="p">],</span> <span class="n">stream</span><span class="p">)</span></div>
 
-</span><span data-line="97">
-</span><span data-line="98">
+</span><span data-line="99">
+</span><span data-line="100">
 <div class="viewcode-block" id="transform_methods">
 <a class="viewcode-back" href="../../_autosummary/creek.multi_streams.html#creek.multi_streams.transform_methods">[docs]</a>
-</span><span data-line="99"><span class="k">def</span><span class="w"> </span><span class="nf">transform_methods</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">method_trans</span><span class="o">=</span><span class="nb">staticmethod</span><span class="p">):</span>
-</span><span data-line="100"><span class="w">    </span><span class="sd">"""Applies method_trans to all the methods of ``cls``</span>
-</span><span data-line="101">
-</span><span data-line="102"><span class="sd">    &gt;&gt;&gt; from functools import partial</span>
-</span><span data-line="103"><span class="sd">    &gt;&gt;&gt; staticmethods = partial(transform_methods, method_trans=staticmethod)</span>
-</span><span data-line="104">
-</span><span data-line="105"><span class="sd">    Now staticmethods is a class decorator that can be used to make all methods</span>
-</span><span data-line="106"><span class="sd">    be defined as staticmethods in bulk</span>
-</span><span data-line="107">
-</span><span data-line="108"><span class="sd">    &gt;&gt;&gt; @staticmethods</span>
-</span><span data-line="109"><span class="sd">    ... class C:</span>
-</span><span data-line="110"><span class="sd">    ...     foo = lambda x: x + 1</span>
-</span><span data-line="111"><span class="sd">    ...     bar = lambda y: y * 2</span>
-</span><span data-line="112"><span class="sd">    &gt;&gt;&gt; c = C()</span>
-</span><span data-line="113"><span class="sd">    &gt;&gt;&gt; c.foo(6)</span>
-</span><span data-line="114"><span class="sd">    7</span>
-</span><span data-line="115"><span class="sd">    &gt;&gt;&gt; c.bar(6)</span>
-</span><span data-line="116"><span class="sd">    12</span>
-</span><span data-line="117"><span class="sd">    """</span>
-</span><span data-line="118">    <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-</span><span data-line="119">        <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">)</span>
-</span><span data-line="120">        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">attr</span><span class="p">):</span>
-</span><span data-line="121">            <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">method_trans</span><span class="p">(</span><span class="n">attr</span><span class="p">))</span>
-</span><span data-line="122">
-</span><span data-line="123">    <span class="k">return</span> <span class="bp">cls</span></div>
-
+</span><span data-line="101"><span class="k">def</span><span class="w"> </span><span class="nf">transform_methods</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">method_trans</span><span class="o">=</span><span class="nb">staticmethod</span><span class="p">):</span>
+</span><span data-line="102"><span class="w">    </span><span class="sd">"""Applies method_trans to all the methods of ``cls``</span>
+</span><span data-line="103">
+</span><span data-line="104"><span class="sd">    &gt;&gt;&gt; from functools import partial</span>
+</span><span data-line="105"><span class="sd">    &gt;&gt;&gt; staticmethods = partial(transform_methods, method_trans=staticmethod)</span>
+</span><span data-line="106">
+</span><span data-line="107"><span class="sd">    Now staticmethods is a class decorator that can be used to make all methods</span>
+</span><span data-line="108"><span class="sd">    be defined as staticmethods in bulk</span>
+</span><span data-line="109">
+</span><span data-line="110"><span class="sd">    &gt;&gt;&gt; @staticmethods</span>
+</span><span data-line="111"><span class="sd">    ... class C:</span>
+</span><span data-line="112"><span class="sd">    ...     foo = lambda x: x + 1</span>
+</span><span data-line="113"><span class="sd">    ...     bar = lambda y: y * 2</span>
+</span><span data-line="114"><span class="sd">    &gt;&gt;&gt; c = C()</span>
+</span><span data-line="115"><span class="sd">    &gt;&gt;&gt; c.foo(6)</span>
+</span><span data-line="116"><span class="sd">    7</span>
+</span><span data-line="117"><span class="sd">    &gt;&gt;&gt; c.bar(6)</span>
+</span><span data-line="118"><span class="sd">    12</span>
+</span><span data-line="119"><span class="sd">    """</span>
+</span><span data-line="120">    <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+</span><span data-line="121">        <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">)</span>
+</span><span data-line="122">        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">attr</span><span class="p">):</span>
+</span><span data-line="123">            <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">method_trans</span><span class="p">(</span><span class="n">attr</span><span class="p">))</span>
 </span><span data-line="124">
-</span><span data-line="125">
-</span><span data-line="126"><span class="n">staticmethods</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">transform_methods</span><span class="p">,</span> <span class="n">method_trans</span><span class="o">=</span><span class="nb">staticmethod</span><span class="p">)</span>
+</span><span data-line="125">    <span class="k">return</span> <span class="bp">cls</span></div>
+
+</span><span data-line="126">
 </span><span data-line="127">
-</span><span data-line="128">
+</span><span data-line="128"><span class="n">staticmethods</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">transform_methods</span><span class="p">,</span> <span class="n">method_trans</span><span class="o">=</span><span class="nb">staticmethod</span><span class="p">)</span>
+</span><span data-line="129">
+</span><span data-line="130">
 <div class="viewcode-block" id="SortKeys">
 <a class="viewcode-back" href="../../_autosummary/creek.multi_streams.html#creek.multi_streams.SortKeys">[docs]</a>
-</span><span data-line="129"><span class="nd">@staticmethods</span>
-</span><span data-line="130"><span class="k">class</span><span class="w"> </span><span class="nc">SortKeys</span><span class="p">:</span>
-</span><span data-line="131"><span class="w">    </span><span class="sd">"""A few ``itemgetter`` sort keys, exposed as staticmethods."""</span>
-</span><span data-line="132">
-</span><span data-line="133">    <span class="n">all_but_last</span> <span class="o">=</span> <span class="n">itemgetter</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-</span><span data-line="134">    <span class="n">second_item</span> <span class="o">=</span> <span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+</span><span data-line="131"><span class="nd">@staticmethods</span>
+</span><span data-line="132"><span class="k">class</span><span class="w"> </span><span class="nc">SortKeys</span><span class="p">:</span>
+</span><span data-line="133"><span class="w">    </span><span class="sd">"""A few ``itemgetter`` sort keys, exposed as staticmethods."""</span>
+</span><span data-line="134">
+</span><span data-line="135">    <span class="n">all_but_last</span> <span class="o">=</span> <span class="n">itemgetter</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span><span data-line="136">    <span class="n">second_item</span> <span class="o">=</span> <span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 
 </span></pre></div>
         </article><button class="back-to-top" type="button">
@@ -292,7 +294,7 @@ data-aria-dark="Switch to auto color mode">
     </div>
   </div>
 </footer>
-      <script src="../../_static/documentation_options.js?v=1c946a6c"></script>
+      <script src="../../_static/documentation_options.js?v=b8ecee75"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

@@ -239,69 +239,75 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="116"><span class="sd">    """</span>
 </span><span data-line="117">
 </span><span data-line="118">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">):</span>
-</span><span data-line="119">        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span> <span class="o">=</span> <span class="n">stream</span>
-</span><span data-line="120">
-</span><span data-line="121">    <span class="n">wrap</span> <span class="o">=</span> <span class="nb">classmethod</span><span class="p">(</span><span class="n">cls_wrap</span><span class="p">)</span>
-</span><span data-line="122">
-</span><span data-line="123">    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-</span><span data-line="124"><span class="w">        </span><span class="sd">"""Delegate method to wrapped stream"""</span>
-</span><span data-line="125">        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
-</span><span data-line="126">
-</span><span data-line="127">    <span class="k">def</span><span class="w"> </span><span class="fm">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span data-line="128">        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span>
-</span><span data-line="129">            <span class="p">{</span><span class="o">*</span><span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">),</span> <span class="o">*</span><span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">)}</span>
-</span><span data-line="130">        <span class="p">)</span>  <span class="c1"># to forward dir to delegated stream as well</span>
-</span><span data-line="131">        <span class="c1"># return list(set(dir(self.__class__)).union(self.stream.__dir__()))  # to forward dir to delegated stream as well</span>
-</span><span data-line="132">
-</span><span data-line="133">    <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span data-line="134">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="fm">__hash__</span><span class="p">()</span>
-</span><span data-line="135">
-</span><span data-line="136">    <span class="c1"># _data_of_obj = static_identity_method  # for write methods</span>
-</span><span data-line="137">    <span class="n">pre_iter</span> <span class="o">=</span> <span class="n">static_identity_method</span>
-</span><span data-line="138">    <span class="n">data_to_obj</span> <span class="o">=</span> <span class="n">static_identity_method</span>
-</span><span data-line="139">    <span class="c1"># post_filt = stream_util.always_true</span>
-</span><span data-line="140">    <span class="n">post_iter</span> <span class="o">=</span> <span class="n">static_identity_method</span>
-</span><span data-line="141">
-</span><span data-line="142">    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span data-line="143">        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_iter</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_to_obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">)))</span>
+</span><span data-line="119"><span class="w">        </span><span class="sd">"""Wrap ``stream``."""</span>
+</span><span data-line="120">        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span> <span class="o">=</span> <span class="n">stream</span>
+</span><span data-line="121">
+</span><span data-line="122">    <span class="n">wrap</span> <span class="o">=</span> <span class="nb">classmethod</span><span class="p">(</span><span class="n">cls_wrap</span><span class="p">)</span>
+</span><span data-line="123">
+</span><span data-line="124">    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+</span><span data-line="125"><span class="w">        </span><span class="sd">"""Delegate method to wrapped stream"""</span>
+</span><span data-line="126">        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+</span><span data-line="127">
+</span><span data-line="128">    <span class="k">def</span><span class="w"> </span><span class="fm">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span data-line="129"><span class="w">        </span><span class="sd">"""List the attributes of the class and of the wrapped stream."""</span>
+</span><span data-line="130">        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span>
+</span><span data-line="131">            <span class="p">{</span><span class="o">*</span><span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">),</span> <span class="o">*</span><span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">)}</span>
+</span><span data-line="132">        <span class="p">)</span>  <span class="c1"># to forward dir to delegated stream as well</span>
+</span><span data-line="133">        <span class="c1"># return list(set(dir(self.__class__)).union(self.stream.__dir__()))  # to forward dir to delegated stream as well</span>
+</span><span data-line="134">
+</span><span data-line="135">    <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span data-line="136"><span class="w">        </span><span class="sd">"""Hash of the wrapped stream."""</span>
+</span><span data-line="137">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="fm">__hash__</span><span class="p">()</span>
+</span><span data-line="138">
+</span><span data-line="139">    <span class="c1"># _data_of_obj = static_identity_method  # for write methods</span>
+</span><span data-line="140">    <span class="n">pre_iter</span> <span class="o">=</span> <span class="n">static_identity_method</span>
+</span><span data-line="141">    <span class="n">data_to_obj</span> <span class="o">=</span> <span class="n">static_identity_method</span>
+</span><span data-line="142">    <span class="c1"># post_filt = stream_util.always_true</span>
+</span><span data-line="143">    <span class="n">post_iter</span> <span class="o">=</span> <span class="n">static_identity_method</span>
 </span><span data-line="144">
-</span><span data-line="145">        <span class="c1"># for line in self.pre_iter(self.stream):</span>
-</span><span data-line="146">        <span class="c1">#     obj = self.data_to_obj(line)</span>
-</span><span data-line="147">        <span class="c1">#     if self.post_filt(obj):</span>
-</span><span data-line="148">        <span class="c1">#         yield obj</span>
-</span><span data-line="149">
-</span><span data-line="150">        <span class="c1"># TODO: See pros and cons of above vs below:</span>
-</span><span data-line="151">        <span class="c1"># yield from filter(self.post_filt,</span>
-</span><span data-line="152">        <span class="c1">#                   map(self.data_to_obj,</span>
-</span><span data-line="153">        <span class="c1">#                       self.pre_iter(self.stream)))</span>
-</span><span data-line="154">
-</span><span data-line="155">    <span class="c1"># _wrapped_methods = {'__iter__'}</span>
-</span><span data-line="156">
-</span><span data-line="157">    <span class="k">def</span><span class="w"> </span><span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># TODO: Pros and cons of having a __next__?</span>
-</span><span data-line="158"><span class="w">        </span><span class="sd">"""By default, ``next(iter(self))``."""</span>
-</span><span data-line="159">        <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+</span><span data-line="145">    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span data-line="146"><span class="w">        </span><span class="sd">"""Iterate over the items: ``post_iter`` applied to ``data_to_obj`` mapped over ``pre_iter(stream)``."""</span>
+</span><span data-line="147">        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_iter</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_to_obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">)))</span>
+</span><span data-line="148">
+</span><span data-line="149">        <span class="c1"># for line in self.pre_iter(self.stream):</span>
+</span><span data-line="150">        <span class="c1">#     obj = self.data_to_obj(line)</span>
+</span><span data-line="151">        <span class="c1">#     if self.post_filt(obj):</span>
+</span><span data-line="152">        <span class="c1">#         yield obj</span>
+</span><span data-line="153">
+</span><span data-line="154">        <span class="c1"># TODO: See pros and cons of above vs below:</span>
+</span><span data-line="155">        <span class="c1"># yield from filter(self.post_filt,</span>
+</span><span data-line="156">        <span class="c1">#                   map(self.data_to_obj,</span>
+</span><span data-line="157">        <span class="c1">#                       self.pre_iter(self.stream)))</span>
+</span><span data-line="158">
+</span><span data-line="159">    <span class="c1"># _wrapped_methods = {'__iter__'}</span>
 </span><span data-line="160">
-</span><span data-line="161">    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span data-line="162">        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
-</span><span data-line="163">        <span class="k">return</span> <span class="bp">self</span>
-</span><span data-line="164">        <span class="c1"># return self._pre_proc(self.stream) # moved to iter to</span>
-</span><span data-line="165">
-</span><span data-line="166">    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-</span><span data-line="167">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span>
-</span><span data-line="168">            <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span>
-</span><span data-line="169">        <span class="p">)</span>  <span class="c1"># TODO: Should we have a _post_proc? Uses?</span></div>
-
+</span><span data-line="161">    <span class="k">def</span><span class="w"> </span><span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># TODO: Pros and cons of having a __next__?</span>
+</span><span data-line="162"><span class="w">        </span><span class="sd">"""By default, ``next(iter(self))``."""</span>
+</span><span data-line="163">        <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+</span><span data-line="164">
+</span><span data-line="165">    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span data-line="166"><span class="w">        </span><span class="sd">"""Enter the wrapped stream's context and return ``self``."""</span>
+</span><span data-line="167">        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
+</span><span data-line="168">        <span class="k">return</span> <span class="bp">self</span>
+</span><span data-line="169">        <span class="c1"># return self._pre_proc(self.stream) # moved to iter to</span>
 </span><span data-line="170">
-</span><span data-line="171">
-</span><span data-line="172"><span class="c1"># class Brook(Creek):</span>
-</span><span data-line="173"><span class="c1">#     post_iter = static_identity_method</span>
-</span><span data-line="174"><span class="c1">#</span>
-</span><span data-line="175"><span class="c1">#     def __iter__(self):</span>
-</span><span data-line="176"><span class="c1">#         yield from self.post_iter(</span>
-</span><span data-line="177"><span class="c1">#             filter(self.post_filt,</span>
-</span><span data-line="178"><span class="c1">#                    map(self.data_to_obj,</span>
-</span><span data-line="179"><span class="c1">#                        self.pre_iter(</span>
-</span><span data-line="180"><span class="c1">#                            self.stream))))</span>
+</span><span data-line="171">    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+</span><span data-line="172"><span class="w">        </span><span class="sd">"""Exit the wrapped stream's context."""</span>
+</span><span data-line="173">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span>
+</span><span data-line="174">            <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span>
+</span><span data-line="175">        <span class="p">)</span>  <span class="c1"># TODO: Should we have a _post_proc? Uses?</span></div>
+
+</span><span data-line="176">
+</span><span data-line="177">
+</span><span data-line="178"><span class="c1"># class Brook(Creek):</span>
+</span><span data-line="179"><span class="c1">#     post_iter = static_identity_method</span>
+</span><span data-line="180"><span class="c1">#</span>
+</span><span data-line="181"><span class="c1">#     def __iter__(self):</span>
+</span><span data-line="182"><span class="c1">#         yield from self.post_iter(</span>
+</span><span data-line="183"><span class="c1">#             filter(self.post_filt,</span>
+</span><span data-line="184"><span class="c1">#                    map(self.data_to_obj,</span>
+</span><span data-line="185"><span class="c1">#                        self.pre_iter(</span>
+</span><span data-line="186"><span class="c1">#                            self.stream))))</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -329,7 +335,7 @@ data-aria-dark="Switch to auto color mode">
     </div>
   </div>
 </footer>
-      <script src="../../_static/documentation_options.js?v=1c946a6c"></script>
+      <script src="../../_static/documentation_options.js?v=b8ecee75"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

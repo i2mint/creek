@@ -243,33 +243,34 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="108">    <span class="n">state</span><span class="p">:</span> <span class="n">State</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span data-line="109">
 </span><span data-line="110">    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span data-line="111">        <span class="bp">self</span><span class="o">.</span><span class="n">_initial_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span>
-</span><span data-line="112">
-</span><span data-line="113">    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">symbols</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Symbol</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">:</span>
-</span><span data-line="114"><span class="w">        </span><span class="sd">"""Set the state to ``state``, then yield the state after each of ``symbols``."""</span>
-</span><span data-line="115">        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">state</span>
-</span><span data-line="116">        <span class="k">for</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="n">symbols</span><span class="p">:</span>
-</span><span data-line="117">            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition</span><span class="p">(</span><span class="n">symbol</span><span class="p">)</span>
-</span><span data-line="118">
+</span><span data-line="111"><span class="w">        </span><span class="sd">"""Remember the initial state, to be able to ``reset``."""</span>
+</span><span data-line="112">        <span class="bp">self</span><span class="o">.</span><span class="n">_initial_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span>
+</span><span data-line="113">
+</span><span data-line="114">    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">symbols</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Symbol</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">:</span>
+</span><span data-line="115"><span class="w">        </span><span class="sd">"""Set the state to ``state``, then yield the state after each of ``symbols``."""</span>
+</span><span data-line="116">        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">state</span>
+</span><span data-line="117">        <span class="k">for</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="n">symbols</span><span class="p">:</span>
+</span><span data-line="118">            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition</span><span class="p">(</span><span class="n">symbol</span><span class="p">)</span>
+</span><span data-line="119">
 <div class="viewcode-block" id="BasicAutomata.transition">
 <a class="viewcode-back" href="../../_autosummary/creek.automatas.html#creek.automatas.BasicAutomata.transition">[docs]</a>
-</span><span data-line="119">    <span class="k">def</span><span class="w"> </span><span class="nf">transition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">:</span> <span class="n">Symbol</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">:</span>
-</span><span data-line="120"><span class="w">        </span><span class="sd">"""Apply one ``symbol`` to the current state and return the new state."""</span>
-</span><span data-line="121">        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">symbol</span><span class="p">)</span>
-</span><span data-line="122">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span></div>
+</span><span data-line="120">    <span class="k">def</span><span class="w"> </span><span class="nf">transition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">:</span> <span class="n">Symbol</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">:</span>
+</span><span data-line="121"><span class="w">        </span><span class="sd">"""Apply one ``symbol`` to the current state and return the new state."""</span>
+</span><span data-line="122">        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">symbol</span><span class="p">)</span>
+</span><span data-line="123">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span></div>
 
-</span><span data-line="123">
+</span><span data-line="124">
 <div class="viewcode-block" id="BasicAutomata.reset">
 <a class="viewcode-back" href="../../_autosummary/creek.automatas.html#creek.automatas.BasicAutomata.reset">[docs]</a>
-</span><span data-line="124">    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span data-line="125"><span class="w">        </span><span class="sd">"""Reset state to initial state and return self."""</span>
-</span><span data-line="126">        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_state</span>
-</span><span data-line="127">        <span class="k">return</span> <span class="bp">self</span></div>
+</span><span data-line="125">    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span data-line="126"><span class="w">        </span><span class="sd">"""Reset state to initial state and return self."""</span>
+</span><span data-line="127">        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_state</span>
+</span><span data-line="128">        <span class="k">return</span> <span class="bp">self</span></div>
 </div>
 
-</span><span data-line="128">
 </span><span data-line="129">
-</span><span data-line="130"><span class="n">automata</span><span class="p">:</span> <span class="n">AutomataFactory</span> <span class="o">=</span> <span class="n">basic_automata</span>  <span class="c1"># back-compatibility alias</span>
+</span><span data-line="130">
+</span><span data-line="131"><span class="n">automata</span><span class="p">:</span> <span class="n">AutomataFactory</span> <span class="o">=</span> <span class="n">basic_automata</span>  <span class="c1"># back-compatibility alias</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -297,7 +298,7 @@ data-aria-dark="Switch to auto color mode">
     </div>
   </div>
 </footer>
-      <script src="../../_static/documentation_options.js?v=1c946a6c"></script>
+      <script src="../../_static/documentation_options.js?v=b8ecee75"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

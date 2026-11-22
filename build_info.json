@@ -1,39 +1,39 @@
 {
   "schema_version": 1,
-  "built_at": "2026-10-20T02:59:33Z",
+  "built_at": "2026-11-22T14:12:25Z",
   "package": {
     "name": "creek",
-    "version": "0.1.36",
+    "version": "0.1.37",
     "display_name": "creek",
     "source": "pyproject.toml"
   },
   "git": {
     "available": true,
-    "commit": "d3baecf956b3fa303b5b608b384346576eb3a5d1",
-    "short_commit": "d3baecf",
+    "commit": "d196c598c9764d3768d4f4f87646eeec6c278676",
+    "short_commit": "d196c59",
     "branch": "master",
     "tags": [],
     "dirty": false,
     "remote_url": "https://github.com/i2mint/creek",
-    "commit_url": "https://github.com/i2mint/creek/commit/d3baecf956b3fa303b5b608b384346576eb3a5d1",
+    "commit_url": "https://github.com/i2mint/creek/commit/d196c598c9764d3768d4f4f87646eeec6c278676",
     "error": null
   },
   "ci": {
     "provider": "github",
     "repository": "i2mint/creek",
-    "sha": "d3baecf956b3fa303b5b608b384346576eb3a5d1",
+    "sha": "d196c598c9764d3768d4f4f87646eeec6c278676",
     "sha_in_history": true,
     "ref": "refs/heads/master",
     "ref_name": "master",
-    "run_id": "39361774977",
-    "run_url": "https://github.com/i2mint/creek/actions/runs/39361774977",
+    "run_id": "45031433130",
+    "run_url": "https://github.com/i2mint/creek/actions/runs/45031433130",
     "server_url": "https://github.com"
   },
   "tools": {
-    "epythet": "0.2.18",
+    "epythet": "0.2.23",
     "sphinx": "9.1.1",
     "docutils": "0.22.4",
-    "python": "3.12.15"
+    "python": "3.12.16"
   },
   "config": {
     "theme": "auto",
@@ -60,11 +60,11 @@
   },
   "pypi": {
     "checked": true,
-    "latest": "0.1.36",
+    "latest": "0.1.37",
     "relation": "same",
     "error": null
   },
-  "reproduce": "git clone https://github.com/i2mint/creek && cd creek\ngit checkout d3baecf956b3fa303b5b608b384346576eb3a5d1\npip install \"epythet==0.2.18\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "reproduce": "git clone https://github.com/i2mint/creek && cd creek\ngit checkout d196c598c9764d3768d4f4f87646eeec6c278676\npip install \"epythet==0.2.23\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
   "warnings": [],
   "alignment": {
     "aligned": true,
