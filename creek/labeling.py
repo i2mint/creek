@@ -73,7 +73,7 @@ class LabeledElement(ABC):
     @abstractmethod
     def mk_new_labels_container(self) -> Labels:
         """Return a new, empty labels container."""
-        raise NotImplemented("Need to implement mk_new_labels_container")
+        raise NotImplementedError("Need to implement mk_new_labels_container")
 
     add_new_label: AddLabel
 
@@ -81,7 +81,7 @@ class LabeledElement(ABC):
     @abstractmethod
     def add_new_label(labels: Labels, label: Label):
         """Add ``label`` to ``labels`` in place."""
-        raise NotImplemented("Need to implement add_new_label")
+        raise NotImplementedError("Need to implement add_new_label")
 
     def __repr__(self):
         """Return ``ClassName(element)``."""

@@ -12,19 +12,19 @@ from i2 import Pipe
 # TODO: Should we use the term KV (key-value-pair) instead of annotation?
 # TODO: Should we use some Time (numerical) type instead of KT here?
 IndexAnnot = tuple[KT, VT]
-IndexAnnot.__doc__ = '''An annotation whose key is an (time) index. 
-KT is usually numerical and represents time. 
-VT holds the value (info) of the annotation.
-'''
+# IndexAnnot: an annotation whose key is an (time) index.
+# KT is usually numerical and represents time.
+# VT holds the value (info) of the annotation.
+# (Not set via ``__doc__``: a ``tuple[...]`` alias's docstring is read-only on 3.12.)
 
 Interval = tuple[KT, KT]  # note this it's two KTs here, usually numerical.
-Interval.__doc__ = '''An interval; i.e. a pair of indices'''
+# Interval: an interval; i.e. a pair of indices
 
 IntervalAnnot = tuple[Interval, VT]
-IntervalAnnot.__doc__ = '''An annotation whose key is an interval.'''
+# IntervalAnnot: an annotation whose key is an interval.
 
 KvExtractor = Callable[[Iterable], Iterable[IndexAnnot]]
-IntervalAnnot.__doc__ = '''A function that extracts annotations from an iterable.'''
+# KvExtractor: a function that extracts annotations from an iterable.
 
 FilterFunc = Callable[..., bool]
 

@@ -72,8 +72,8 @@ class MappingTransitionFunc:
         if isinstance(state_mapper, Mapping):
             state_mapper = state_mapper.get
         new_mapping = {
-            (state_mapper(state), symbol): state_mapper(state)
-            for (state, symbol), state in self.mapping.items()
+            (state_mapper(state), symbol): state_mapper(next_state)
+            for (state, symbol), next_state in self.mapping.items()
         }
         return MappingTransitionFunc(new_mapping, self.strict)
 
