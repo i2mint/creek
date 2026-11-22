@@ -74,7 +74,7 @@ static_identity_method = staticmethod(identity_func)
 
 
 class Compose:
-    def __init__(self, *funcs, default=identity_func):
+    def __init__(self, *funcs, default=identity_func) -> None:
         if len(funcs) == 0:
             self.first_func = (default,)
             self.other_funcs = ()
@@ -111,5 +111,5 @@ class CreekLayer:
     def post_iter(self, obj_stream):
         return Compose(*self.post_iters)(obj_stream)
 
-    def lay(self, **kwargs):
+    def lay(self, **kwargs) -> None:
         pass

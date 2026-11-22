@@ -64,7 +64,7 @@ class LabeledElement(ABC):
       a single label to the labels container.
     """
 
-    def __init__(self, element: Element):
+    def __init__(self, element: Element) -> None:
         """Store the ``element`` and make a new labels container for it."""
         self.element = element
         self.labels = self.mk_new_labels_container()
@@ -83,7 +83,7 @@ class LabeledElement(ABC):
         """Add ``label`` to ``labels`` in place."""
         raise NotImplementedError("Need to implement add_new_label")
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return ``ClassName(element)``."""
         return f"{type(self).__name__}({self.element})"
 
@@ -92,7 +92,7 @@ class LabeledElement(ABC):
         self.add_new_label(self.labels, label)
         return self
 
-    def __contains__(self, label):
+    def __contains__(self, label) -> bool:
         """Return whether ``label`` is in the labels."""
         return label in self.labels
 

@@ -115,7 +115,7 @@ class Creek:
 
     """
 
-    def __init__(self, stream):
+    def __init__(self, stream) -> None:
         """Wrap ``stream``."""
         self.stream = stream
 

@@ -174,7 +174,7 @@ class ExceptionRaiserCallbackMixin:
 
     dflt_args = ()
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Set up the instance from ``args`` and ``kwargs``, falling back to ``dflt_args`` when no positional args are given."""
         if len(args) == 0:
             if isinstance(self.dflt_args, str):
@@ -392,7 +392,7 @@ class IndexedBuffer:
         if_overlaps_past=overlaps_past_error,
         if_overlaps_future=overlaps_future_error,
         slice_get_postproc: Callable = list,
-    ):
+    ) -> None:
         """Set up the buffer of length ``buffer_len`` (optionally pre-filled); see the class docstring."""
         self._deque = deque(prefill, buffer_len)
         self.buffer_len = self._deque.maxlen
@@ -402,7 +402,7 @@ class IndexedBuffer:
         self.slice_get_postproc = slice_get_postproc
         self._lock = Lock()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return a representation showing the buffer length and the max index."""
         return (
             f"{type(self).__name__}("
@@ -485,7 +485,7 @@ class IndexedBuffer:
 
     extend = _extend_ram_lighter_cpu_heavier
 
-    def clear(self):
+    def clear(self) -> None:
         """Empty the buffer and reset ``max_idx`` to 0."""
         with self._lock:
             self._deque.clear()
@@ -497,7 +497,7 @@ class IndexedBuffer:
     #     return self.max_idx
 
 
-def consume(gen, n):
+def consume(gen, n) -> None:
     """Consume n iterations of generator (without returning elements)"""
     try:
         for _ in range(n):
@@ -753,7 +753,7 @@ class BufferedGetter:
         # if_overlaps_past=overlaps_past_error,
         # if_overlaps_future=overlaps_future_error,
         slice_get_postproc: Callable = list,
-    ):
+    ) -> None:
         """Set up the buffer of length ``buffer_len`` (optionally pre-filled); see the class docstring."""
         self._deque = deque(prefill, buffer_len)
         self.buffer_len = self._deque.maxlen
@@ -775,12 +775,12 @@ class BufferedGetter:
             x = self.input_data_trans(x)
             self._deque.append(x)
 
-    def extend(self, iterable):
+    def extend(self, iterable) -> None:
         """Append each item of ``iterable``."""
         for x in iterable:
             self.append(x)
 
-    def clear(self):
+    def clear(self) -> None:
         """Empty the buffer."""
         with self._lock:
             self._deque.clear()
