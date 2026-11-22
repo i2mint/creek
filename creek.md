@@ -1,4 +1,4 @@
-> built 2026-11-22 20:29 UTC from 4f8de63 (master) · creek 0.1.38. Details: build_info.json
+> built 2026-11-22 22:08 UTC from 2e4c47e (master) · creek 0.1.38. Details: build_info.json
 
 # index.html.md
 
@@ -40,6 +40,7 @@ If you are a control freak, the rest of this README is written for you, starting
 
 The `Creek` base class offers a layer-able wrap of the stream interface. There are three layering methods, `pre_iter`, `data_to_obj` and `post_iter`, each the identity by default. Iterating over a creek is exactly:
 
+<!-- wads-docs: skip fragment; yield from is shown out of its enclosing function -->
 ```python
 yield from self.post_iter(map(self.data_to_obj, self.pre_iter(self.stream)))
 ```
@@ -2385,7 +2386,7 @@ You can use sentinels too
 
 # About this build
 
-This documentation was built on **2026-11-22 20:29 UTC** from commit <a href="https://github.com/i2mint/creek/commit/4f8de632c66f0537c0b2210f0eb6c4d492244206"><code>4f8de63</code></a> on branch <code>master</code>, for **creek 0.1.38** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-22 22:08 UTC** from commit <a href="https://github.com/i2mint/creek/commit/2e4c47e5861e216c698fc6ea992409e4a70e02fb"><code>2e4c47e</code></a> on branch <code>master</code>, for **creek 0.1.38** (from <code>pyproject.toml</code>).
 
 #### NOTE
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -2394,7 +2395,7 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 |                     |                                                                                                                                                     |
 |---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/i2mint/creek/commit/4f8de632c66f0537c0b2210f0eb6c4d492244206"><code>4f8de632c66f0537c0b2210f0eb6c4d492244206</code></a> |
+| Commit              | <a href="https://github.com/i2mint/creek/commit/2e4c47e5861e216c698fc6ea992409e4a70e02fb"><code>2e4c47e5861e216c698fc6ea992409e4a70e02fb</code></a> |
 | Branch              | <code>master</code>                                                                                                                                 |
 | Tags at this commit | none                                                                                                                                                |
 | Working tree        | clean                                                                                                                                               |
@@ -2405,9 +2406,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>i2mint/creek</code>                                                                  |
-| Run          | <a href="https://github.com/i2mint/creek/actions/runs/45066562737">45066562737</a>         |
+| Run          | <a href="https://github.com/i2mint/creek/actions/runs/45075889291">45075889291</a>         |
 | Ref          | <code>refs/heads/master</code>                                                             |
-| Event commit | <code>4f8de632c66f0537c0b2210f0eb6c4d492244206</code> (in the history of the built commit) |
+| Event commit | <code>2e4c47e5861e216c698fc6ea992409e4a70e02fb</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -2438,7 +2439,7 @@ Latest release: <a href="https://pypi.org/project/creek/0.1.38/">0.1.38</a>, the
 
 ```bash
 git clone https://github.com/i2mint/creek && cd creek
-git checkout 4f8de632c66f0537c0b2210f0eb6c4d492244206
+git checkout 2e4c47e5861e216c698fc6ea992409e4a70e02fb
 pip install "epythet==0.2.23"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

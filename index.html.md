@@ -36,6 +36,7 @@ If you are a control freak, the rest of this README is written for you, starting
 
 The `Creek` base class offers a layer-able wrap of the stream interface. There are three layering methods, `pre_iter`, `data_to_obj` and `post_iter`, each the identity by default. Iterating over a creek is exactly:
 
+<!-- wads-docs: skip fragment; yield from is shown out of its enclosing function -->
 ```python
 yield from self.post_iter(map(self.data_to_obj, self.pre_iter(self.stream)))
 ```
