@@ -455,7 +455,7 @@ Stats = Any
 _no_value_specified_sentinel = cast(int, object())
 
 
-def always_true(x):
+def always_true(x) -> bool:
     """Return ``True``, whatever ``x`` is."""
     return True
 
@@ -538,7 +538,7 @@ class BufferStats(deque):
         add_new_val: Callable = deque.append,
         # *,
         # func_cond=always_true,
-    ):
+    ) -> None:
         """Set up the buffer statistics; see the class docstring for the arguments."""
         if maxlen is _no_value_specified_sentinel:
             raise TypeError("You are required to specify maxlen")

@@ -149,7 +149,9 @@ class IteratorExit(BaseException):
 DFLT_INTERRUPT_EXCEPTIONS = (StopIteration, IteratorExit, KeyboardInterrupt)
 
 
-def iterate_until_exception(iterator, interrupt_exceptions=DFLT_INTERRUPT_EXCEPTIONS):
+def iterate_until_exception(
+    iterator, interrupt_exceptions=DFLT_INTERRUPT_EXCEPTIONS
+) -> None:
     """Call ``next`` on ``iterator`` until one of ``interrupt_exceptions`` is raised, then print ``ending``."""
     while True:
         try:
@@ -314,19 +316,19 @@ no_such_item = type("NoSuchItem", (), {})()
 class stream_util:
     """A namespace of small stream helpers."""
 
-    def always_true(*args, **kwargs):
+    def always_true(*args, **kwargs) -> bool:
         """Return ``True``."""
         return True
 
-    def do_nothing(*args, **kwargs):
+    def do_nothing(*args, **kwargs) -> None:
         """Return ``None``."""
         pass
 
-    def rewind(self, instance):
+    def rewind(self, instance) -> None:
         """Seek ``instance`` back to 0."""
         instance.seek(0)
 
-    def skip_lines(self, instance, n_lines_to_skip=0):
+    def skip_lines(self, instance, n_lines_to_skip=0) -> None:
         """Seek ``instance`` back to 0 (``n_lines_to_skip`` is currently ignored)."""
         instance.seek(0)
 
@@ -346,7 +348,7 @@ def cls_wrap(cls, obj):
         @wraps(obj, updated=())
         class Wrap(cls):
             @wraps(obj.__init__)
-            def __init__(self, *args, **kwargs):
+            def __init__(self, *args, **kwargs) -> None:
                 wrapped = obj(*args, **kwargs)
                 super().__init__(wrapped)
 
@@ -432,7 +434,7 @@ class Pipe:
 
     funcs = ()
 
-    def __init__(self, *funcs, **named_funcs):
+    def __init__(self, *funcs, **named_funcs) -> None:
         """Store the ``funcs`` (positional, then named) to be applied one after the other."""
         named_funcs = self._process_reserved_names(named_funcs)
         funcs = list(funcs) + list(named_funcs.values())
@@ -468,7 +470,7 @@ class Pipe:
             out = func(out)
         return out
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Return the number of functions."""
         return len(self.funcs)
 

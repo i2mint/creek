@@ -1,6 +1,4 @@
-"""Tools to make annotators.
-
-"""
+"""Tools to make annotators."""
 
 from typing import Union, Tuple, KT, VT
 from collections.abc import Iterable, Callable
@@ -29,7 +27,7 @@ KvExtractor = Callable[[Iterable], Iterable[IndexAnnot]]
 FilterFunc = Callable[..., bool]
 
 
-def always_true(x):
+def always_true(x) -> bool:
     return True
 
 
@@ -62,7 +60,7 @@ def mk_interval_extractor(
     *,
     kv_extractor: KvExtractor = enumerate,
     include_tag: bool = True,
-    track_tag: FilterFunc = always_true
+    track_tag: FilterFunc = always_true,
 ) -> Callable[[Iterable], Iterable[Interval | IntervalAnnot]]:
     """Make an interval extractor from a key-value extractor.
 

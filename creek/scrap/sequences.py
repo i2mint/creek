@@ -15,10 +15,10 @@ from collections.abc import Sequence
 # This was just to verify that ``Sequence`` mixins can resolve all methods from
 # just __len__ and __getitem__ (but how, I don't know yet, seems it's burried in C)
 class Seq(Sequence):
-    def __init__(self, seq):
+    def __init__(self, seq) -> None:
         self.seq = seq
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.seq)
 
     def __getitem__(self, item):
