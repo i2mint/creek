@@ -1,32 +1,32 @@
 {
   "schema_version": 1,
-  "built_at": "2026-11-22T18:30:04Z",
+  "built_at": "2026-11-22T20:29:10Z",
   "package": {
     "name": "creek",
-    "version": "0.1.37",
+    "version": "0.1.38",
     "display_name": "creek",
     "source": "pyproject.toml"
   },
   "git": {
     "available": true,
-    "commit": "ee2a87472c4a08453d235b924ce9bcccbb151cec",
-    "short_commit": "ee2a874",
+    "commit": "4f8de632c66f0537c0b2210f0eb6c4d492244206",
+    "short_commit": "4f8de63",
     "branch": "master",
     "tags": [],
     "dirty": false,
     "remote_url": "https://github.com/i2mint/creek",
-    "commit_url": "https://github.com/i2mint/creek/commit/ee2a87472c4a08453d235b924ce9bcccbb151cec",
+    "commit_url": "https://github.com/i2mint/creek/commit/4f8de632c66f0537c0b2210f0eb6c4d492244206",
     "error": null
   },
   "ci": {
     "provider": "github",
     "repository": "i2mint/creek",
-    "sha": "ee2a87472c4a08453d235b924ce9bcccbb151cec",
+    "sha": "4f8de632c66f0537c0b2210f0eb6c4d492244206",
     "sha_in_history": true,
     "ref": "refs/heads/master",
     "ref_name": "master",
-    "run_id": "45055302328",
-    "run_url": "https://github.com/i2mint/creek/actions/runs/45055302328",
+    "run_id": "45066562737",
+    "run_url": "https://github.com/i2mint/creek/actions/runs/45066562737",
     "server_url": "https://github.com"
   },
   "tools": {
@@ -61,15 +61,13 @@
   "pypi": {
     "checked": true,
     "latest": "0.1.38",
-    "relation": "behind",
+    "relation": "same",
     "error": null
   },
-  "reproduce": "git clone https://github.com/i2mint/creek && cd creek\ngit checkout ee2a87472c4a08453d235b924ce9bcccbb151cec\npip install \"epythet==0.2.23\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "reproduce": "git clone https://github.com/i2mint/creek && cd creek\ngit checkout 4f8de632c66f0537c0b2210f0eb6c4d492244206\npip install \"epythet==0.2.23\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
   "warnings": [],
   "alignment": {
-    "aligned": false,
-    "notes": [
-      "The documented version (0.1.37) is behind the latest release on PyPI (0.1.38): `pip install creek` gives newer code than these docs describe."
-    ]
+    "aligned": true,
+    "notes": []
   }
 }

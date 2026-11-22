@@ -15,7 +15,7 @@
 - [creek.multi_streams](_autosummary/creek.multi_streams.html.md): Merge several sorted streams into one stream of &#96;(stream_id, item)&#96; pairs.
 - [creek.tools](_autosummary/creek.tools.html.md): Tools to index, window and segment streams.
 - [creek.util](_autosummary/creek.util.html.md): Iterator, cursor and function-composition utilities used across creek.
-- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-11-22 18:30 UTC&#42;&#42; from commit &lt;a href="https://github.com/i2m...
+- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-11-22 20:29 UTC&#42;&#42; from commit &lt;a href="https://github.com/i2m...
 
 ## Optional
 

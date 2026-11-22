@@ -617,7 +617,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="457">
 <div class="viewcode-block" id="always_true">
 <a class="viewcode-back" href="../../_autosummary/creek.tools.html#creek.tools.always_true">[docs]</a>
-</span><span data-line="458"><span class="k">def</span><span class="w"> </span><span class="nf">always_true</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span><span data-line="458"><span class="k">def</span><span class="w"> </span><span class="nf">always_true</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 </span><span data-line="459"><span class="w">    </span><span class="sd">"""Return ``True``, whatever ``x`` is."""</span>
 </span><span data-line="460">    <span class="k">return</span> <span class="kc">True</span></div>
 
@@ -703,7 +703,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="538">        <span class="n">add_new_val</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">deque</span><span class="o">.</span><span class="n">append</span><span class="p">,</span>
 </span><span data-line="539">        <span class="c1"># *,</span>
 </span><span data-line="540">        <span class="c1"># func_cond=always_true,</span>
-</span><span data-line="541">    <span class="p">):</span>
+</span><span data-line="541">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span data-line="542"><span class="w">        </span><span class="sd">"""Set up the buffer statistics; see the class docstring for the arguments."""</span>
 </span><span data-line="543">        <span class="k">if</span> <span class="n">maxlen</span> <span class="ow">is</span> <span class="n">_no_value_specified_sentinel</span><span class="p">:</span>
 </span><span data-line="544">            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"You are required to specify maxlen"</span><span class="p">)</span>
@@ -843,7 +843,7 @@ data-aria-dark="Switch to auto color mode">
     </div>
   </div>
 </footer>
-      <script src="../../_static/documentation_options.js?v=b8ecee75"></script>
+      <script src="../../_static/documentation_options.js?v=50f64db7"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

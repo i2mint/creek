@@ -187,7 +187,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="64"><span class="sd">      a single label to the labels container.</span>
 </span><span data-line="65"><span class="sd">    """</span>
 </span><span data-line="66">
-</span><span data-line="67">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">):</span>
+</span><span data-line="67">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span data-line="68"><span class="w">        </span><span class="sd">"""Store the ``element`` and make a new labels container for it."""</span>
 </span><span data-line="69">        <span class="bp">self</span><span class="o">.</span><span class="n">element</span> <span class="o">=</span> <span class="n">element</span>
 </span><span data-line="70">        <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mk_new_labels_container</span><span class="p">()</span>
@@ -212,7 +212,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="84">        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"Need to implement add_new_label"</span><span class="p">)</span></div>
 
 </span><span data-line="85">
-</span><span data-line="86">    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span data-line="86">    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 </span><span data-line="87"><span class="w">        </span><span class="sd">"""Return ``ClassName(element)``."""</span>
 </span><span data-line="88">        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="si">}</span><span class="s2">)"</span>
 </span><span data-line="89">
@@ -224,7 +224,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="93">        <span class="k">return</span> <span class="bp">self</span></div>
 
 </span><span data-line="94">
-</span><span data-line="95">    <span class="k">def</span><span class="w"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+</span><span data-line="95">    <span class="k">def</span><span class="w"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 </span><span data-line="96"><span class="w">        </span><span class="sd">"""Return whether ``label`` is in the labels."""</span>
 </span><span data-line="97">        <span class="k">return</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span></div>
 
@@ -395,7 +395,7 @@ data-aria-dark="Switch to auto color mode">
     </div>
   </div>
 </footer>
-      <script src="../../_static/documentation_options.js?v=b8ecee75"></script>
+      <script src="../../_static/documentation_options.js?v=50f64db7"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

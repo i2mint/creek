@@ -306,7 +306,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="174">
 </span><span data-line="175">    <span class="n">dflt_args</span> <span class="o">=</span> <span class="p">()</span>
 </span><span data-line="176">
-</span><span data-line="177">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span data-line="177">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span data-line="178"><span class="w">        </span><span class="sd">"""Set up the instance from ``args`` and ``kwargs``, falling back to ``dflt_args`` when no positional args are given."""</span>
 </span><span data-line="179">        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 </span><span data-line="180">            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dflt_args</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -551,7 +551,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="392">        <span class="n">if_overlaps_past</span><span class="o">=</span><span class="n">overlaps_past_error</span><span class="p">,</span>
 </span><span data-line="393">        <span class="n">if_overlaps_future</span><span class="o">=</span><span class="n">overlaps_future_error</span><span class="p">,</span>
 </span><span data-line="394">        <span class="n">slice_get_postproc</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="nb">list</span><span class="p">,</span>
-</span><span data-line="395">    <span class="p">):</span>
+</span><span data-line="395">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span data-line="396"><span class="w">        </span><span class="sd">"""Set up the buffer of length ``buffer_len`` (optionally pre-filled); see the class docstring."""</span>
 </span><span data-line="397">        <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="n">prefill</span><span class="p">,</span> <span class="n">buffer_len</span><span class="p">)</span>
 </span><span data-line="398">        <span class="bp">self</span><span class="o">.</span><span class="n">buffer_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span><span class="o">.</span><span class="n">maxlen</span>
@@ -561,7 +561,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="402">        <span class="bp">self</span><span class="o">.</span><span class="n">slice_get_postproc</span> <span class="o">=</span> <span class="n">slice_get_postproc</span>
 </span><span data-line="403">        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
 </span><span data-line="404">
-</span><span data-line="405">    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span data-line="405">    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 </span><span data-line="406"><span class="w">        </span><span class="sd">"""Return a representation showing the buffer length and the max index."""</span>
 </span><span data-line="407">        <span class="k">return</span> <span class="p">(</span>
 </span><span data-line="408">            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">("</span>
@@ -652,7 +652,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="487">
 <div class="viewcode-block" id="IndexedBuffer.clear">
 <a class="viewcode-back" href="../../_autosummary/creek.infinite_sequence.html#creek.infinite_sequence.IndexedBuffer.clear">[docs]</a>
-</span><span data-line="488">    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span data-line="488">    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span data-line="489"><span class="w">        </span><span class="sd">"""Empty the buffer and reset ``max_idx`` to 0."""</span>
 </span><span data-line="490">        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
 </span><span data-line="491">            <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -668,7 +668,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="499">
 <div class="viewcode-block" id="consume">
 <a class="viewcode-back" href="../../_autosummary/creek.infinite_sequence.html#creek.infinite_sequence.consume">[docs]</a>
-</span><span data-line="500"><span class="k">def</span><span class="w"> </span><span class="nf">consume</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+</span><span data-line="500"><span class="k">def</span><span class="w"> </span><span class="nf">consume</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span data-line="501"><span class="w">    </span><span class="sd">"""Consume n iterations of generator (without returning elements)"""</span>
 </span><span data-line="502">    <span class="k">try</span><span class="p">:</span>
 </span><span data-line="503">        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
@@ -936,7 +936,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="753">        <span class="c1"># if_overlaps_past=overlaps_past_error,</span>
 </span><span data-line="754">        <span class="c1"># if_overlaps_future=overlaps_future_error,</span>
 </span><span data-line="755">        <span class="n">slice_get_postproc</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="nb">list</span><span class="p">,</span>
-</span><span data-line="756">    <span class="p">):</span>
+</span><span data-line="756">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span data-line="757"><span class="w">        </span><span class="sd">"""Set up the buffer of length ``buffer_len`` (optionally pre-filled); see the class docstring."""</span>
 </span><span data-line="758">        <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="n">prefill</span><span class="p">,</span> <span class="n">buffer_len</span><span class="p">)</span>
 </span><span data-line="759">        <span class="bp">self</span><span class="o">.</span><span class="n">buffer_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span><span class="o">.</span><span class="n">maxlen</span>
@@ -966,7 +966,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="777">
 <div class="viewcode-block" id="BufferedGetter.extend">
 <a class="viewcode-back" href="../../_autosummary/creek.infinite_sequence.html#creek.infinite_sequence.BufferedGetter.extend">[docs]</a>
-</span><span data-line="778">    <span class="k">def</span><span class="w"> </span><span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable</span><span class="p">):</span>
+</span><span data-line="778">    <span class="k">def</span><span class="w"> </span><span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span data-line="779"><span class="w">        </span><span class="sd">"""Append each item of ``iterable``."""</span>
 </span><span data-line="780">        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
 </span><span data-line="781">            <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
@@ -974,7 +974,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="782">
 <div class="viewcode-block" id="BufferedGetter.clear">
 <a class="viewcode-back" href="../../_autosummary/creek.infinite_sequence.html#creek.infinite_sequence.BufferedGetter.clear">[docs]</a>
-</span><span data-line="783">    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span data-line="783">    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span data-line="784"><span class="w">        </span><span class="sd">"""Empty the buffer."""</span>
 </span><span data-line="785">        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
 </span><span data-line="786">            <span class="bp">self</span><span class="o">.</span><span class="n">_deque</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
@@ -1027,7 +1027,7 @@ data-aria-dark="Switch to auto color mode">
     </div>
   </div>
 </footer>
-      <script src="../../_static/documentation_options.js?v=b8ecee75"></script>
+      <script src="../../_static/documentation_options.js?v=50f64db7"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

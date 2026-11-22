@@ -98,9 +98,15 @@ Transform `x` with `input_data_trans` and add it to the buffer.
 
 Empty the buffer.
 
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
 #### extend(iterable)
 
 Append each item of `iterable`.
+
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 #### filter(filt)
 
@@ -237,6 +243,9 @@ Add one item, advancing `max_idx` by 1.
 #### clear()
 
 Empty the buffer and reset `max_idx` to 0.
+
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 #### extend(iterable)
 
@@ -485,6 +494,9 @@ Return `obj` unchanged (the default transform).
 ### creek.infinite_sequence.consume(gen, n)
 
 Consume n iterations of generator (without returning elements)
+
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ### creek.infinite_sequence.new_type(name, typ, doc=None)
 

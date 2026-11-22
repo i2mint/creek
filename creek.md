@@ -1,4 +1,4 @@
-> built 2026-11-22 18:30 UTC from ee2a874 (master) · creek 0.1.37. Details: build_info.json
+> built 2026-11-22 20:29 UTC from 4f8de63 (master) · creek 0.1.38. Details: build_info.json
 
 # index.html.md
 
@@ -513,9 +513,15 @@ Transform `x` with `input_data_trans` and add it to the buffer.
 
 Empty the buffer.
 
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
 #### extend(iterable)
 
 Append each item of `iterable`.
+
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 #### filter(filt)
 
@@ -652,6 +658,9 @@ Add one item, advancing `max_idx` by 1.
 #### clear()
 
 Empty the buffer and reset `max_idx` to 0.
+
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 #### extend(iterable)
 
@@ -900,6 +909,9 @@ Return `obj` unchanged (the default transform).
 ### creek.infinite_sequence.consume(gen, n)
 
 Consume n iterations of generator (without returning elements)
+
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ### creek.infinite_sequence.new_type(name, typ, doc=None)
 
@@ -1693,6 +1705,9 @@ Alternative to dynamically_index using itertools and partial
 
 Return `True`, whatever `x` is.
 
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
+
 ### creek.tools.apply_and_fanout(seq, func, idx)
 
 Apply function (that returns an Iterable) to an element of a sequence
@@ -2228,6 +2243,9 @@ See [https://github.com/i2mint/creek/issues/6](https://github.com/i2mint/creek/i
 
 Call `next` on `iterator` until one of `interrupt_exceptions` is raised, then print `ending`.
 
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
 ### creek.util.iterator_to_cursor(iterator, default=<creek.util.no_default object>)
 
 Get a cursor function for the input iterator.
@@ -2297,17 +2315,29 @@ A namespace of small stream helpers.
 
 Return `True`.
 
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
+
 #### do_nothing(\*\*kwargs)
 
 Return `None`.
+
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 #### rewind(instance)
 
 Seek `instance` back to 0.
 
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
 #### skip_lines(instance, n_lines_to_skip=0)
 
 Seek `instance` back to 0 (`n_lines_to_skip` is currently ignored).
+
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ### creek.util.to_iterator(x, sentinel=<creek.util.no_sentinel object>)
 
@@ -2355,18 +2385,16 @@ You can use sentinels too
 
 # About this build
 
-This documentation was built on **2026-11-22 18:30 UTC** from commit <a href="https://github.com/i2mint/creek/commit/ee2a87472c4a08453d235b924ce9bcccbb151cec"><code>ee2a874</code></a> on branch <code>master</code>, for **creek 0.1.37** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-22 20:29 UTC** from commit <a href="https://github.com/i2mint/creek/commit/4f8de632c66f0537c0b2210f0eb6c4d492244206"><code>4f8de63</code></a> on branch <code>master</code>, for **creek 0.1.38** (from <code>pyproject.toml</code>).
 
-#### WARNING
-The documentation and the package may be misaligned:
-
-- The documented version (0.1.37) is behind the latest release on PyPI (0.1.38): `pip install creek` gives newer code than these docs describe.
+#### NOTE
+Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
 
 ## Source
 
 |                     |                                                                                                                                                     |
 |---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/i2mint/creek/commit/ee2a87472c4a08453d235b924ce9bcccbb151cec"><code>ee2a87472c4a08453d235b924ce9bcccbb151cec</code></a> |
+| Commit              | <a href="https://github.com/i2mint/creek/commit/4f8de632c66f0537c0b2210f0eb6c4d492244206"><code>4f8de632c66f0537c0b2210f0eb6c4d492244206</code></a> |
 | Branch              | <code>master</code>                                                                                                                                 |
 | Tags at this commit | none                                                                                                                                                |
 | Working tree        | clean                                                                                                                                               |
@@ -2377,9 +2405,9 @@ The documentation and the package may be misaligned:
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>i2mint/creek</code>                                                                  |
-| Run          | <a href="https://github.com/i2mint/creek/actions/runs/45055302328">45055302328</a>         |
+| Run          | <a href="https://github.com/i2mint/creek/actions/runs/45066562737">45066562737</a>         |
 | Ref          | <code>refs/heads/master</code>                                                             |
-| Event commit | <code>ee2a87472c4a08453d235b924ce9bcccbb151cec</code> (in the history of the built commit) |
+| Event commit | <code>4f8de632c66f0537c0b2210f0eb6c4d492244206</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -2404,13 +2432,13 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/creek/0.1.38/">0.1.38</a>, newer than the documented version (0.1.37).
+Latest release: <a href="https://pypi.org/project/creek/0.1.38/">0.1.38</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/creek && cd creek
-git checkout ee2a87472c4a08453d235b924ce9bcccbb151cec
+git checkout 4f8de632c66f0537c0b2210f0eb6c4d492244206
 pip install "epythet==0.2.23"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

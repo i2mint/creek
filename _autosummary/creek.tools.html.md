@@ -312,6 +312,9 @@ Alternative to dynamically_index using itertools and partial
 
 Return `True`, whatever `x` is.
 
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
+
 ### creek.tools.apply_and_fanout(seq, func, idx)
 
 Apply function (that returns an Iterable) to an element of a sequence

@@ -304,12 +304,22 @@ pull data from (according to the demands of the query).</p>
 <dt class="sig sig-object py" id="creek.infinite_sequence.BufferedGetter.clear">
 <span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/infinite_sequence.html#BufferedGetter.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.infinite_sequence.BufferedGetter.clear" title="Link to this definition">#</a></dt>
 <dd><p>Empty the buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="creek.infinite_sequence.BufferedGetter.extend">
 <span class="sig-name descname"><span class="pre">extend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/infinite_sequence.html#BufferedGetter.extend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.infinite_sequence.BufferedGetter.extend" title="Link to this definition">#</a></dt>
 <dd><p>Append each item of <code class="docutils literal notranslate"><span class="pre">iterable</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -339,6 +349,8 @@ pull data from (according to the demands of the query).</p>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Make the instance callable and have the effect of raising the instance.
 Meant to add to an exception class so that instances of this class can be used as callbacks that raise the error</p>
+<dl class="field-list simple">
+</dl>
 </dd></dl>
 
 <dl class="py class">
@@ -454,6 +466,11 @@ error that tells you so:</p>
 <dt class="sig sig-object py" id="creek.infinite_sequence.IndexedBuffer.clear">
 <span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/infinite_sequence.html#IndexedBuffer.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.infinite_sequence.IndexedBuffer.clear" title="Link to this definition">#</a></dt>
 <dd><p>Empty the buffer and reset <code class="docutils literal notranslate"><span class="pre">max_idx</span></code> to 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -630,6 +647,8 @@ In those situations, you can use <code class="docutils literal notranslate"><spa
 <dd><p>Bases: <a class="reference internal" href="#creek.infinite_sequence.ExceptionRaiserCallbackMixin" title="creek.infinite_sequence.ExceptionRaiserCallbackMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExceptionRaiserCallbackMixin</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#IndexError" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IndexError</span></code></a></p>
 <p>IndexError that indicates that there was an attempt to index some data that is not contained in the buffer
 (i.e. is that a part of the request is NO LONGER, or NOT YET covered by the buffer)</p>
+<dl class="field-list simple">
+</dl>
 </dd></dl>
 
 <dl class="py exception">
@@ -638,6 +657,8 @@ In those situations, you can use <code class="docutils literal notranslate"><spa
 <dd><p>Bases: <a class="reference internal" href="#creek.infinite_sequence.NotDuringError" title="creek.infinite_sequence.NotDuringError"><code class="xref py py-class docutils literal notranslate"><span class="pre">NotDuringError</span></code></a></p>
 <p>IndexError that indicates that there was an attempt to index some data that is in the FUTURE
 (i.e. is NOT YET completely covered by the buffer)</p>
+<dl class="field-list simple">
+</dl>
 </dd></dl>
 
 <dl class="py exception">
@@ -646,6 +667,8 @@ In those situations, you can use <code class="docutils literal notranslate"><spa
 <dd><p>Bases: <a class="reference internal" href="#creek.infinite_sequence.NotDuringError" title="creek.infinite_sequence.NotDuringError"><code class="xref py py-class docutils literal notranslate"><span class="pre">NotDuringError</span></code></a></p>
 <p>IndexError that indicates that there was an attempt to index some data that is in the PAST
 (i.e. is NO LONGER completely covered by the buffer)</p>
+<dl class="field-list simple">
+</dl>
 </dd></dl>
 
 <dl class="py exception">
@@ -693,6 +716,11 @@ resolved to max_idx + idx</p>
 <dt class="sig sig-object py" id="creek.infinite_sequence.consume">
 <span class="sig-prename descclassname"><span class="pre">creek.infinite_sequence.</span></span><span class="sig-name descname"><span class="pre">consume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/creek/infinite_sequence.html#consume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#creek.infinite_sequence.consume" title="Link to this definition">#</a></dt>
 <dd><p>Consume n iterations of generator (without returning elements)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -853,7 +881,7 @@ This can then be used to enable [i:j] access.</p>
     </div>
   </div>
 </footer>
-      <script src="../_static/documentation_options.js?v=b8ecee75"></script>
+      <script src="../_static/documentation_options.js?v=50f64db7"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

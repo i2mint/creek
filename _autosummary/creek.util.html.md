@@ -267,6 +267,9 @@ See [https://github.com/i2mint/creek/issues/6](https://github.com/i2mint/creek/i
 
 Call `next` on `iterator` until one of `interrupt_exceptions` is raised, then print `ending`.
 
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
 ### creek.util.iterator_to_cursor(iterator, default=<creek.util.no_default object>)
 
 Get a cursor function for the input iterator.
@@ -336,17 +339,29 @@ A namespace of small stream helpers.
 
 Return `True`.
 
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
+
 #### do_nothing(\*\*kwargs)
 
 Return `None`.
+
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 #### rewind(instance)
 
 Seek `instance` back to 0.
 
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
 #### skip_lines(instance, n_lines_to_skip=0)
 
 Seek `instance` back to 0 (`n_lines_to_skip` is currently ignored).
+
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ### creek.util.to_iterator(x, sentinel=<creek.util.no_sentinel object>)
 
