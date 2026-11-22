@@ -175,6 +175,7 @@ class ExceptionRaiserCallbackMixin:
     dflt_args = ()
 
     def __init__(self, *args, **kwargs):
+        """Set up the instance from ``args`` and ``kwargs``, falling back to ``dflt_args`` when no positional args are given."""
         if len(args) == 0:
             if isinstance(self.dflt_args, str):
                 self.dflt_args = (self.dflt_args,)
@@ -392,6 +393,7 @@ class IndexedBuffer:
         if_overlaps_future=overlaps_future_error,
         slice_get_postproc: Callable = list,
     ):
+        """Set up the buffer of length ``buffer_len`` (optionally pre-filled); see the class docstring."""
         self._deque = deque(prefill, buffer_len)
         self.buffer_len = self._deque.maxlen
         self.max_idx = 0  # should correspond to the number of items added
@@ -401,6 +403,7 @@ class IndexedBuffer:
         self._lock = Lock()
 
     def __repr__(self):
+        """Return a representation showing the buffer length and the max index."""
         return (
             f"{type(self).__name__}("
             f"buffer_len={self.buffer_len}, "
@@ -409,6 +412,7 @@ class IndexedBuffer:
         )
 
     def __iter__(self):
+        """Iterate over the items currently in the buffer."""
         yield from self._deque
 
     @property
@@ -435,6 +439,7 @@ class IndexedBuffer:
             )
 
     def __getitem__(self, item):
+        """Return the item(s) at ``item`` (an index or a slice, negative indices allowed); raise if the request is outside the buffer."""
         item = absolute_item(
             item, self.max_idx
         )  # Note: Overhead for convenience of negative indices use (worth it?)
@@ -653,9 +658,11 @@ class InfiniteSeq:
     buffer_len: int
 
     def __post_init__(self):
+        """Create the indexed buffer of length ``buffer_len``."""
         self.indexed_buffer = IndexedBuffer(self.buffer_len)
 
     def __getitem__(self, item):
+        """Return the item(s) at ``item``, first pulling from the iterator whatever a slice reaching into the future needs."""
         if isinstance(item, slice):
             n_ticks_in_the_future = item.stop - self.indexed_buffer.max_idx
             if n_ticks_in_the_future > 0:
@@ -747,6 +754,7 @@ class BufferedGetter:
         # if_overlaps_future=overlaps_future_error,
         slice_get_postproc: Callable = list,
     ):
+        """Set up the buffer of length ``buffer_len`` (optionally pre-filled); see the class docstring."""
         self._deque = deque(prefill, buffer_len)
         self.buffer_len = self._deque.maxlen
         self.input_data_trans = input_data_trans
@@ -778,6 +786,7 @@ class BufferedGetter:
             self._deque.clear()
 
     def __getitem__(self, q: Query):
+        """Return the items matching the query ``q``."""
         return self._getitem(q)
 
     def _getitem(self, q: Query):
@@ -790,4 +799,5 @@ class BufferedGetter:
         return filter(filt, self._deque)
 
     def __iter__(self):  # to dodge the iteration falling back to __getitem__(i)
+        """Iterate over the items currently in the buffer (so that iteration doesn't fall back on ``__getitem__``)."""
         yield from self._deque

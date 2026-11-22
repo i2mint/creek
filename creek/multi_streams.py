@@ -71,12 +71,14 @@ class MergedStreams:
     sort_key: Callable | None = None
 
     def __post_init__(self):
+        """Set the sort key: the given ``sort_key`` applied to the second item of each pair (the default is that second item itself)."""
         if self.sort_key is None:
             self.effective_sort_key = itemgetter(1)
         else:
             self.effective_sort_key = Pipe(itemgetter(1), self.sort_key)
 
     def __iter__(self):
+        """Merge the streams into one stream of ``(key, item)`` pairs sorted by the effective sort key."""
         yield from heapq.merge(
             *multi_stream_items(self.streams_map), key=self.effective_sort_key
         )

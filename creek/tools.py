@@ -288,6 +288,7 @@ class DynamicIndexer:
     size_increments = staticmethod(size_increments)
 
     def __post_init__(self):
+        """Start counting from ``start``."""
         self.current_idx = self.start
 
     def __call__(self, x):
@@ -538,6 +539,7 @@ class BufferStats(deque):
         # *,
         # func_cond=always_true,
     ):
+        """Set up the buffer statistics; see the class docstring for the arguments."""
         if maxlen is _no_value_specified_sentinel:
             raise TypeError("You are required to specify maxlen")
         if not isinstance(maxlen, int):

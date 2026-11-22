@@ -116,6 +116,7 @@ class Creek:
     """
 
     def __init__(self, stream):
+        """Wrap ``stream``."""
         self.stream = stream
 
     wrap = classmethod(cls_wrap)
@@ -125,12 +126,14 @@ class Creek:
         return getattr(self.stream, attr)
 
     def __dir__(self):
+        """List the attributes of the class and of the wrapped stream."""
         return list(
             {*dir(self.__class__), *dir(self.stream)}
         )  # to forward dir to delegated stream as well
         # return list(set(dir(self.__class__)).union(self.stream.__dir__()))  # to forward dir to delegated stream as well
 
     def __hash__(self):
+        """Hash of the wrapped stream."""
         return self.stream.__hash__()
 
     # _data_of_obj = static_identity_method  # for write methods
@@ -140,6 +143,7 @@ class Creek:
     post_iter = static_identity_method
 
     def __iter__(self):
+        """Iterate over the items: ``post_iter`` applied to ``data_to_obj`` mapped over ``pre_iter(stream)``."""
         yield from self.post_iter(map(self.data_to_obj, self.pre_iter(self.stream)))
 
         # for line in self.pre_iter(self.stream):
@@ -159,11 +163,13 @@ class Creek:
         return next(iter(self))
 
     def __enter__(self):
+        """Enter the wrapped stream's context and return ``self``."""
         self.stream.__enter__()
         return self
         # return self._pre_proc(self.stream) # moved to iter to
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        """Exit the wrapped stream's context."""
         return self.stream.__exit__(
             exc_type, exc_val, exc_tb
         )  # TODO: Should we have a _post_proc? Uses?
