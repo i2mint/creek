@@ -51,11 +51,6 @@ def test_basic_automata_class_state_and_reset():
     assert a.reset() is a and a.state == "a"
 
 
-@pytest.mark.xfail(
-    reason="map_states: the comprehension rebinds ``state`` to the next state, so "
-    "keys are built from the next state (\{('A', 0): 'B'\} is expected)",
-    strict=True,
-)
 def test_mapping_transition_func_map_states_maps_next_states():
     mapped = MappingTransitionFunc({("a", 0): "b"}).map_states(str.upper)
     assert mapped("A", 0) == "B"
@@ -99,3 +94,12 @@ def test_cls_wrap_instance_and_class():
     w = Wrapped(1, b=3)
     assert isinstance(w, Box) and w.x.total == 4
     assert Wrapped.__name__ == "Plain"
+
+
+def test_abstract_labeling_methods_raise_not_implemented_error():
+    from creek.labeling import LabeledElement
+
+    with pytest.raises(NotImplementedError):
+        LabeledElement.add_new_label([], 1)
+    with pytest.raises(NotImplementedError):
+        LabeledElement.mk_new_labels_container(None)
