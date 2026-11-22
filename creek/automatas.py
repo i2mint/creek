@@ -108,6 +108,7 @@ class BasicAutomata:
     state: State = None
 
     def __post_init__(self):
+        """Remember the initial state, to be able to ``reset``."""
         self._initial_state = self.state
 
     def __call__(self, state: State, symbols: Iterable[Symbol]) -> State:

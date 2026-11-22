@@ -95,6 +95,7 @@ class IterableType(Protocol):
     """
 
     def __iter__(self) -> Iterable[IteratorItem]:
+        """Protocol method: return an iterator."""
         pass
 
 
@@ -107,6 +108,7 @@ class IteratorType(Protocol):
     """
 
     def __next__(self) -> IteratorItem:
+        """Protocol method: return the next item."""
         pass
 
 
@@ -431,6 +433,7 @@ class Pipe:
     funcs = ()
 
     def __init__(self, *funcs, **named_funcs):
+        """Store the ``funcs`` (positional, then named) to be applied one after the other."""
         named_funcs = self._process_reserved_names(named_funcs)
         funcs = list(funcs) + list(named_funcs.values())
         self.funcs = funcs
@@ -466,6 +469,7 @@ class Pipe:
         return out
 
     def __len__(self):
+        """Return the number of functions."""
         return len(self.funcs)
 
     _dflt_signature = Signature.from_callable(lambda *args, **kwargs: None)
